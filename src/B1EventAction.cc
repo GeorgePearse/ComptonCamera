@@ -35,13 +35,20 @@
 
 #include "G4UnitsTable.hh"
 
+#include <iostream>
+#include <fstream>
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1EventAction::B1EventAction(B1RunAction* runAction)
 : G4UserEventAction(),
   fRunAction(runAction),
-  fEdep(0.)
-{} 
+  fEdepScatterer(0.),
+  fEdepDetector(0.),
+  fRunTime(0.)
+{
+fFirstWrite = true;
+} 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -52,21 +59,61 @@ B1EventAction::~B1EventAction()
 
 void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
-  fEdep = 0.;
+  fEdepScatterer = 0.;
+  fEdepDetector = 0.;
+  fBeginTime = fRunTime;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B1EventAction::AddEdep(G4double edep)
-{
-	fEdep += edep; 
-}
-
 void B1EventAction::EndOfEventAction(const G4Event*)
 {   
-  // accumulate statistics in run action
-  //fRunAction->AddEdep(fEdep);
-  std::cout << "EndOfEvent fEdep = " << G4BestUnit(fEdep, "Energy") << std::endl;
-}
+  if(fEdepScatterer != 0 && fEdepDetector != 0)
+    {
+      // Text file writer for Scatterer
+      std::ofstream myfile;
+      // Special condition for first write to create file
+      if(fFirstWrite)
+	{
+		myfile.open("scatterdata.txt");
+	}
+	else
+	{
+		myfile.open ("scatterdata.txt", std::ios::app);
+	}
+      	if (myfile.is_open())
+      	{
+          myfile << (fTimeScatterer + fBeginTime)/1000  << " "
+	  << fEdepScatterer*1000 << "\n";
+	  myfile.close();
+        }
+	else std::cerr << "Unable to open scatter file" << std::endl;
 
+
+       // Text file writer for Absorber
+       std::ofstream myfile2;
+       // Special condition for first write to create file
+       if(fFirstWrite)
+	{
+		myfile2.open("absorbdata.txt");
+	}
+	else
+	{
+		myfile2.open ("absorbdata.txt", std::ios::app);
+	}
+      	if (myfile2.is_open())
+      	{
+          myfile2 << (fTimeDetector + fBeginTime)/1000 << " "
+	  << fEdepDetector*1000 << "\n";
+	  myfile2.close();
+        }
+	else std::cerr << "Unable to open absorb file" << std::endl;
+
+      std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
+      std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
+
+      fFirstWrite = false;
+    }
+}
+// Can use incremented copy number for when have many scatterers and detectors
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

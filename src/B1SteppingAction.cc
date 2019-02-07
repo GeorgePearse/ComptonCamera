@@ -52,7 +52,9 @@ B1SteppingAction::~B1SteppingAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1SteppingAction::UserSteppingAction(const G4Step* step)
-{
+{ // track runtime of event by summing delta times in each step
+  G4double deltaTime = step->GetDeltaTime();
+  fEventAction->TotalTime(deltaTime);
   
   // get volume of the current step
   G4LogicalVolume* volume 
@@ -62,9 +64,23 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // check if we are in scoring volume
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
 
-  // collect energy deposited in this step
-  G4double edepStep = step->GetTotalEnergyDeposit();
-  fEventAction->AddEdep(edepStep);  
+  // collect energy deposited in step
+  // scatterer energy
+  if (volume->GetName() == "Scatterer")
+    {
+      G4double edepStep = step->GetTotalEnergyDeposit();
+      G4double timeScatterer = step->GetTrack()->GetGlobalTime();
+      fEventAction->AddEdepScatterer(edepStep);
+      fEventAction->TimeScatterer(timeScatterer);
+    }
+  // detector energy
+  if (volume->GetName() == "Absorber")
+    {
+      G4double edepStep = step->GetTotalEnergyDeposit();
+      G4double timeDetector = step->GetTrack()->GetGlobalTime();
+      fEventAction->AddEdepDetector(edepStep);
+      fEventAction->TimeDetector(timeDetector);
+    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
