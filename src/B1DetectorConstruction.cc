@@ -124,7 +124,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   rot1->rotateX(90*deg);
         
   // Tube section shape       
-  G4double shape1_rmina =  0*cm, shape1_rmaxa = 2*cm;
+  G4double shape1_rmina =  0.*cm, shape1_rmaxa = 2.*cm;
   G4double shape1_hz = 3.*cm;
   G4double shape1_phimin = 0.*deg, shape1_phimax = 360.*deg;
   G4Tubs* solidShape1 =    

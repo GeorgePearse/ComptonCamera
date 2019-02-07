@@ -24,48 +24,62 @@
 // ********************************************************************
 //
 //
-/// \file B1EventAction.hh
-/// \brief Definition of the B1EventAction class
+/// \file B1SteppingAction.cc
+/// \brief Implementation of the B1SteppingAction class
 
-#ifndef B1EventAction_h
-#define B1EventAction_h 1
+#include "B1SteppingAction.hh"
+#include "B1EventAction.hh"
+#include "B1DetectorConstruction.hh"
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
-
-class B1RunAction;
-
-/// Event action class
-///
-
-class B1EventAction : public G4UserEventAction
-{
-  public:
-    B1EventAction(B1RunAction* runAction);
-    virtual ~B1EventAction();
-
-    virtual void BeginOfEventAction(const G4Event* event);
-    virtual void EndOfEventAction(const G4Event* event);
-
-    void AddEdepScatterer(G4double edep){fEdepScatterer += edep;};
-    void AddEdepDetector(G4double edep){fEdepDetector += edep;};
-    void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
-    void TimeScatterer(G4double timeScatterer){fTimeScatterer = timeScatterer;};
-    void TimeDetector(G4double timeDetector){fTimeDetector = timeDetector;};
-
-  private:
-    B1RunAction* fRunAction;
-    G4double     fEdepScatterer;
-    G4double     fEdepDetector;
-    G4double fTimeScatterer;
-    G4double fTimeDetector;
-    G4double fRunTime;
-    G4double fBeginTime;
-    G4bool fFirstWrite;
-};
+#include "G4Step.hh"
+#include "G4Event.hh"
+#include "G4RunManager.hh"
+#include "G4LogicalVolume.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+B1SteppingAction::B1SteppingAction(B1EventAction* eventAction)
+: G4UserSteppingAction(),
+  fEventAction(eventAction),
+  fScoringVolume(0)
+{}
 
-    
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+B1SteppingAction::~B1SteppingAction()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1SteppingAction::UserSteppingAction(const G4Step* step)
+{
+  
+  // get volume of the current step
+  G4LogicalVolume* volume 
+    = step->GetPreStepPoint()->GetTouchableHandle()
+      ->GetVolume()->GetLogicalVolume();
+      
+  // check if we are in scoring volume
+  if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
+
+  // collect energy deposited in step
+  // scatterer energy
+  if (volume->GetName() == "Scatterer")
+    {
+      G4double edepStep = step->GetTotalEnergyDeposit();
+      G4double timeScatterer = step->GetTrack()->GetGlobalTime();
+      fEventAction->AddEdepScatterer(edepStep);
+      fEventAction->TimeScatterer(timeScatterer);
+    }
+  // detector energy
+  if (volume->GetName() == "Absorber")
+    {
+      G4double edepStep = step->GetTotalEnergyDeposit();
+      G4double timeDetector = step->GetTrack()->GetGlobalTime();
+      fEventAction->AddEdepDetector(edepStep);
+      fEventAction->TimeDetector(timeDetector);
+    }
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
