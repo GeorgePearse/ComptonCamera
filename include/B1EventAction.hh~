@@ -49,7 +49,6 @@ class B1EventAction : public G4UserEventAction
 
     void AddEdepScatterer(G4double edep){fEdepScatterer += edep;};
     void AddEdepDetector(G4double edep){fEdepDetector += edep;};
-    void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
     void TimeScatterer(G4double timeScatterer){fTimeScatterer = timeScatterer;};
     void TimeDetector(G4double timeDetector){fTimeDetector = timeDetector;};
 
@@ -59,9 +58,6 @@ class B1EventAction : public G4UserEventAction
     G4double     fEdepDetector;
     G4double fTimeScatterer;
     G4double fTimeDetector;
-    G4double fRunTime;
-    G4double fBeginTime;
-    G4bool fFirstWrite;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

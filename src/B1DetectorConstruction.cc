@@ -72,7 +72,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   //     
   // World
   //
-  G4double world_sizeXY = 2.*env_sizeXY;
+  G4double world_sizeXY = 1.2*env_sizeXY;
   G4double world_sizeZ  = 1.2*env_sizeZ;
   G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
   
@@ -118,14 +118,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   //     
   // Shape 1
   //  
-  G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_KEVLAR");
+  G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_A-150_TISSUE");
   G4ThreeVector pos1 = G4ThreeVector(0, 0*cm, -7*cm);
   G4RotationMatrix* rot1 = new G4RotationMatrix();
   rot1->rotateX(90*deg);
         
   // Tube section shape       
   G4double shape1_rmina =  0.*cm, shape1_rmaxa = 2.*cm;
-  G4double shape1_hz = 2.5*cm;
+  G4double shape1_hz = 3.*cm;
   G4double shape1_phimin = 0.*deg, shape1_phimax = 360.*deg;
   G4Tubs* solidShape1 =    
     new G4Tubs("Shape1", 
@@ -149,15 +149,17 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   //     
   // Shape 2
   //
-  G4Material* shape2_mat = nist->FindOrBuildMaterial("G4_CONCRETE");
-  G4ThreeVector pos2 = G4ThreeVector(-5*cm, 0*cm, 7*cm);
+  G4Material* shape2_mat = nist->FindOrBuildMaterial("G4_BONE_COMPACT_ICRU");
+  G4ThreeVector pos2 = G4ThreeVector(-10*cm, 0*cm, 7*cm);
   G4RotationMatrix* rot2 = new G4RotationMatrix();
   rot2->rotateX(90*deg);
 
-  G4double shape2_x = 3.*cm;
-  G4double shape2_y = 2.*cm;
-  G4double shape2_z = 5.*cm;
-  G4Box* solidShape2 =    new G4Box("Shape2", 0.5*shape2_x, 0.5*shape2_y, 0.5*shape2_z);
+  G4double shape2_rmina =  0.*cm, shape2_rmaxa = 2.*cm;
+  G4double shape2_hz = 3.*cm;
+  G4double shape2_phimin = 0.*deg, shape2_phimax = 360.*deg;
+  G4Tubs* solidShape2 =    new G4Tubs("Shape2",
+    shape2_rmina, shape2_rmaxa, shape2_hz,
+    shape2_phimin, shape2_phimax);
                 
   G4LogicalVolume* logicShape2 =                         
     new G4LogicalVolume(solidShape2,         //its solid

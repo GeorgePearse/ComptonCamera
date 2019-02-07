@@ -52,7 +52,9 @@ B1SteppingAction::~B1SteppingAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1SteppingAction::UserSteppingAction(const G4Step* step)
-{
+{ // track runtime of event by summing delta times in each step
+  G4double deltaTime = step->GetDeltaTime();
+  fEventAction->TotalTime(deltaTime);
   
   // get volume of the current step
   G4LogicalVolume* volume 

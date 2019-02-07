@@ -44,7 +44,8 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
 : G4UserEventAction(),
   fRunAction(runAction),
   fEdepScatterer(0.),
-  fEdepDetector(0.)
+  fEdepDetector(0.),
+  fRunTime(0.)
 {
 fFirstWrite = true;
 } 
@@ -60,18 +61,20 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
   fEdepScatterer = 0.;
   fEdepDetector = 0.;
+  fBeginTime = fRunTime;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1EventAction::EndOfEventAction(const G4Event*)
 {   
-
-  if(fEdepScatterer != 0 && fEdepDetector != 0)  // if statement so that file does not overwrite. 
+  if(fEdepScatterer != 0 && fEdepDetector != 0)
     {
       // Text file writer for Scatterer
-      	std::ofstream myfile;// ("scatterdata.txt");
-	if(fFirstWrite){
+      std::ofstream myfile;
+      // Special condition for first write to create file
+      if(fFirstWrite)
+	{
 		myfile.open("scatterdata.txt");
 	}
 	else
@@ -80,15 +83,18 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 	}
       	if (myfile.is_open())
       	{
-          myfile << fTimeScatterer/1000  << " " << fEdepScatterer*1000 << "\n";
+          myfile << (fTimeScatterer + fBeginTime)/1000  << " "
+	  << fEdepScatterer*1000 << "\n";
 	  myfile.close();
         }
 	else std::cerr << "Unable to open scatter file" << std::endl;
 
 
-      // Text file writer for Absorber
-      	std::ofstream myfile2;// ("absorbdata.txt");
-	if(fFirstWrite){
+       // Text file writer for Absorber
+       std::ofstream myfile2;
+       // Special condition for first write to create file
+       if(fFirstWrite)
+	{
 		myfile2.open("absorbdata.txt");
 	}
 	else
@@ -97,17 +103,16 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 	}
       	if (myfile2.is_open())
       	{
-          myfile2 << fTimeDetector/1000 << " " << fEdepDetector*1000 << "\n";
+          myfile2 << (fTimeDetector + fBeginTime)/1000 << " "
+	  << fEdepDetector*1000 << "\n";
 	  myfile2.close();
         }
 	else std::cerr << "Unable to open absorb file" << std::endl;
 
+      std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
+      std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
 
-      
-	std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer, "Time") << std::endl;
-      std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector, "Time") << std::endl;
-
-	fFirstWrite = false;
+      fFirstWrite = false;
     }
 }
 // Can use incremented copy number for when have many scatterers and detectors
