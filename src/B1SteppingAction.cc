@@ -63,6 +63,17 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       ->GetVolume();
   G4LogicalVolume* volume = volumePhys->GetLogicalVolume();
 
+  // Code to fix Segmentation Faults
+  G4String procName = "";
+  G4StepPoint* preStep = step->GetPreStepPoint();
+  if(preStep!= nullptr)
+  {
+    const G4VProcess* proc = preStep->GetProcessDefinedStep();
+    if(proc != nullptr)
+    {
+      procName = proc->GetProcessName();
+    }
+  }
 
   // check if we are in scoring volume
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
@@ -74,11 +85,16 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     {
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
-      G4double timeScatterer = step->GetTrack()->GetGlobalTime();
-      G4ThreeVector Pos = step->GetPostStepPoint()->GetPosition();
-      fEventAction->Vector(Pos);
       fEventAction->AddEdepScatterer(edepStep, copyNo);
-      fEventAction->TimeScatterer(timeScatterer, copyNo);
+	if (procName == "compt")
+	{
+		G4double timeScatterer = step->GetTrack()->GetGlobalTime();
+		G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
+		fEventAction->TimeScatterer(timeScatterer, copyNo);
+		fEventAction->Vector(Pos);
+		fEventAction->Count();
+	}
+
     }
   // detector energy
   if (volume->GetName() == "Absorber")
