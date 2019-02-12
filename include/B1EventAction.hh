@@ -57,6 +57,7 @@ class B1EventAction : public G4UserEventAction
 
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
     void Vector(G4ThreeVector Pos){fVector = Pos;};
+    void Count(){N += 1;};
 
   private:
     B1RunAction* fRunAction;
@@ -72,6 +73,7 @@ class B1EventAction : public G4UserEventAction
     std::string fAbsorbCopyNo;
     std::string absorbName;
     std::string scatName;
+    int N;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

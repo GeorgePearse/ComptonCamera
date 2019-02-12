@@ -95,6 +95,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
   fEdepScatterer = 0.;
   fEdepDetector = 0.;
+  N = 0.;
   fBeginTime = fRunTime;
 }
 
@@ -149,6 +150,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
       std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
       std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
       std::cout << "PostStepPoint fVector = " << fVector << std::endl;
+      std::cout << "InScatterer Count(N) = " << N << std::endl;
 
       fFirstWrite = false;
     }

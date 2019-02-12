@@ -126,14 +126,14 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   //     
   // Shape 1
   //  
-  G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_A-150_TISSUE");
+  G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
   G4ThreeVector pos1 = G4ThreeVector(fScatXPos, 0*cm, -7*cm);
   G4RotationMatrix* rot1 = new G4RotationMatrix();
   rot1->rotateX(90*deg);
         
   // Tube section shape       
-  G4double shape1_rmina =  0.*cm, shape1_rmaxa = 2.*cm;
-  G4double shape1_hz = 3.*cm;
+  G4double shape1_rmina =  0.*cm, shape1_rmaxa = 0.14*cm;
+  G4double shape1_hz = 0.43*cm;
   G4double shape1_phimin = 0.*deg, shape1_phimax = 360.*deg;
   G4Tubs* solidShape1 =    
     new G4Tubs("Shape1", 
@@ -162,8 +162,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   G4RotationMatrix* rot2 = new G4RotationMatrix();
   rot2->rotateX(90*deg);
 
-  G4double shape2_rmina =  0.*cm, shape2_rmaxa = 2.*cm;
-  G4double shape2_hz = 3.*cm;
+  G4double shape2_rmina =  0.*cm, shape2_rmaxa = 3.81*cm;
+  G4double shape2_hz = 3.81*cm;
   G4double shape2_phimin = 0.*deg, shape2_phimax = 360.*deg;
   G4Tubs* solidShape2 =    new G4Tubs("Shape2",
     shape2_rmina, shape2_rmaxa, shape2_hz,
