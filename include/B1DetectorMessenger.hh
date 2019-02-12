@@ -5,3 +5,7 @@
 #include "globals.hh"
 
 
+class B1DetectorConstruction;
+class G4UIdirectory;
+class G4UIcmdWithAString;
+class G4UIcmdWithADoubleAndUnit;
