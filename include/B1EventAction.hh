@@ -47,11 +47,13 @@ class B1EventAction : public G4UserEventAction
     virtual void BeginOfEventAction(const G4Event* event);
     virtual void EndOfEventAction(const G4Event* event);
 
-    void AddEdepScatterer(G4double edep){fEdepScatterer += edep;};
-    void AddEdepDetector(G4double edep){fEdepDetector += edep;};
+    virtual void AddEdepScatterer(G4double edep, int copyNo);
+    virtual void AddEdepDetector(G4double edep, int copyNo);
+    virtual void TimeScatterer(G4double timeScatterer, int copyNo);
+    virtual void TimeDetector(G4double timeDetector, int copyNo);
+
+
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
-    void TimeScatterer(G4double timeScatterer){fTimeScatterer = timeScatterer;};
-    void TimeDetector(G4double timeDetector){fTimeDetector = timeDetector;};
 
   private:
     B1RunAction* fRunAction;
@@ -62,6 +64,10 @@ class B1EventAction : public G4UserEventAction
     G4double fRunTime;
     G4double fBeginTime;
     G4bool fFirstWrite;
+    std::string fScatCopyNo;
+    std::string fAbsorbCopyNo;
+    std::string absorbName;
+    std::string scatName;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
