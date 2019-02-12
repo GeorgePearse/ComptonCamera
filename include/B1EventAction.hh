@@ -32,6 +32,8 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
+#include "G4ThreeVector.hh"
+
 
 class B1RunAction;
 
@@ -52,9 +54,11 @@ class B1EventAction : public G4UserEventAction
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
     void TimeScatterer(G4double timeScatterer){fTimeScatterer = timeScatterer;};
     void TimeDetector(G4double timeDetector){fTimeDetector = timeDetector;};
+    void Vector(G4ThreeVector Pos){fVector = Pos;};
 
   private:
     B1RunAction* fRunAction;
+    G4ThreeVector fVector;
     G4double     fEdepScatterer;
     G4double     fEdepDetector;
     G4double fTimeScatterer;
