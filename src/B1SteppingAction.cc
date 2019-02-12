@@ -75,9 +75,10 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       G4double timeScatterer = step->GetTrack()->GetGlobalTime();
+      G4ThreeVector Pos = step->GetPostStepPoint()->GetPosition();
+      fEventAction->Vector(Pos);
       fEventAction->AddEdepScatterer(edepStep, copyNo);
       fEventAction->TimeScatterer(timeScatterer, copyNo);
-      
     }
   // detector energy
   if (volume->GetName() == "Absorber")

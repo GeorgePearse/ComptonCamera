@@ -41,17 +41,25 @@
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 
+#include "B1DetectorMessenger.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1DetectorConstruction::B1DetectorConstruction()
 : G4VUserDetectorConstruction(),
-  fScoringVolume(0)
-{ }
+  fScoringVolume(0),
+  fScatXPos(0),
+  fDetectorMessenger(0)
+{
+  fDetectorMessenger = new B1DetectorMessenger(this);
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1DetectorConstruction::~B1DetectorConstruction()
-{ }
+{
+  delete fDetectorMessenger;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -119,7 +127,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   // Shape 1
   //  
   G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_A-150_TISSUE");
-  G4ThreeVector pos1 = G4ThreeVector(0, 0*cm, -7*cm);
+  G4ThreeVector pos1 = G4ThreeVector(fScatXPos, 0*cm, -7*cm);
   G4RotationMatrix* rot1 = new G4RotationMatrix();
   rot1->rotateX(90*deg);
         
@@ -181,6 +189,20 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   //always return the physical World
   //
   return physWorld;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScatXPos(G4double val)
+{
+  fScatXPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::UpdateGeometry()
+{
+  G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
