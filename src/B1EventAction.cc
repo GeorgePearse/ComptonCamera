@@ -152,10 +152,4 @@ void B1EventAction::EndOfEventAction(const G4Event*)
       fFirstWrite = false;
     }
 }
-
-
-
-
-
-// Can use incremented copy number for when have many scatterers and detectors
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
