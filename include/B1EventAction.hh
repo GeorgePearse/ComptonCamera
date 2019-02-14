@@ -69,6 +69,7 @@ class B1EventAction : public G4UserEventAction
     G4double fRunTime;
     G4double fBeginTime;
     G4bool fFirstWrite;
+    G4bool fFirstWritePosCount;
     std::string fScatCopyNo;
     std::string fAbsorbCopyNo;
     std::string absorbName;
