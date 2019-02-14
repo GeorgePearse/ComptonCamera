@@ -61,6 +61,7 @@ class B1DetectorMessenger: public G4UImessenger
     G4UIcmdWithADoubleAndUnit* fScatYPos;
     G4UIcmdWithADoubleAndUnit* fScatRad;
     G4UIcmdWithADoubleAndUnit* fDetXPos;
+    G4UIcmdWithADoubleAndUnit* fDetYPos;
     G4UIcmdWithoutParameter*   fUpdateCmd;
 
 };

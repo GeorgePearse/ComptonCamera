@@ -50,6 +50,8 @@ B1DetectorConstruction::B1DetectorConstruction()
   fScoringVolume(0),
   fScatXPos(0),
   fScatYPos(0),
+  fDetXPos(0),
+  fDetYPos(0),
   fDetectorMessenger(0)
 {
   fDetectorMessenger = new B1DetectorMessenger(this);
@@ -159,7 +161,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   // Shape 2
   //
   G4Material* shape2_mat = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
-  G4ThreeVector pos2 = G4ThreeVector(fDetXPos, 0*cm, 7*cm);
+  G4ThreeVector pos2 = G4ThreeVector(fDetXPos, fDetYPos, 7*cm);
   G4RotationMatrix* rot2 = new G4RotationMatrix();
   rot2->rotateX(90*deg);
 
@@ -218,6 +220,13 @@ void B1DetectorConstruction::SetScatRad(G4double val)
 void B1DetectorConstruction::SetDetXPos(G4double val)
 {
   fDetXPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDetYPos(G4double val)
+{
+  fDetYPos = val;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
