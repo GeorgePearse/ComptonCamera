@@ -40,13 +40,14 @@
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4Material.hh"
 
 #include "B1DetectorMessenger.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1DetectorConstruction::B1DetectorConstruction()
-: G4VUserDetectorConstruction(),
+: G4VUserDetectorConstruction(), 
   fScoringVolume(0),
   fScatXPos(0),
   fScatYPos(0),
@@ -54,15 +55,30 @@ B1DetectorConstruction::B1DetectorConstruction()
   fDetYPos(0),
   fDetectorMessenger(0)
 {
-  fDetectorMessenger = new B1DetectorMessenger(this);
+//Matterial Definition  of Lanthanum(III) Bromide
+G4Isotope* iso79_Br = new G4Isotope("79_Br", 35, 79, 78.918*g/mole);
+G4Isotope* iso81_Br = new G4Isotope("81_Br", 35, 81, 80.916*g/mole);
+G4Isotope* iso138_La = new G4Isotope("138_La", 57, 138, 137.907*g/mole);
+G4Isotope* iso139_La = new G4Isotope("139_La", 57, 139, 138.906*g/mole);
+
+G4Element* Br = new G4Element("Bromide", "Br", 2);
+Br->AddIsotope(iso79_Br, 50.69*perCent);
+Br->AddIsotope(iso81_Br, 49.31*perCent);
+G4Element* La = new G4Element("Lanthanum", "La", 2);
+La->AddIsotope(iso138_La, 0.08881*perCent);
+La->AddIsotope(iso139_La, 99.9119*perCent);
+
+G4Material* LaBr = 
+new G4Material("Lanthanum_Bromide", 5.06*g/cm3, 2, kStateSolid);
+LaBr->AddElement( Br, 0.6036373016896684);
+LaBr->AddElement( La, 0.39636269831033155); 
+fDetectorMessenger = new B1DetectorMessenger(this);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1DetectorConstruction::~B1DetectorConstruction()
-{
-  delete fDetectorMessenger;
-}
+{delete fDetectorMessenger;}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -160,8 +176,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   //     
   // Shape 2
   //
-  G4Material* shape2_mat = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
   G4ThreeVector pos2 = G4ThreeVector(fDetXPos, fDetYPos, 7*cm);
+  G4Material* shape2_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide");
   G4RotationMatrix* rot2 = new G4RotationMatrix();
   rot2->rotateX(90*deg);
 
