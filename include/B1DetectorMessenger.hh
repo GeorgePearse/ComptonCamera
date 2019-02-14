@@ -24,47 +24,45 @@
 // ********************************************************************
 //
 //
-/// \file B1DetectorConstruction.hh
-/// \brief Definition of the B1DetectorConstruction class
+//
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef B1DetectorConstruction_h
-#define B1DetectorConstruction_h 1
+#ifndef B1DetectorMessenger_h
+#define B1DetectorMessenger_h 1
 
-#include "G4VUserDetectorConstruction.hh"
+#include "G4UImessenger.hh"
 #include "globals.hh"
 
-class G4VPhysicalVolume;
-class G4LogicalVolume;
+class B1DetectorConstruction;
+class G4UIdirectory;
+class G4UIcmdWithAString;
+class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithoutParameter;
 
-class B1DetectorMessenger;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-/// Detector construction class to define materials and geometry.
-
-class B1DetectorConstruction : public G4VUserDetectorConstruction
+class B1DetectorMessenger: public G4UImessenger
 {
   public:
-    B1DetectorConstruction();
-    virtual ~B1DetectorConstruction();
-
-    virtual void SetScatXPos(G4double);
-    virtual void SetScatYPos(G4double);
-    virtual void SetScatRad(G4double);
-    virtual void SetDetXPos(G4double);
-    virtual G4VPhysicalVolume* Construct();
+    B1DetectorMessenger(B1DetectorConstruction* );
+   ~B1DetectorMessenger();
     
-    G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
-
-    virtual void UpdateGeometry();
-
+    virtual void SetNewValue(G4UIcommand*, G4String);
+    
   private:
-  G4double fScatXPos;
-  G4double fScatYPos;
-  G4double fScatRad;
-  G4double fDetXPos;
-  B1DetectorMessenger* fDetectorMessenger;
-  
-  protected:
-    G4LogicalVolume*  fScoringVolume;
+    B1DetectorConstruction*    fDetector;
+    
+    G4UIdirectory*             fB1Dir;
+    G4UIdirectory*             fScatDir;
+    G4UIdirectory*             fDetDir;
+
+    G4UIcmdWithADoubleAndUnit* fScatXPos;
+    G4UIcmdWithADoubleAndUnit* fScatYPos;
+    G4UIcmdWithADoubleAndUnit* fScatRad;
+    G4UIcmdWithADoubleAndUnit* fDetXPos;
+    G4UIcmdWithoutParameter*   fUpdateCmd;
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
