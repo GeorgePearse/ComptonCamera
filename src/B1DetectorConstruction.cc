@@ -49,6 +49,7 @@ B1DetectorConstruction::B1DetectorConstruction()
 : G4VUserDetectorConstruction(),
   fScoringVolume(0),
   fScatXPos(0),
+  fScatYPos(0),
   fDetectorMessenger(0)
 {
   fDetectorMessenger = new B1DetectorMessenger(this);
@@ -70,7 +71,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   
   // Envelope parameters
   //
-  G4double env_sizeXY = 20*cm, env_sizeZ = 30*cm;
+  G4double env_sizeXY = 40*cm, env_sizeZ = 30*cm;
   G4Material* env_mat = nist->FindOrBuildMaterial("G4_AIR");
    
   // Option to switch on/off checking of volumes overlaps
@@ -127,12 +128,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   // Shape 1
   //  
   G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
-  G4ThreeVector pos1 = G4ThreeVector(fScatXPos, 0*cm, -7*cm);
+  G4ThreeVector pos1 = G4ThreeVector(fScatXPos, fScatYPos, -7*cm);
   G4RotationMatrix* rot1 = new G4RotationMatrix();
   rot1->rotateX(90*deg);
         
   // Tube section shape       
-  G4double shape1_rmina =  0.*cm, shape1_rmaxa = 0.14*cm;
+  G4double shape1_rmina =  0.*cm, shape1_rmaxa = fScatRad;//0.14*cm;
   G4double shape1_hz = 0.43*cm;
   G4double shape1_phimin = 0.*deg, shape1_phimax = 360.*deg;
   G4Tubs* solidShape1 =    
@@ -145,10 +146,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
                         shape1_mat,          //its material
                         "Scatterer");           //its name
                
-  new G4PVPlacement(rot1,                       // rortation
+  new G4PVPlacement(rot1,                    //rotation
                     pos1,                    //at position
                     logicShape1,             //its logical volume
-                    "Shape1",                //its name
+                    "Scatterer",                //its name
                     logicEnv,                //its mother  volume
                     false,                   //no boolean operation
                     0,                       //copy number
@@ -157,8 +158,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   //     
   // Shape 2
   //
-  G4Material* shape2_mat = nist->FindOrBuildMaterial("G4_BONE_COMPACT_ICRU");
-  G4ThreeVector pos2 = G4ThreeVector(-10*cm, 0*cm, 7*cm);
+  G4Material* shape2_mat = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
+  G4ThreeVector pos2 = G4ThreeVector(fDetXPos, 0*cm, 7*cm);
   G4RotationMatrix* rot2 = new G4RotationMatrix();
   rot2->rotateX(90*deg);
 
@@ -196,6 +197,27 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 void B1DetectorConstruction::SetScatXPos(G4double val)
 {
   fScatXPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScatYPos(G4double val)
+{
+  fScatYPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScatRad(G4double val)
+{
+  fScatRad = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDetXPos(G4double val)
+{
+  fDetXPos = val;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

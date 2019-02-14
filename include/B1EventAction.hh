@@ -34,6 +34,7 @@
 #include "globals.hh"
 #include "G4ThreeVector.hh"
 
+#include <vector>
 
 class B1RunAction;
 
@@ -56,12 +57,11 @@ class B1EventAction : public G4UserEventAction
 
 
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
-    void Vector(G4ThreeVector Pos){fVector = Pos;};
+    void Vector(G4ThreeVector Pos){posList.push_back(Pos);};
     void Count(){N += 1;};
 
   private:
     B1RunAction* fRunAction;
-    G4ThreeVector fVector;
     G4double     fEdepScatterer;
     G4double     fEdepDetector;
     G4double fTimeScatterer;
@@ -74,6 +74,7 @@ class B1EventAction : public G4UserEventAction
     std::string absorbName;
     std::string scatName;
     int N;
+    std::vector<G4ThreeVector> posList;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

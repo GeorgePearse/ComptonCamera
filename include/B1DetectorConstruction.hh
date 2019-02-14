@@ -47,6 +47,9 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
     virtual ~B1DetectorConstruction();
 
     virtual void SetScatXPos(G4double);
+    virtual void SetScatYPos(G4double);
+    virtual void SetScatRad(G4double);
+    virtual void SetDetXPos(G4double);
     virtual G4VPhysicalVolume* Construct();
     
     G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
@@ -55,6 +58,9 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
 
   private:
   G4double fScatXPos;
+  G4double fScatYPos;
+  G4double fScatRad;
+  G4double fDetXPos;
   B1DetectorMessenger* fDetectorMessenger;
   
   protected:

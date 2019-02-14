@@ -41,7 +41,7 @@
 
 B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
 :fDetector(det),
- fB1Dir(0), fScatDir(0), fScatXPos(0), fUpdateCmd(0)
+ fB1Dir(0), fScatDir(0), fScatXPos(0), fScatYPos(0), fScatRad(0), fDetDir(0), fDetXPos(0), fUpdateCmd(0)
 { 
   fB1Dir = new G4UIdirectory("/B1/");
   fB1Dir->SetGuidance("UI commands for the Compton camera");
@@ -49,10 +49,28 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fScatDir = new G4UIdirectory("/B1/scat/");
   fScatDir->SetGuidance("scatterer construction commands");
   
-  fScatXPos = new G4UIcmdWithADoubleAndUnit("/B1/scat/setX",this);
+  fScatXPos = new G4UIcmdWithADoubleAndUnit("/B1/scat/setX", this);
   fScatXPos->SetGuidance("Set X position of the scatterer (zero is in line with source)");
-  fScatXPos->SetParameterName("xPos",false);  
+  fScatXPos->SetParameterName("ScatXPos", false);  
   fScatXPos->SetUnitCategory("Length");
+
+  fScatYPos = new G4UIcmdWithADoubleAndUnit("/B1/scat/setY", this);
+  fScatYPos->SetGuidance("Set Y position of the scatterer");
+  fScatYPos->SetParameterName("ScatYPos", false);  
+  fScatYPos->SetUnitCategory("Length");
+
+  fScatRad = new G4UIcmdWithADoubleAndUnit("/B1/scat/setRad", this);
+  fScatRad->SetGuidance("Set radius of the scatterer");
+  fScatRad->SetParameterName("ScatRad", false);
+  fScatRad->SetUnitCategory("Length");
+
+  fDetDir = new G4UIdirectory("/B1/det/");
+  fDetDir->SetGuidance("detector construction commands");
+
+  fDetXPos = new G4UIcmdWithADoubleAndUnit("/B1/det/setX", this);
+  fDetXPos->SetGuidance("Set X position of the detector (zero is in line with source)");
+  fDetXPos->SetParameterName("DetXPos", false);
+  fDetXPos->SetUnitCategory("Length");
   
   fUpdateCmd = new G4UIcmdWithoutParameter("/B1/scat/update",this);
   fUpdateCmd->SetGuidance("Update geometry.");
@@ -64,10 +82,14 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
 
 B1DetectorMessenger::~B1DetectorMessenger()
 {
-  delete fScatXPos; 
+  delete fScatXPos;
+  delete fScatYPos;
+  delete fScatRad;
+  delete fDetXPos;
   delete fUpdateCmd;
   delete fScatDir;  
   delete fB1Dir;
+  delete fDetDir;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -76,6 +98,15 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 {  
   if ( command == fScatXPos )
    {fDetector->SetScatXPos(fScatXPos->GetNewDoubleValue(newValue));}
+
+  if ( command == fScatYPos )
+   {fDetector->SetScatYPos(fScatYPos->GetNewDoubleValue(newValue));}
+
+  if ( command == fScatRad )
+   {fDetector->SetScatRad(fScatRad->GetNewDoubleValue(newValue));}
+
+  if ( command == fDetXPos )
+   {fDetector->SetDetXPos(fDetXPos->GetNewDoubleValue(newValue));}
    
   if  ( command == fUpdateCmd )
    {fDetector->UpdateGeometry();}

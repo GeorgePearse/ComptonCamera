@@ -38,6 +38,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -97,6 +98,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fEdepDetector = 0.;
   N = 0.;
   fBeginTime = fRunTime;
+  posList.clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -149,10 +151,13 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
       std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
       std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
-      std::cout << "PostStepPoint fVector = " << fVector << std::endl;
+      for(unsigned int i=0; i<posList.size(); i++)
+	{
+	  std::cout << "PostStepPoint fVector = " << posList[i] << std::endl;
+	}
       std::cout << "InScatterer Count(N) = " << N << std::endl;
 
       fFirstWrite = false;
     }
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.x.....

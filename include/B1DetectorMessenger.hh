@@ -55,8 +55,12 @@ class B1DetectorMessenger: public G4UImessenger
     
     G4UIdirectory*             fB1Dir;
     G4UIdirectory*             fScatDir;
+    G4UIdirectory*             fDetDir;
 
     G4UIcmdWithADoubleAndUnit* fScatXPos;
+    G4UIcmdWithADoubleAndUnit* fScatYPos;
+    G4UIcmdWithADoubleAndUnit* fScatRad;
+    G4UIcmdWithADoubleAndUnit* fDetXPos;
     G4UIcmdWithoutParameter*   fUpdateCmd;
 
 };
