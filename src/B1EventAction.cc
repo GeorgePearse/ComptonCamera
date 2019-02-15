@@ -34,11 +34,12 @@
 #include "G4RunManager.hh"
 
 #include "G4UnitsTable.hh"
+#include <G4SystemOfUnits.hh>
 
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <G4SystemOfUnits.hh>
+#include <vector>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -118,7 +119,9 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
   fEdepScatterer = 0.;
   fEdepDetector = 0.;
+  N = 0.;
   fBeginTime = fRunTime;
+  posList.clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -177,9 +180,32 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
       std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
       std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
-      std::cout << "PostStepPoint fVector = " << fVector << std::endl;
-
       fFirstWrite = false;
-    }
-}
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+  // Text file writer for Scatterer Position and Count
+  std::ofstream myfile3;
+  // Special condition for first write to create file
+  if(fFirstWritePosCount)
+	{
+        	myfile3.open("Scat_Pos/Count.txt");
+	}
+	else
+	{
+		myfile3.open("Scat_Pos/Count.txt", std::ios::app);
+	}
+      	if (myfile3.is_open())
+      	{
+		for(unsigned int i=0; i<posList.size(); i++)
+		{
+	  		myfile3 << "PostStepPoint fVector = " << posList[i] << "\n";
+		}
+	myfile3 << "InScatterer Count(N) = " << N << "\n";
+	myfile3.close();
+	}
+	else std::cerr << "Unable to open Scat_Pos/Count file" << std::endl;
+	}
+  fFirstWritePosCount = false;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.x.....cc
