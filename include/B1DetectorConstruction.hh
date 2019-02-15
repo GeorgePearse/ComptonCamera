@@ -36,6 +36,8 @@
 class G4VPhysicalVolume;
 class G4LogicalVolume;
 
+class B1DetectorMessenger;
+
 /// Detector construction class to define materials and geometry.
 
 class B1DetectorConstruction : public G4VUserDetectorConstruction
@@ -44,10 +46,27 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
     B1DetectorConstruction();
     virtual ~B1DetectorConstruction();
 
+    virtual void SetScatXPos(G4double);
+    virtual void SetScatYPos(G4double);
+    virtual void SetScatRad(G4double);
+    virtual void SetDetXPos(G4double);
+    virtual void SetDetYPos(G4double);
+    virtual void SetDetRad(G4double);
     virtual G4VPhysicalVolume* Construct();
     
     G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
 
+    virtual void UpdateGeometry();
+
+  private:
+  G4double fScatXPos;
+  G4double fScatYPos;
+  G4double fScatRad;
+  G4double fDetXPos;
+  G4double fDetYPos;
+  G4double fDetRad;
+  B1DetectorMessenger* fDetectorMessenger;
+  
   protected:
     G4LogicalVolume*  fScoringVolume;
 };

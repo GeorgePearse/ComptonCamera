@@ -34,9 +34,12 @@
 #include "G4RunManager.hh"
 
 #include "G4UnitsTable.hh"
+#include <G4SystemOfUnits.hh>
 
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <vector>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -48,6 +51,7 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fRunTime(0.)
 {
 fFirstWrite = true;
+fPeakBroaden = true;
 } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -57,34 +61,99 @@ B1EventAction::~B1EventAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B1EventAction::BeginOfEventAction(const G4Event*)
-{    
-  fEdepScatterer = 0.;
-  fEdepDetector = 0.;
-  fBeginTime = fRunTime;
+void B1EventAction::AddEdepScatterer(G4double edep, int copyNo)
+ 
+{
+  {fEdepScatterer += edep;
+  fScatCopyNo = std::to_string(copyNo);}
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B1EventAction::EndOfEventAction(const G4Event*)
-{   
-  if(fEdepScatterer != 0 && fEdepDetector != 0)
+void B1EventAction::TimeScatterer(G4double timeScatterer, int copyNo)
+{
+  fTimeScatterer = timeScatterer;
+  fScatCopyNo = std::to_string(copyNo);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1EventAction::AddEdepDetector(G4double edep, int copyNo)
+{
+  fEdepDetector += edep;
+  fAbsorbCopyNo = std::to_string(copyNo);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1EventAction::TimeDetector(G4double timeDetector, int copyNo)
+{
+  fTimeDetector = timeDetector;
+  fAbsorbCopyNo = std::to_string(copyNo);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1EventAction::PeakBroad(double g, double c, bool scatter = true)
+{
+if(scatter == true)
     {
+    std::cout << " dirac scat peak = " << fEdepScatterer/keV << std::endl;
+    double Sigma = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g))/2.35482;
+    fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma);
+    std::cout << " broad scat peak = " << fEdepScatterer << std::endl;
+    }
+else
+
+    {
+    std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
+    double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
+    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma);
+    std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
+    }
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1EventAction::BeginOfEventAction(const G4Event*)
+{    
+  fEdepScatterer = 0.;
+  fEdepDetector = 0.;
+  N = 0.;
+  fBeginTime = fRunTime;
+  posList.clear();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+void B1EventAction::EndOfEventAction(const G4Event*)
+{ 
+  if(fEdepScatterer != 0 && fEdepDetector != 0)
+    { 
+      if(fPeakBroaden == true)
+      {
+	B1EventAction::PeakBroad(0.4209, 0.1962, true);
+	B1EventAction::PeakBroad(0.3974, 0.04931, false);
+      }
+      
       // Text file writer for Scatterer
       std::ofstream myfile;
+      scatName = "scatter" + fScatCopyNo + "data.txt";
+      absorbName = "absorb" + fAbsorbCopyNo + "data.txt";
       // Special condition for first write to create file
       if(fFirstWrite)
 	{
-		myfile.open("scatterdata.txt");
+		myfile.open(scatName);
 	}
 	else
 	{
-		myfile.open ("scatterdata.txt", std::ios::app);
+		myfile.open (scatName, std::ios::app);
 	}
       	if (myfile.is_open())
       	{
           myfile << (fTimeScatterer + fBeginTime)/1000  << " "
-	  << fEdepScatterer*1000 << "\n";
+	  << fEdepScatterer/keV << "\n";
 	  myfile.close();
         }
 	else std::cerr << "Unable to open scatter file" << std::endl;
@@ -95,25 +164,48 @@ void B1EventAction::EndOfEventAction(const G4Event*)
        // Special condition for first write to create file
        if(fFirstWrite)
 	{
-		myfile2.open("absorbdata.txt");
+		myfile2.open(absorbName);
 	}
 	else
 	{
-		myfile2.open ("absorbdata.txt", std::ios::app);
+		myfile2.open (absorbName, std::ios::app);
 	}
       	if (myfile2.is_open())
       	{
           myfile2 << (fTimeDetector + fBeginTime)/1000 << " "
-	  << fEdepDetector*1000 << "\n";
+	  << fEdepDetector/keV << "\n";
 	  myfile2.close();
         }
 	else std::cerr << "Unable to open absorb file" << std::endl;
 
       std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
       std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
-
       fFirstWrite = false;
-    }
-}
-// Can use incremented copy number for when have many scatterers and detectors
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+  // Text file writer for Scatterer Position and Count
+  std::ofstream myfile3;
+  // Special condition for first write to create file
+  if(fFirstWritePosCount)
+	{
+        	myfile3.open("Scat_Pos/Count.txt");
+	}
+	else
+	{
+		myfile3.open("Scat_Pos/Count.txt", std::ios::app);
+	}
+      	if (myfile3.is_open())
+      	{
+		for(unsigned int i=0; i<posList.size(); i++)
+		{
+	  		myfile3 << "PostStepPoint fVector = " << posList[i] << "\n";
+		}
+	myfile3 << "InScatterer Count(N) = " << N << "\n";
+	myfile3.close();
+	}
+	else std::cerr << "Unable to open Scat_Pos/Count file" << std::endl;
+	}
+  fFirstWritePosCount = false;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.x.....cc

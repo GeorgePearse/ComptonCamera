@@ -24,64 +24,51 @@
 // ********************************************************************
 //
 //
-/// \file B1EventAction.hh
-/// \brief Definition of the B1EventAction class
+//
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef B1EventAction_h
-#define B1EventAction_h 1
+#ifndef B1DetectorMessenger_h
+#define B1DetectorMessenger_h 1
 
-#include "G4UserEventAction.hh"
+#include "G4UImessenger.hh"
 #include "globals.hh"
-#include "G4ThreeVector.hh"
 
-#include <vector>
+class B1DetectorConstruction;
+class G4UIdirectory;
+class G4UIcmdWithAString;
+class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithoutParameter;
 
-class B1RunAction;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-/// Event action class
-///
-
-class B1EventAction : public G4UserEventAction
+class B1DetectorMessenger: public G4UImessenger
 {
   public:
-    B1EventAction(B1RunAction* runAction);
-    virtual ~B1EventAction();
-
-    virtual void BeginOfEventAction(const G4Event* event);
-    virtual void EndOfEventAction(const G4Event* event);
-
-    virtual void AddEdepScatterer(G4double edep, int copyNo);
-    virtual void AddEdepDetector(G4double edep, int copyNo);
-    virtual void TimeScatterer(G4double timeScatterer, int copyNo);
-    virtual void TimeDetector(G4double timeDetector, int copyNo);
-    virtual void PeakBroad(double g, double c, bool scatter);
-
-
-    void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
-    void Vector(G4ThreeVector Pos){posList.push_back(Pos);};
-    void Count(){N += 1;};
-
+    B1DetectorMessenger(B1DetectorConstruction* );
+   ~B1DetectorMessenger();
+    
+    virtual void SetNewValue(G4UIcommand*, G4String);
+    
   private:
-    B1RunAction* fRunAction;
-    G4double     fEdepScatterer;
-    G4double     fEdepDetector;
-    G4double fTimeScatterer;
-    G4double fTimeDetector;
-    G4double fRunTime;
-    G4double fBeginTime;
-    G4bool fFirstWrite;
-    G4bool fPeakBroaden;
-    G4bool fFirstWritePosCount;
-    std::string fScatCopyNo;
-    std::string fAbsorbCopyNo;
-    std::string absorbName;
-    std::string scatName;
-    int N;
-    std::vector<G4ThreeVector> posList;
+    B1DetectorConstruction*    fDetector;
+    
+    G4UIdirectory*             fB1Dir;
+    G4UIdirectory*             fScatDir;
+    G4UIdirectory*             fDetDir;
+
+    G4UIcmdWithADoubleAndUnit* fScatXPos;
+    G4UIcmdWithADoubleAndUnit* fScatYPos;
+    G4UIcmdWithADoubleAndUnit* fScatRad;
+    G4UIcmdWithADoubleAndUnit* fDetXPos;
+    G4UIcmdWithADoubleAndUnit* fDetYPos;
+    G4UIcmdWithADoubleAndUnit* fDetRad;
+  
+    G4UIcmdWithoutParameter*   fUpdateCmd;
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
 
-    

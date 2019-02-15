@@ -35,6 +35,7 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4LogicalVolume.hh"
+#include "G4VPhysicalVolume.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -56,30 +57,53 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   G4double deltaTime = step->GetDeltaTime();
   fEventAction->TotalTime(deltaTime);
   
-  // get volume of the current step
-  G4LogicalVolume* volume 
+  // get physical and logical volume of the current step
+  G4VPhysicalVolume* volumePhys 
     = step->GetPreStepPoint()->GetTouchableHandle()
-      ->GetVolume()->GetLogicalVolume();
-      
+      ->GetVolume();
+  G4LogicalVolume* volume = volumePhys->GetLogicalVolume();
+
+  // Code to fix Segmentation Faults
+  G4String procName = "";
+  G4StepPoint* preStep = step->GetPreStepPoint();
+  if(preStep!= nullptr)
+  {
+    const G4VProcess* proc = preStep->GetProcessDefinedStep();
+    if(proc != nullptr)
+    {
+      procName = proc->GetProcessName();
+    }
+  }
+
   // check if we are in scoring volume
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
 
   // collect energy deposited in step
   // scatterer energy
+  // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
     {
       G4double edepStep = step->GetTotalEnergyDeposit();
-      G4double timeScatterer = step->GetTrack()->GetGlobalTime();
-      fEventAction->AddEdepScatterer(edepStep);
-      fEventAction->TimeScatterer(timeScatterer);
+      int copyNo = volumePhys->GetCopyNo();
+      fEventAction->AddEdepScatterer(edepStep, copyNo);
+	if (procName == "compt")
+	{
+		G4double timeScatterer = step->GetTrack()->GetGlobalTime();
+		G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
+		fEventAction->TimeScatterer(timeScatterer, copyNo);
+		fEventAction->Vector(Pos);
+		fEventAction->Count();
+	}
+
     }
   // detector energy
   if (volume->GetName() == "Absorber")
     {
       G4double edepStep = step->GetTotalEnergyDeposit();
+      int copyNo = volumePhys->GetCopyNo();
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
-      fEventAction->AddEdepDetector(edepStep);
-      fEventAction->TimeDetector(timeDetector);
+      fEventAction->AddEdepDetector(edepStep, copyNo);
+      fEventAction->TimeDetector(timeDetector, copyNo);
     }
 }
 
