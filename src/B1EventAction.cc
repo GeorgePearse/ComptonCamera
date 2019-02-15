@@ -38,6 +38,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <G4SystemOfUnits.hh>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -49,6 +50,7 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fRunTime(0.)
 {
 fFirstWrite = true;
+fPeakBroaden = true;
 } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -59,9 +61,10 @@ B1EventAction::~B1EventAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1EventAction::AddEdepScatterer(G4double edep, int copyNo)
+ 
 {
-  fEdepScatterer += edep;
-  fScatCopyNo = std::to_string(copyNo);
+  {fEdepScatterer += edep;
+  fScatCopyNo = std::to_string(copyNo);}
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -90,6 +93,26 @@ void B1EventAction::TimeDetector(G4double timeDetector, int copyNo)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+void B1EventAction::PeakBroad(double g, double c, bool scatter = true)
+{
+if(scatter == true)
+    {
+    std::cout << " dirac scat peak = " << fEdepScatterer/keV << std::endl;
+    double Sigma = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g))/2.35482;
+    fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma);
+    std::cout << " broad scat peak = " << fEdepScatterer << std::endl;
+    }
+else
+
+    {
+    std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
+    double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
+    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma);
+    std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
+    }
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
@@ -102,9 +125,15 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 
 
 void B1EventAction::EndOfEventAction(const G4Event*)
-{   
+{ 
   if(fEdepScatterer != 0 && fEdepDetector != 0)
-    {
+    { 
+      if(fPeakBroaden == true)
+      {
+	B1EventAction::PeakBroad(0.4209, 0.1962, true);
+	B1EventAction::PeakBroad(0.3974, 0.04931, false);
+      }
+      
       // Text file writer for Scatterer
       std::ofstream myfile;
       scatName = "scatter" + fScatCopyNo + "data.txt";
@@ -121,7 +150,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
       	if (myfile.is_open())
       	{
           myfile << (fTimeScatterer + fBeginTime)/1000  << " "
-	  << fEdepScatterer*1000 << "\n";
+	  << fEdepScatterer/keV << "\n";
 	  myfile.close();
         }
 	else std::cerr << "Unable to open scatter file" << std::endl;
@@ -141,7 +170,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
       	if (myfile2.is_open())
       	{
           myfile2 << (fTimeDetector + fBeginTime)/1000 << " "
-	  << fEdepDetector*1000 << "\n";
+	  << fEdepDetector/keV << "\n";
 	  myfile2.close();
         }
 	else std::cerr << "Unable to open absorb file" << std::endl;

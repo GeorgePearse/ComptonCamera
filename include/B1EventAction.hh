@@ -53,6 +53,7 @@ class B1EventAction : public G4UserEventAction
     virtual void AddEdepDetector(G4double edep, int copyNo);
     virtual void TimeScatterer(G4double timeScatterer, int copyNo);
     virtual void TimeDetector(G4double timeDetector, int copyNo);
+    virtual void PeakBroad(double g, double c, bool scatter);
 
 
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
@@ -68,6 +69,7 @@ class B1EventAction : public G4UserEventAction
     G4double fRunTime;
     G4double fBeginTime;
     G4bool fFirstWrite;
+    G4bool fPeakBroaden;
     std::string fScatCopyNo;
     std::string fAbsorbCopyNo;
     std::string absorbName;
