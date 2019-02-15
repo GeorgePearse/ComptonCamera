@@ -41,7 +41,7 @@
 
 B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
 :fDetector(det),
- fB1Dir(0), fScatDir(0), fScatXPos(0), fScatYPos(0), fScatRad(0), fDetDir(0), fDetXPos(0), fUpdateCmd(0)
+ fB1Dir(0), fScatDir(0), fScatXPos(0), fScatYPos(0), fScatRad(0), fDetDir(0), fDetXPos(0), fDetYPos(0), fUpdateCmd(0)
 { 
   fB1Dir = new G4UIdirectory("/B1/");
   fB1Dir->SetGuidance("UI commands for the Compton camera");
@@ -71,6 +71,16 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fDetXPos->SetGuidance("Set X position of the detector (zero is in line with source)");
   fDetXPos->SetParameterName("DetXPos", false);
   fDetXPos->SetUnitCategory("Length");
+
+  fDetYPos = new G4UIcmdWithADoubleAndUnit("/B1/det/setY", this);
+  fDetYPos->SetGuidance("Set Y position of the detector");
+  fDetYPos->SetParameterName("DetYPos", false);
+  fDetYPos->SetUnitCategory("Length");
+
+  fDetRad = new G4UIcmdWithADoubleAndUnit("/B1/det/setRad", this);
+  fDetRad->SetGuidance("Set radius of the detector");
+  fDetRad->SetParameterName("DetRad", false);
+  fDetRad->SetUnitCategory("Length");
   
   fUpdateCmd = new G4UIcmdWithoutParameter("/B1/scat/update",this);
   fUpdateCmd->SetGuidance("Update geometry.");
@@ -86,6 +96,8 @@ B1DetectorMessenger::~B1DetectorMessenger()
   delete fScatYPos;
   delete fScatRad;
   delete fDetXPos;
+  delete fDetYPos;
+  delete fDetRad;
   delete fUpdateCmd;
   delete fScatDir;  
   delete fB1Dir;
@@ -107,6 +119,12 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   if ( command == fDetXPos )
    {fDetector->SetDetXPos(fDetXPos->GetNewDoubleValue(newValue));}
+
+  if ( command == fDetYPos )
+   {fDetector->SetDetYPos(fDetYPos->GetNewDoubleValue(newValue));}
+
+  if ( command == fDetRad )
+   {fDetector->SetDetRad(fDetRad->GetNewDoubleValue(newValue));}
    
   if  ( command == fUpdateCmd )
    {fDetector->UpdateGeometry();}

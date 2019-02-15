@@ -71,8 +71,17 @@ La->AddIsotope(iso139_La, 99.9119*perCent);
 G4Material* LaBr = 
 new G4Material("Lanthanum_Bromide", 5.06*g/cm3, 2, kStateSolid);
 LaBr->AddElement( Br, 0.6036373016896684);
-LaBr->AddElement( La, 0.39636269831033155); 
+LaBr->AddElement( La, 0.39636269831033155);
+ 
 fDetectorMessenger = new B1DetectorMessenger(this);
+ 
+fScatXPos = 0;
+fScatYPos = 0;
+fScatRad = 21.5*mm;
+fDetXPos = -10*cm;
+fDetYPos = 0*cm;
+fDetRad = 1.905*cm;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -151,8 +160,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   rot1->rotateX(90*deg);
         
   // Tube section shape       
-  G4double shape1_rmina =  0.*cm, shape1_rmaxa = fScatRad;//0.14*cm;
-  G4double shape1_hz = 0.43*cm;
+  G4double shape1_rmina =  0.*cm, shape1_rmaxa = fScatRad;
+  G4double shape1_hz = 14*mm;
   G4double shape1_phimin = 0.*deg, shape1_phimax = 360.*deg;
   G4Tubs* solidShape1 =    
     new G4Tubs("Shape1", 
@@ -181,7 +190,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   G4RotationMatrix* rot2 = new G4RotationMatrix();
   rot2->rotateX(90*deg);
 
-  G4double shape2_rmina =  0.*cm, shape2_rmaxa = 3.81*cm;
+  G4double shape2_rmina =  0.*cm, shape2_rmaxa = fDetRad;
   G4double shape2_hz = 3.81*cm;
   G4double shape2_phimin = 0.*deg, shape2_phimax = 360.*deg;
   G4Tubs* solidShape2 =    new G4Tubs("Shape2",
@@ -243,6 +252,13 @@ void B1DetectorConstruction::SetDetXPos(G4double val)
 void B1DetectorConstruction::SetDetYPos(G4double val)
 {
   fDetYPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDetRad(G4double val)
+{
+  fDetRad = val;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
