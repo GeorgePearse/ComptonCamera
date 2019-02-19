@@ -105,8 +105,10 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
   G4double z0 = -0.5 * envSizeZ;
 
-  fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+  //fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+  fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, -50*cm));
 
+  // By Ben
   G4double pi = CLHEP::pi;
   G4double psi = 2*pi*G4UniformRand();
   G4double theta = (pi/18)*G4UniformRand();

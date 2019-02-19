@@ -52,6 +52,7 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
 {
 fFirstWrite = true;
 fPeakBroaden = true;
+fFirstWritePosCount = true;
 } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -61,6 +62,7 @@ B1EventAction::~B1EventAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// Originally by Jack, generalised with copy number by Douglas
 void B1EventAction::AddEdepScatterer(G4double edep, int copyNo)
  
 {
@@ -70,6 +72,7 @@ void B1EventAction::AddEdepScatterer(G4double edep, int copyNo)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// Originally by Jack, generalised with copy number by Douglas
 void B1EventAction::TimeScatterer(G4double timeScatterer, int copyNo)
 {
   fTimeScatterer = timeScatterer;
@@ -78,6 +81,7 @@ void B1EventAction::TimeScatterer(G4double timeScatterer, int copyNo)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// Originally by Jack, generalised with copy number by Douglas
 void B1EventAction::AddEdepDetector(G4double edep, int copyNo)
 {
   fEdepDetector += edep;
@@ -86,6 +90,7 @@ void B1EventAction::AddEdepDetector(G4double edep, int copyNo)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// Originally by Jack, generalised with copy number by Douglas
 void B1EventAction::TimeDetector(G4double timeDetector, int copyNo)
 {
   fTimeDetector = timeDetector;
@@ -94,13 +99,14 @@ void B1EventAction::TimeDetector(G4double timeDetector, int copyNo)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// By Douglas
 void B1EventAction::PeakBroad(double g, double c, bool scatter = true)
 {
 if(scatter == true)
     {
     std::cout << " dirac scat peak = " << fEdepScatterer/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g))/2.35482;
-    fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma);
+    fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma)/1000;
     std::cout << " broad scat peak = " << fEdepScatterer << std::endl;
     }
 else
@@ -108,7 +114,7 @@ else
     {
     std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
-    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma);
+    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma)/1000;
     std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
     }
 }
@@ -128,7 +134,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 
 
 void B1EventAction::EndOfEventAction(const G4Event*)
-{ 
+{ // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
     { if(N==1){fRunAction->CountUseful();}; 
       if(N>1){fRunAction->CountUseless();}; // write code to see how many times this runs
@@ -183,32 +189,33 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
       std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
       std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
-      fFirstWrite = false;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-  // Text file writer for Scatterer Position and Count
+  // Text file writer for Scatterer Position and Count - by Ben
   std::ofstream myfile3;
   // Special condition for first write to create file
   if(fFirstWritePosCount)
 	{
-        	myfile3.open("Scat_Pos/Count.txt");
+          myfile3.open("Scat_PosCount.txt");
 	}
-	else
+  else
 	{
-		myfile3.open("Scat_Pos/Count.txt", std::ios::app);
+	  myfile3.open("Scat_PosCount.txt", std::ios::app);
 	}
-      	if (myfile3.is_open())
+  if (myfile3.is_open())
       	{
-		for(unsigned int i=0; i<posList.size(); i++)
-		{
-	  		myfile3 << "PostStepPoint fVector = " << posList[i] << "\n";
-		}
-	myfile3 << "InScatterer Count(N) = " << N << "\n";
+	myfile3 << "New Event" << "\n";
+	for(unsigned int i=0; i<posList.size(); i++)
+	{
+	  myfile3 << posList[i] << "\n";
+	}
 	myfile3.close();
 	}
-	else std::cerr << "Unable to open Scat_Pos/Count file" << std::endl;
-	}
+   else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
+  fFirstWrite = false;
   fFirstWritePosCount = false;
+   }
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.x.....cc

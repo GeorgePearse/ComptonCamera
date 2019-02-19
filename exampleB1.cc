@@ -35,7 +35,6 @@
 #else
 #include "G4RunManager.hh"
 #endif
-#include <chrono>
 #include "G4UImanager.hh"
 #include "QBBC.hh"
 
@@ -43,6 +42,7 @@
 #include "G4UIExecutive.hh"
 
 #include "Randomize.hh"
+
 //#include "StepLimiter.hh"
 //#include <StepLimiter.hh>
 //#include "G4steplimiterphysics.hh"
@@ -60,7 +60,10 @@ int main(int argc,char** argv)
   }
 
   // Choose the Random engine
+  time_t systime = time(NULL);
+  long seed = (long) systime;
   G4Random::setTheEngine(new CLHEP::RanecuEngine);
+  G4Random::setTheSeed(seed);
   
   // Construct the default run manager
   //
@@ -77,9 +80,11 @@ int main(int argc,char** argv)
 
   // Physics list
   G4VModularPhysicsList* physicsList = new QBBC;
-  G4StepLimiterPhysics* StepLim = new G4StepLimiterPhysics();
-  StepLim->SetApplyToAll(true);
-  physicsList->RegisterPhysics(StepLim);
+
+  G4StepLimiterPhysics* StepLim = new G4StepLimiterPhysics(); //George
+  StepLim->SetApplyToAll(true); //George 
+  physicsList->RegisterPhysics(StepLim); //George
+
   physicsList->SetVerboseLevel(1);
   runManager->SetUserInitialization(physicsList);
     
