@@ -106,7 +106,7 @@ if(scatter == true)
     {
     std::cout << " dirac scat peak = " << fEdepScatterer/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g))/2.35482;
-    fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma);
+    fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma)/1000;
     std::cout << " broad scat peak = " << fEdepScatterer << std::endl;
     }
 else
@@ -114,7 +114,7 @@ else
     {
     std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
-    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma);
+    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma)/1000;
     std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
     }
 }
