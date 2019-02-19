@@ -52,6 +52,7 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
 {
 fFirstWrite = true;
 fPeakBroaden = true;
+fFirstWritePosCount = true;
 } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -180,7 +181,6 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
       std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
       std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
-      fFirstWrite = false;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
   // Text file writer for Scatterer Position and Count
@@ -188,24 +188,26 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   // Special condition for first write to create file
   if(fFirstWritePosCount)
 	{
-        	myfile3.open("Scat_Pos/Count.txt");
+          myfile3.open("Scat_PosCount.txt");
 	}
-	else
+  else
 	{
-		myfile3.open("Scat_Pos/Count.txt", std::ios::app);
+	  myfile3.open("Scat_PosCount.txt", std::ios::app);
 	}
-      	if (myfile3.is_open())
+  if (myfile3.is_open())
       	{
-		for(unsigned int i=0; i<posList.size(); i++)
-		{
-	  		myfile3 << "PostStepPoint fVector = " << posList[i] << "\n";
-		}
-	myfile3 << "InScatterer Count(N) = " << N << "\n";
+	myfile3 << "New Event" << "\n";
+	for(unsigned int i=0; i<posList.size(); i++)
+	{
+	  myfile3 << posList[i] << "\n";
+	}
 	myfile3.close();
 	}
-	else std::cerr << "Unable to open Scat_Pos/Count file" << std::endl;
-	}
+   else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
+  fFirstWrite = false;
   fFirstWritePosCount = false;
+   }
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.x.....cc
