@@ -46,6 +46,7 @@
 #include "G4PhysicalVolumeStore.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
+#include "G4VisAttributes.hh"
 
 #include "B1DetectorMessenger.hh"
 
@@ -58,17 +59,23 @@ B1DetectorConstruction::B1DetectorConstruction()
   fScatYPos(0),
   fScatPolarR(0),
   fScatPolarPhi(0),
+  fScatRotX(0),
+  fScatRotY(0),
+  fScatRotZ(0),
   fScatRad(0),
   fScatHeight(0),
   fDetXPos(0),
   fDetYPos(0),
   fDetPolarR(0),
   fDetPolarPhi(0),
+  fDetRotX(0),
+  fDetRotY(0),
+  fDetRotZ(0),
   fDetRad(0),
   fDetHeight(0),
   fDetectorMessenger(0)
 {
-//Matterial Definition  of Lanthanum(III) Bromide - by Ben
+//Material Definition  of Lanthanum(III) Bromide - by Ben
 G4Isotope* iso79_Br = new G4Isotope("79_Br", 35, 79, 78.918*g/mole);
 G4Isotope* iso81_Br = new G4Isotope("81_Br", 35, 81, 80.916*g/mole);
 G4Isotope* iso138_La = new G4Isotope("138_La", 57, 138, 137.907*g/mole);
@@ -92,12 +99,18 @@ fScatXPos = 0;
 fScatYPos = -7*cm;
 fScatPolarR = 0;
 fScatPolarPhi = 9000;
+fScatRotX = 90*deg;
+fScatRotY = 0;
+fScatRotZ = 0;
 fScatRad = 21.5*mm;
 fScatHeight = 14*mm;
 fDetXPos = -10*cm;
 fDetYPos = 7*cm;
 fDetPolarR = 0;
 fDetPolarPhi = 0;
+fDetRotX = 0;
+fDetRotY = 0;
+fDetRotZ = 0;
 fDetRad = 1.905*cm;
 fDetHeight = 3.81*cm;
 
@@ -151,6 +164,10 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
     new G4LogicalVolume(solidWorld,          //its solid
                         world_mat,           //its material
                         "World");            //its name
+  
+  G4VisAttributes* logicWorldVis = new G4VisAttributes();
+  logicWorldVis->SetVisibility(false);
+  logicWorld->SetVisAttributes(logicWorldVis);
                                    
   G4VPhysicalVolume* physWorld = 
     new G4PVPlacement(0,                     //no rotation
@@ -175,6 +192,11 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
     new G4LogicalVolume(solidEnv,            //its solid
                         env_mat,             //its material
                         "Envelope");         //its name
+  
+  G4VisAttributes* logicEnvVis = new G4VisAttributes();
+  logicEnvVis->SetVisibility(false);
+  logicEnv->SetVisAttributes(logicEnvVis);
+
                
   new G4PVPlacement(rotEnv,                       //no rotation
                     G4ThreeVector(),         //at (0,0,0)
@@ -196,10 +218,12 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
     }
   if(fScatPolarPhi!=9000)
     {
-      pos1->setPhi(fScatPolarPhi);
+      pos1->setTheta(fScatPolarPhi);
     }
   G4RotationMatrix* rot1 = new G4RotationMatrix();
-  rot1->rotateX(90*deg);
+  rot1->rotateX(fScatRotX);
+  rot1->rotateY(fScatRotY);
+  rot1->rotateZ(fScatRotZ);
         
   // Tube section shape       
   G4double shape1_rmina =  0.*cm, shape1_rmaxa = fScatRad;
@@ -216,7 +240,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                         "Scatterer");           //its name
                
   new G4PVPlacement(rot1,                    //rotation
-                    G4ThreeVector(pos1->x(), pos1->y(), pos1->z()),                    //at position
+                    G4ThreeVector(pos1->x(), pos1->y(), pos1->z()),  //at position
                     logicShape1,             //its logical volume
                     "Scatterer",                //its name
                     logicEnv,                //its mother  volume
@@ -234,11 +258,13 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
     }
   if(fDetPolarPhi!=9000)
     {
-      pos2->setPhi(fDetPolarPhi);
+      pos2->setTheta(fDetPolarPhi);
     }
   G4Material* shape2_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide");
   G4RotationMatrix* rot2 = new G4RotationMatrix();
-  //rot2->rotateX(90*deg);
+  rot2->rotateX(fDetRotX);
+  rot2->rotateY(fDetRotY);
+  rot2->rotateZ(fDetRotZ);
 
   G4double shape2_rmina =  0.*cm, shape2_rmaxa = fDetRad;
   G4double shape2_hz = fDetHeight;
@@ -300,6 +326,27 @@ void B1DetectorConstruction::SetScatPolarPhi(G4double val)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+void B1DetectorConstruction::SetScatRotX(G4double val)
+{
+  fScatRotX = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScatRotY(G4double val)
+{
+  fScatRotY = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScatRotZ(G4double val)
+{
+  fScatRotZ = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 void B1DetectorConstruction::SetScatRad(G4double val)
 {
   fScatRad = val;
@@ -338,6 +385,27 @@ void B1DetectorConstruction::SetDetPolarR(G4double val)
 void B1DetectorConstruction::SetDetPolarPhi(G4double val)
 {
   fDetPolarPhi = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDetRotX(G4double val)
+{
+  fDetRotX = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDetRotY(G4double val)
+{
+  fDetRotY = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDetRotZ(G4double val)
+{
+  fDetRotZ = val;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
