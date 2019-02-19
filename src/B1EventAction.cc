@@ -139,8 +139,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
     { 
       if(fPeakBroaden == true)
       {
-	B1EventAction::PeakBroad(0.4209, 0.1962, true);
-	B1EventAction::PeakBroad(0.3974, 0.04931, false);
+	B1EventAction::PeakBroad(0.5254, 0.7222, true);
+	B1EventAction::PeakBroad(0.3871, -0.5296, false);
       }
       
       // Text file writer for Scatterer

@@ -116,7 +116,8 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double sin_theta = std::sqrt(1 - cos_theta*cos_theta);
   G4ThreeVector dir(sin_theta*std::cos(psi), sin_theta*std::sin(psi), cos_theta);
 
-  fParticleGun->SetParticleMomentumDirection(dir);
+  //fParticleGun->SetParticleMomentumDirection(dir);
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
