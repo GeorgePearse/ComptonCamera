@@ -43,6 +43,7 @@ class B1DetectorMessenger;
 class B1DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
+
     B1DetectorConstruction();
     virtual ~B1DetectorConstruction();
 

@@ -41,8 +41,15 @@
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4Material.hh"
+#include "G4PVReplica.hh"
+#include "G4VisAttributes.hh"
+#include "G4Colour.hh"
 
 #include "B1DetectorMessenger.hh"
+
+#include "G4UserLimits.hh" //George
+#include "G4StepStatus.hh" //George
+#include "G4StepPoint.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -164,9 +171,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   G4double shape1_hz = 14*mm;
   G4double shape1_phimin = 0.*deg, shape1_phimax = 360.*deg;
   G4Tubs* solidShape1 =    
-    new G4Tubs("Shape1", 
-    shape1_rmina, shape1_rmaxa, shape1_hz,
-    shape1_phimin, shape1_phimax);
+    new G4Tubs("Shape1", shape1_rmina, shape1_rmaxa, shape1_hz, shape1_phimin, shape1_phimax);
                       
   G4LogicalVolume* logicShape1 =                         
     new G4LogicalVolume(solidShape1,         //its solid
@@ -210,7 +215,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
-                
+
+  
+  //Varying step length depending on the logical volume 
+  G4double stepLength = 0.001*mm;
+  G4UserLimits* maxStep = new G4UserLimits(stepLength); 
+  logicShape1->SetUserLimits(maxStep);
  
 
   //

@@ -130,7 +130,10 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 void B1EventAction::EndOfEventAction(const G4Event*)
 { 
   if(fEdepScatterer != 0 && fEdepDetector != 0)
-    { 
+    { if(N==1){fRunAction->CountUseful();}; 
+      if(N>1){fRunAction->CountUseless();}; // write code to see how many times this runs
+      fRunAction->Count(); // checking how many times this runs
+
       if(fPeakBroaden == true)
       {
 	B1EventAction::PeakBroad(0.4209, 0.1962, true);

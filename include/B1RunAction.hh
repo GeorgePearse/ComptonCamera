@@ -53,8 +53,14 @@ class B1RunAction : public G4UserRunAction
     virtual void   EndOfRunAction(const G4Run*);
 
     void AddEdep (G4double edep); 
+    void CountUseful(){numberUseful+=1;};
+    void CountUseless(){numberUseless+=1;};
+    void Count(){count+=1;};
 
   private:
+    int count = 0; // think this might reset it to 0 every time the function is called?
+    int numberUseful = 0; 
+    int numberUseless = 0;
     G4Accumulable<G4double> fEdep;
     G4Accumulable<G4double> fEdep2;
 };
