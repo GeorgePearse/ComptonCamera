@@ -59,6 +59,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
     virtual void SetDetRad(G4double);
     virtual void SetDetHeight(G4double);
     virtual G4VPhysicalVolume* Construct();
+    virtual G4VPhysicalVolume* ConstructVolumes();
     
     G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
 

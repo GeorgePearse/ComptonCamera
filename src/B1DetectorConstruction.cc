@@ -42,6 +42,11 @@
 #include "G4SystemOfUnits.hh"
 #include "G4Material.hh"
 
+#include "G4GeometryManager.hh"
+#include "G4PhysicalVolumeStore.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4SolidStore.hh"
+
 #include "B1DetectorMessenger.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -84,13 +89,13 @@ LaBr->AddElement( La, 0.39636269831033155);
 fDetectorMessenger = new B1DetectorMessenger(this);
  
 fScatXPos = 0;
-fScatYPos = 0;
+fScatYPos = -7*cm;
 fScatPolarR = 0;
 fScatPolarPhi = 9000;
 fScatRad = 21.5*mm;
 fScatHeight = 14*mm;
 fDetXPos = -10*cm;
-fDetYPos = 0*cm;
+fDetYPos = 7*cm;
 fDetPolarR = 0;
 fDetPolarPhi = 0;
 fDetRad = 1.905*cm;
@@ -106,13 +111,26 @@ B1DetectorConstruction::~B1DetectorConstruction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4VPhysicalVolume* B1DetectorConstruction::Construct()
-{  
+{
+  return ConstructVolumes();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
+{
+  // Cleanup old geometry
+  G4GeometryManager::GetInstance()->OpenGeometry();
+  G4PhysicalVolumeStore::GetInstance()->Clean();
+  G4LogicalVolumeStore::GetInstance()->Clean();
+  G4SolidStore::GetInstance()->Clean();
+  
   // Get nist material manager
   G4NistManager* nist = G4NistManager::Instance();
   
   // Envelope parameters
   //
-  G4double env_sizeXY = 40*cm, env_sizeZ = 30*cm;
+  G4double env_sizeXY = 100*cm, env_sizeZ = 200*cm;
   G4Material* env_mat = nist->FindOrBuildMaterial("G4_AIR");
    
   // Option to switch on/off checking of volumes overlaps
@@ -146,7 +164,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
                      
   //     
   // Envelope
-  //  
+  //
+  G4RotationMatrix* rotEnv = new G4RotationMatrix();
+  //rotEnv->rotateX(90*deg);
   G4Box* solidEnv =    
     new G4Box("Envelope",                    //its name
         0.5*env_sizeXY, 0.5*env_sizeXY, 0.5*env_sizeZ); //its size
@@ -156,7 +176,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
                         env_mat,             //its material
                         "Envelope");         //its name
                
-  new G4PVPlacement(0,                       //no rotation
+  new G4PVPlacement(rotEnv,                       //no rotation
                     G4ThreeVector(),         //at (0,0,0)
                     logicEnv,                //its logical volume
                     "Envelope",              //its name
@@ -169,7 +189,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   // Shape 1
   //  
   G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
-  G4ThreeVector* pos1 = new G4ThreeVector(fScatXPos, fScatYPos, -7*cm);
+  G4ThreeVector* pos1 = new G4ThreeVector(fScatXPos, 0*cm, fScatYPos);
   if(fScatPolarR!=0)
     {
       pos1->setMag(fScatPolarR);
@@ -207,7 +227,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   //     
   // Shape 2
   //
-  G4ThreeVector* pos2 = new G4ThreeVector(fDetXPos, fDetYPos, 7*cm);
+  G4ThreeVector* pos2 = new G4ThreeVector(fDetXPos, 0*cm, fDetYPos);
   if(fDetPolarR!=0)
     {
       pos2->setMag(fDetPolarR);
@@ -218,7 +238,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
     }
   G4Material* shape2_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide");
   G4RotationMatrix* rot2 = new G4RotationMatrix();
-  rot2->rotateX(90*deg);
+  //rot2->rotateX(90*deg);
 
   G4double shape2_rmina =  0.*cm, shape2_rmaxa = fDetRad;
   G4double shape2_hz = fDetHeight;
@@ -338,7 +358,7 @@ void B1DetectorConstruction::SetDetHeight(G4double val)
 
 void B1DetectorConstruction::UpdateGeometry()
 {
-  G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
+  G4RunManager::GetRunManager()->DefineWorldVolume(ConstructVolumes());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

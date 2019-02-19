@@ -124,7 +124,7 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fDetHeight->SetUnitCategory("Length");
   
   // Update geometry to apply changes made using the messenger
-  fUpdateCmd = new G4UIcmdWithoutParameter("/B1/scat/update",this);
+  fUpdateCmd = new G4UIcmdWithoutParameter("/B1/update",this);
   fUpdateCmd->SetGuidance("Update geometry.");
   fUpdateCmd->SetGuidance("This command MUST be applied before \"beamOn\" ");
   fUpdateCmd->SetGuidance("if you changed geometrical value(s).");
