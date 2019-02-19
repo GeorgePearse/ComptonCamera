@@ -53,7 +53,7 @@ B1SteppingAction::~B1SteppingAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1SteppingAction::UserSteppingAction(const G4Step* step)
-{ // track runtime of event by summing delta times in each step
+{ // track runtime of event by summing delta times in each step - by Jack
   G4double deltaTime = step->GetDeltaTime();
   fEventAction->TotalTime(deltaTime);
   
@@ -78,7 +78,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // check if we are in scoring volume
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
 
-  // collect energy deposited in step
+  // collect energy deposited in step - originally by Jack, generalised with copy number by Douglas
   // scatterer energy
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")

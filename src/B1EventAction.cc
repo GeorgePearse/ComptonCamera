@@ -61,6 +61,7 @@ B1EventAction::~B1EventAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// Originally by Jack, generalised with copy number by Douglas
 void B1EventAction::AddEdepScatterer(G4double edep, int copyNo)
  
 {
@@ -70,6 +71,7 @@ void B1EventAction::AddEdepScatterer(G4double edep, int copyNo)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// Originally by Jack, generalised with copy number by Douglas
 void B1EventAction::TimeScatterer(G4double timeScatterer, int copyNo)
 {
   fTimeScatterer = timeScatterer;
@@ -78,6 +80,7 @@ void B1EventAction::TimeScatterer(G4double timeScatterer, int copyNo)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// Originally by Jack, generalised with copy number by Douglas
 void B1EventAction::AddEdepDetector(G4double edep, int copyNo)
 {
   fEdepDetector += edep;
@@ -86,6 +89,7 @@ void B1EventAction::AddEdepDetector(G4double edep, int copyNo)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// Originally by Jack, generalised with copy number by Douglas
 void B1EventAction::TimeDetector(G4double timeDetector, int copyNo)
 {
   fTimeDetector = timeDetector;
@@ -94,6 +98,7 @@ void B1EventAction::TimeDetector(G4double timeDetector, int copyNo)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// By Douglas
 void B1EventAction::PeakBroad(double g, double c, bool scatter = true)
 {
 if(scatter == true)
@@ -128,7 +133,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 
 
 void B1EventAction::EndOfEventAction(const G4Event*)
-{ 
+{ // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
     { 
       if(fPeakBroaden == true)
@@ -183,7 +188,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
       fFirstWrite = false;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-  // Text file writer for Scatterer Position and Count
+  // Text file writer for Scatterer Position and Count - by Ben
   std::ofstream myfile3;
   // Special condition for first write to create file
   if(fFirstWritePosCount)
