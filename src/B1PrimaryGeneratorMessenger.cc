@@ -23,64 +23,61 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file B1PrimaryGeneratorMessenger.cc
+/// \brief Implementation of the B1PrimaryGeneratorMessenger class
 //
 //
+// BY JACK
+//
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef B1DetectorMessenger_h
-#define B1DetectorMessenger_h 1
+#include "B1PrimaryGeneratorMessenger.hh"
 
-#include "G4UImessenger.hh"
-#include "globals.hh"
-
-class B1DetectorConstruction;
-class G4UIdirectory;
-class G4UIcmdWithAString;
-class G4UIcmdWithADoubleAndUnit;
-class G4UIcmdWithoutParameter;
+#include "B1PrimaryGeneratorAction.hh"
+#include "G4UIdirectory.hh"
+#include "G4UIcmdWithADoubleAndUnit.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class B1DetectorMessenger: public G4UImessenger
+B1PrimaryGeneratorMessenger::B1PrimaryGeneratorMessenger(
+                                                  B1PrimaryGeneratorAction* Gun)
+:fAction(Gun), fGunDir(0), fXPos(0), fYPos(0)
 {
-  public:
-    B1DetectorMessenger(B1DetectorConstruction* );
-   ~B1DetectorMessenger();
-    
-    virtual void SetNewValue(G4UIcommand*, G4String);
-    
-  private:
-    B1DetectorConstruction*    fDetector;
-    
-    G4UIdirectory*             fB1Dir;
-    G4UIdirectory*             fScatDir;
-    G4UIdirectory*             fDetDir;
-
-    G4UIcmdWithADoubleAndUnit* fScatXPos;
-    G4UIcmdWithADoubleAndUnit* fScatYPos;
-    G4UIcmdWithADoubleAndUnit* fScatPolarR;
-    G4UIcmdWithADoubleAndUnit* fScatPolarPhi;
-    G4UIcmdWithADoubleAndUnit* fScatRotX;
-    G4UIcmdWithADoubleAndUnit* fScatRotY;
-    G4UIcmdWithADoubleAndUnit* fScatRotZ;
-    G4UIcmdWithADoubleAndUnit* fScatRad;
-    G4UIcmdWithADoubleAndUnit* fScatHeight;
-    G4UIcmdWithADoubleAndUnit* fDetXPos;
-    G4UIcmdWithADoubleAndUnit* fDetYPos;
-    G4UIcmdWithADoubleAndUnit* fDetPolarR;
-    G4UIcmdWithADoubleAndUnit* fDetPolarPhi;
-    G4UIcmdWithADoubleAndUnit* fDetRotX;
-    G4UIcmdWithADoubleAndUnit* fDetRotY;
-    G4UIcmdWithADoubleAndUnit* fDetRotZ;
-    G4UIcmdWithADoubleAndUnit* fDetRad;
-    G4UIcmdWithADoubleAndUnit* fDetHeight;
+  fGunDir = new G4UIdirectory("/B1/source");
+  fGunDir->SetGuidance("source control");
   
-    G4UIcmdWithoutParameter*   fUpdateCmd;
+  fXPos = new G4UIcmdWithADoubleAndUnit("/B1/source/setXPos",this);
+  fXPos->SetGuidance("set X pos of the point source");
+  fXPos->SetParameterName("xPos",false);
+  fXPos->SetUnitCategory("Length");
 
-};
+  fYPos = new G4UIcmdWithADoubleAndUnit("/B1/source/setYPos",this);
+  fYPos->SetGuidance("set Y pos of the point source");
+  fYPos->SetParameterName("YPos",false);
+  fYPos->SetUnitCategory("Length");
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+B1PrimaryGeneratorMessenger::~B1PrimaryGeneratorMessenger()
+{
+  delete fXPos;
+  delete fYPos;
+  delete fGunDir;    
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1PrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
+                                               G4String newValue)
+{    
+  if (command == fXPos)
+   { fAction->SetXPos(fXPos->GetNewDoubleValue(newValue));}
+
+  if (command == fYPos)
+   { fAction->SetYPos(fYPos->GetNewDoubleValue(newValue));}
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

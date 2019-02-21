@@ -36,6 +36,8 @@
 #include "G4RunManager.hh"
 #include "G4LogicalVolume.hh"
 #include "G4VPhysicalVolume.hh"
+#include "G4UserLimits.hh"
+#include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -82,7 +84,9 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // scatterer energy
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
-    {
+      
+    { //G4double stepLength = step->GetStepLength(); //George checking step length
+      //std::cout<<"stepLength="<<stepLength/mm<< "\n"; //George checking step length
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);

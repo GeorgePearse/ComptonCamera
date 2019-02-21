@@ -35,7 +35,6 @@
 #else
 #include "G4RunManager.hh"
 #endif
-
 #include "G4UImanager.hh"
 #include "QBBC.hh"
 
@@ -43,6 +42,11 @@
 #include "G4UIExecutive.hh"
 
 #include "Randomize.hh"
+
+//#include "StepLimiter.hh"
+//#include <StepLimiter.hh>
+//#include "G4steplimiterphysics.hh"
+#include "G4StepLimiterPhysics.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -76,6 +80,11 @@ int main(int argc,char** argv)
 
   // Physics list
   G4VModularPhysicsList* physicsList = new QBBC;
+
+  G4StepLimiterPhysics* StepLim = new G4StepLimiterPhysics(); //George
+  StepLim->SetApplyToAll(true); //George 
+  physicsList->RegisterPhysics(StepLim); //George
+
   physicsList->SetVerboseLevel(1);
   runManager->SetUserInitialization(physicsList);
     
@@ -111,7 +120,6 @@ int main(int argc,char** argv)
   // Free the store: user actions, physics_list and detector_description are
   // owned and deleted by the run manager, so they should not be deleted 
   // in the main() program !
-  
   delete visManager;
   delete runManager;
 }

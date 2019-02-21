@@ -75,6 +75,22 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fScatPolarPhi->SetParameterName("ScatPolarPhi", false);  
   fScatPolarPhi->SetUnitCategory("Angle");
 
+  // Set scatterer rotation
+  fScatRotX = new G4UIcmdWithADoubleAndUnit("/B1/scat/setRotX", this);
+  fScatRotX->SetGuidance("Set X rotation of scatterer");
+  fScatRotX->SetParameterName("ScatRotX", false);  
+  fScatRotX->SetUnitCategory("Angle");
+
+  fScatRotY = new G4UIcmdWithADoubleAndUnit("/B1/scat/setRotY", this);
+  fScatRotY->SetGuidance("Set Y rotation of scatterer");
+  fScatRotY->SetParameterName("ScatRotY", false);  
+  fScatRotY->SetUnitCategory("Angle");
+
+  fScatRotZ = new G4UIcmdWithADoubleAndUnit("/B1/scat/setRotZ", this);
+  fScatRotZ->SetGuidance("Set Z rotation of scatterer");
+  fScatRotZ->SetParameterName("ScatRotZ", false);  
+  fScatRotZ->SetUnitCategory("Angle");
+
   // Set radius and height of scatterer
   fScatRad = new G4UIcmdWithADoubleAndUnit("/B1/scat/setRad", this);
   fScatRad->SetGuidance("Set radius of the scatterer");
@@ -112,6 +128,22 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fDetPolarPhi->SetParameterName("DetPolarPhi", false);  
   fDetPolarPhi->SetUnitCategory("Angle");
 
+  // Set detector rotation
+  fDetRotX = new G4UIcmdWithADoubleAndUnit("/B1/det/setRotX", this);
+  fDetRotX->SetGuidance("Set X rotation of detector");
+  fDetRotX->SetParameterName("DetRotX", false);  
+  fDetRotX->SetUnitCategory("Angle");
+
+  fDetRotY = new G4UIcmdWithADoubleAndUnit("/B1/det/setRotY", this);
+  fDetRotY->SetGuidance("Set Y rotation of detector");
+  fDetRotY->SetParameterName("DetRotY", false);  
+  fDetRotY->SetUnitCategory("Angle");
+
+  fDetRotZ = new G4UIcmdWithADoubleAndUnit("/B1/det/setRotZ", this);
+  fDetRotZ->SetGuidance("Set Z rotation of detector");
+  fDetRotZ->SetParameterName("DetRotZ", false);  
+  fDetRotZ->SetUnitCategory("Angle");
+
   // Set radius and height of detector
   fDetRad = new G4UIcmdWithADoubleAndUnit("/B1/det/setRad", this);
   fDetRad->SetGuidance("Set radius of the detector");
@@ -124,7 +156,7 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fDetHeight->SetUnitCategory("Length");
   
   // Update geometry to apply changes made using the messenger
-  fUpdateCmd = new G4UIcmdWithoutParameter("/B1/scat/update",this);
+  fUpdateCmd = new G4UIcmdWithoutParameter("/B1/update",this);
   fUpdateCmd->SetGuidance("Update geometry.");
   fUpdateCmd->SetGuidance("This command MUST be applied before \"beamOn\" ");
   fUpdateCmd->SetGuidance("if you changed geometrical value(s).");
@@ -138,12 +170,18 @@ B1DetectorMessenger::~B1DetectorMessenger()
   delete fScatYPos;
   delete fScatPolarR;
   delete fScatPolarPhi;
+  delete fScatRotX;
+  delete fScatRotY;
+  delete fScatRotZ;
   delete fScatRad;
   delete fScatHeight;
   delete fDetXPos;
   delete fDetYPos;
   delete fDetPolarR;
   delete fDetPolarPhi;
+  delete fDetRotX;
+  delete fDetRotY;
+  delete fDetRotZ;
   delete fDetRad;
   delete fDetHeight;
   delete fUpdateCmd;
@@ -169,6 +207,15 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   if ( command == fScatPolarPhi )
    {fDetector->SetScatPolarPhi(fScatPolarPhi->GetNewDoubleValue(newValue));}
 
+  if ( command == fScatRotX )
+   {fDetector->SetScatRotX(fScatRotX->GetNewDoubleValue(newValue));}
+
+  if ( command == fScatRotY )
+   {fDetector->SetScatRotY(fScatRotY->GetNewDoubleValue(newValue));}
+
+  if ( command == fScatRotZ )
+   {fDetector->SetScatRotZ(fScatRotZ->GetNewDoubleValue(newValue));}
+
   if ( command == fScatRad )
    {fDetector->SetScatRad(fScatRad->GetNewDoubleValue(newValue));}
 
@@ -186,6 +233,15 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   if ( command == fDetPolarPhi )
    {fDetector->SetDetPolarPhi(fDetPolarPhi->GetNewDoubleValue(newValue));}
+
+  if ( command == fDetRotX )
+   {fDetector->SetDetRotX(fDetRotX->GetNewDoubleValue(newValue));}
+
+  if ( command == fDetRotY )
+   {fDetector->SetDetRotY(fDetRotY->GetNewDoubleValue(newValue));}
+
+  if ( command == fDetRotZ )
+   {fDetector->SetDetRotZ(fDetRotZ->GetNewDoubleValue(newValue));}
 
   if ( command == fDetRad )
    {fDetector->SetDetRad(fDetRad->GetNewDoubleValue(newValue));}

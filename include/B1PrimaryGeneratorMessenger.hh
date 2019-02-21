@@ -23,61 +23,39 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file B1PrimaryGeneratorMessenger.hh
+/// \brief Definition of the B1PrimaryGeneratorMessenger class
 //
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef B1DetectorMessenger_h
-#define B1DetectorMessenger_h 1
+#ifndef B1PrimaryGeneratorMessenger_h
+#define B1PrimaryGeneratorMessenger_h 1
 
 #include "G4UImessenger.hh"
 #include "globals.hh"
 
-class B1DetectorConstruction;
+class B1PrimaryGeneratorAction;
 class G4UIdirectory;
-class G4UIcmdWithAString;
 class G4UIcmdWithADoubleAndUnit;
-class G4UIcmdWithoutParameter;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class B1DetectorMessenger: public G4UImessenger
+class B1PrimaryGeneratorMessenger: public G4UImessenger
 {
   public:
-    B1DetectorMessenger(B1DetectorConstruction* );
-   ~B1DetectorMessenger();
+    B1PrimaryGeneratorMessenger(B1PrimaryGeneratorAction*);
+   ~B1PrimaryGeneratorMessenger();
     
     virtual void SetNewValue(G4UIcommand*, G4String);
     
   private:
-    B1DetectorConstruction*    fDetector;
+    B1PrimaryGeneratorAction*    fAction;
     
-    G4UIdirectory*             fB1Dir;
-    G4UIdirectory*             fScatDir;
-    G4UIdirectory*             fDetDir;
-
-    G4UIcmdWithADoubleAndUnit* fScatXPos;
-    G4UIcmdWithADoubleAndUnit* fScatYPos;
-    G4UIcmdWithADoubleAndUnit* fScatPolarR;
-    G4UIcmdWithADoubleAndUnit* fScatPolarPhi;
-    G4UIcmdWithADoubleAndUnit* fScatRotX;
-    G4UIcmdWithADoubleAndUnit* fScatRotY;
-    G4UIcmdWithADoubleAndUnit* fScatRotZ;
-    G4UIcmdWithADoubleAndUnit* fScatRad;
-    G4UIcmdWithADoubleAndUnit* fScatHeight;
-    G4UIcmdWithADoubleAndUnit* fDetXPos;
-    G4UIcmdWithADoubleAndUnit* fDetYPos;
-    G4UIcmdWithADoubleAndUnit* fDetPolarR;
-    G4UIcmdWithADoubleAndUnit* fDetPolarPhi;
-    G4UIcmdWithADoubleAndUnit* fDetRotX;
-    G4UIcmdWithADoubleAndUnit* fDetRotY;
-    G4UIcmdWithADoubleAndUnit* fDetRotZ;
-    G4UIcmdWithADoubleAndUnit* fDetRad;
-    G4UIcmdWithADoubleAndUnit* fDetHeight;
-  
-    G4UIcmdWithoutParameter*   fUpdateCmd;
-
+    G4UIdirectory*             fGunDir;      
+    G4UIcmdWithADoubleAndUnit* fXPos;
+    G4UIcmdWithADoubleAndUnit* fYPos;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

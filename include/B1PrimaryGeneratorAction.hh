@@ -34,6 +34,8 @@
 #include "G4ParticleGun.hh"
 #include "globals.hh"
 
+#include "B1PrimaryGeneratorMessenger.hh"
+
 class G4ParticleGun;
 class G4Event;
 class G4Box;
@@ -54,10 +56,16 @@ class B1PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   
     // method to access particle gun
     const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
+
+    void SetXPos(G4double val){fXPos = val;};
+    void SetYPos(G4double val){fYPos = val;};
   
   private:
     G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
     G4Box* fEnvelopeBox;
+
+    B1PrimaryGeneratorMessenger* fPrimaryGeneratorMessenger;
+    G4double fXPos, fYPos;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
