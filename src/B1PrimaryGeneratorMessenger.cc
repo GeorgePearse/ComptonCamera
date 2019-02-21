@@ -23,51 +23,61 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file B1PrimaryGeneratorMessenger.cc
+/// \brief Implementation of the B1PrimaryGeneratorMessenger class
 //
-/// \file B1PrimaryGeneratorAction.hh
-/// \brief Definition of the B1PrimaryGeneratorAction class
-
-#ifndef B1PrimaryGeneratorAction_h
-#define B1PrimaryGeneratorAction_h 1
-
-#include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4ParticleGun.hh"
-#include "globals.hh"
+//
+// BY JACK
+//
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "B1PrimaryGeneratorMessenger.hh"
 
-class G4ParticleGun;
-class G4Event;
-class G4Box;
-
-/// The primary generator action class with particle gun.
-///
-/// The default kinematic is a 6 MeV gamma, randomly distribued 
-/// in front of the phantom across 80% of the (X,Y) phantom size.
-
-class B1PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
-{
-  public:
-    B1PrimaryGeneratorAction();    
-    virtual ~B1PrimaryGeneratorAction();
-
-    // method from the base class
-    virtual void GeneratePrimaries(G4Event*);         
-  
-    // method to access particle gun
-    const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
-
-    void SetXPos(G4double val){fXPos = val;};
-    void SetYPos(G4double val){fYPos = val;};
-  
-  private:
-    G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
-    G4Box* fEnvelopeBox;
-
-    B1PrimaryGeneratorMessenger* fPrimaryGeneratorMessenger;
-    G4double fXPos, fYPos;
-};
+#include "B1PrimaryGeneratorAction.hh"
+#include "G4UIdirectory.hh"
+#include "G4UIcmdWithADoubleAndUnit.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+B1PrimaryGeneratorMessenger::B1PrimaryGeneratorMessenger(
+                                                  B1PrimaryGeneratorAction* Gun)
+:fAction(Gun), fGunDir(0), fXPos(0), fYPos(0)
+{
+  fGunDir = new G4UIdirectory("/B1/source");
+  fGunDir->SetGuidance("source control");
+  
+  fXPos = new G4UIcmdWithADoubleAndUnit("/B1/source/setXPos",this);
+  fXPos->SetGuidance("set X pos of the point source");
+  fXPos->SetParameterName("xPos",false);
+  fXPos->SetUnitCategory("Length");
+
+  fYPos = new G4UIcmdWithADoubleAndUnit("/B1/source/setYPos",this);
+  fYPos->SetGuidance("set Y pos of the point source");
+  fYPos->SetParameterName("YPos",false);
+  fYPos->SetUnitCategory("Length");
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+B1PrimaryGeneratorMessenger::~B1PrimaryGeneratorMessenger()
+{
+  delete fXPos;
+  delete fYPos;
+  delete fGunDir;    
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1PrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
+                                               G4String newValue)
+{    
+  if (command == fXPos)
+   { fAction->SetXPos(fXPos->GetNewDoubleValue(newValue));}
+
+  if (command == fYPos)
+   { fAction->SetYPos(fYPos->GetNewDoubleValue(newValue));}
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
