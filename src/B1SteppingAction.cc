@@ -104,6 +104,11 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
+	if (procName == "phot")
+	{
+		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
+		fEventAction->Vector2(Pos2);	
+	}
     }
 }
 

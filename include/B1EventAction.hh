@@ -59,6 +59,7 @@ class B1EventAction : public G4UserEventAction
 
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
     void Vector(G4ThreeVector Pos){posList.push_back(Pos);};
+    void Vector2(G4ThreeVector Pos2){posList2.push_back(Pos2);};
     void Count(){N += 1;};
 
   private:
@@ -72,12 +73,14 @@ class B1EventAction : public G4UserEventAction
     G4bool fFirstWrite;
     G4bool fPeakBroaden;
     G4bool fFirstWritePosCount;
+    G4bool fFirstWritePosCount2;
     std::string fScatCopyNo;
     std::string fAbsorbCopyNo;
     std::string absorbName;
     std::string scatName;
     int N;
     std::vector<G4ThreeVector> posList;
+    std::vector<G4ThreeVector> posList2;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
