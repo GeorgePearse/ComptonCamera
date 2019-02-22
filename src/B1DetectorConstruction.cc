@@ -103,7 +103,7 @@ LaBr->AddElement( La, 0.39636269831033155);
 fDetectorMessenger = new B1DetectorMessenger(this);
  
 fScatXPos = 0;
-fScatYPos = -7*cm;
+fScatYPos = 0;
 fScatPolarR = 0;
 fScatPolarPhi = 9000;
 fScatRotX = 90*deg;
