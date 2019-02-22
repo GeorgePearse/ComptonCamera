@@ -122,9 +122,9 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
     runCondition += G4BestUnit(particleEnergy,"Energy");
   }
 
-  std::cout<<"numberUseful="<<numberUseful<< "\n"; //George 
-  std::cout<<"numberUseless="<<numberUseless<< "\n"; //George 
-  std::cout<<"count="<<count<< "\n"; //George 
+  //std::cout<<"numberUseful="<<numberUseful<< "\n"; //George 
+  //std::cout<<"numberUseless="<<numberUseless<< "\n"; //George 
+  //std::cout<<"count="<<count<< "\n"; //George 
         
   // Print
   //  

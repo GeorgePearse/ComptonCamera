@@ -115,18 +115,18 @@ void B1EventAction::PeakBroad(double g, double c, bool scatter = true)
 {
 if(scatter == true)
     {
-    std::cout << " dirac scat peak = " << fEdepScatterer/keV << std::endl;
+    //std::cout << " dirac scat peak = " << fEdepScatterer/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g))/2.35482;
     fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma)/1000;
-    std::cout << " broad scat peak = " << fEdepScatterer << std::endl;
+    //std::cout << " broad scat peak = " << fEdepScatterer << std::endl;
     }
 else
 
     {
-    std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
+    //std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
     fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma)/1000;
-    std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
+    //std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
     }
 }
 
@@ -205,8 +205,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
         }
 	else std::cerr << "Unable to open absorb file" << std::endl;
 
-      std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
-      std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
+      //std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
+      //std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
   // Text file writer for Scatterer Position and Count - by Ben
