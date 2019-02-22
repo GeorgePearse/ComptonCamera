@@ -167,8 +167,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
       
       // Text file writer for Scatterer
       std::ofstream myfile;
-      scatName = fOutput + "/scatter" + fScatCopyNo + "data.txt";
-      absorbName = fOutput + "/absorb" + fAbsorbCopyNo + "data.txt";
+      scatName = fOutput + "scatter" + fScatCopyNo + "data.txt";
+      absorbName = fOutput + "absorb" + fAbsorbCopyNo + "data.txt";
       // Special condition for first write to create file
       if(fFirstWrite)
 	{
@@ -215,11 +215,11 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   // Special condition for first write to create file
   if(fFirstWritePosCount)
 	{
-          myfile3.open(fOutput + "/Scat_PosCount.txt");
+          myfile3.open(fOutput + "Scat_PosCount.txt");
 	}
   else
 	{
-	  myfile3.open(fOutput + "/Scat_PosCount.txt", std::ios::app);
+	  myfile3.open(fOutput + "Scat_PosCount.txt", std::ios::app);
 	}
   if (myfile3.is_open())
       	{
@@ -235,11 +235,11 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
  if(fFirstWritePosCount2)
 	{
-          myfile4.open("Scat_PosCount2.txt");
+          myfile4.open(fOutput + "Scat_PosCount2.txt");
 	}
   else
 	{
-	  myfile4.open("Scat_PosCount2.txt", std::ios::app);
+	  myfile4.open(fOutput + "Scat_PosCount2.txt", std::ios::app);
 	}
   if (myfile4.is_open())
       	{
