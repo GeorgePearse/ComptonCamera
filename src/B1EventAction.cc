@@ -107,7 +107,7 @@ if(scatter == true)
     {
     std::cout << " dirac scat peak = " << fEdepScatterer/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g))/2.35482;
-    fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma)/1000;
+    fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma);
     std::cout << " broad scat peak = " << fEdepScatterer << std::endl;
     }
 else
@@ -115,7 +115,7 @@ else
     {
     std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
-    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma)/1000;
+    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma);
     std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
     }
 }
@@ -137,10 +137,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 void B1EventAction::EndOfEventAction(const G4Event*)
 { // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
-    { if(N==1){fRunAction->CountUseful();}; 
-      if(N>1){fRunAction->CountUseless();}; // write code to see how many times this runs
-      fRunAction->Count(); // checking how many times this runs
-
+    { 
       if(fPeakBroaden == true)
       {
 	B1EventAction::PeakBroad(0.4209, 0.1962, true);
