@@ -36,10 +36,14 @@
 #include "G4UnitsTable.hh"
 #include <G4SystemOfUnits.hh>
 
+#include "G4GenericMessenger.hh"
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
+
+#include <stdlib.h>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -48,17 +52,24 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fRunAction(runAction),
   fEdepScatterer(0.),
   fEdepDetector(0.),
-  fRunTime(0.)
+  fRunTime(0.),
+  fMessenger(0)
 {
 fFirstWrite = true;
 fPeakBroaden = true;
 fFirstWritePosCount = true;
+fOutput = "";
+// Event action generic messenger - by Jack
+ fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
+ auto& outputCommand = fMessenger->DeclareMethod("setOutput", &B1EventAction::SetOutput, "sets output folder");
 } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1EventAction::~B1EventAction()
-{}
+{
+  delete fMessenger;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -120,6 +131,13 @@ else
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void B1EventAction::SetOutput(std::string folderName)
+{
+  fOutput = folderName;
+  system(("mkdir " + fOutput).c_str());
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
@@ -148,8 +166,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
       
       // Text file writer for Scatterer
       std::ofstream myfile;
-      scatName = "scatter" + fScatCopyNo + "data.txt";
-      absorbName = "absorb" + fAbsorbCopyNo + "data.txt";
+      scatName = fOutput + "/scatter" + fScatCopyNo + "data.txt";
+      absorbName = fOutput + "/absorb" + fAbsorbCopyNo + "data.txt";
       // Special condition for first write to create file
       if(fFirstWrite)
 	{
@@ -196,11 +214,11 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   // Special condition for first write to create file
   if(fFirstWritePosCount)
 	{
-          myfile3.open("Scat_PosCount.txt");
+          myfile3.open(fOutput + "/Scat_PosCount.txt");
 	}
   else
 	{
-	  myfile3.open("Scat_PosCount.txt", std::ios::app);
+	  myfile3.open(fOutput + "/Scat_PosCount.txt", std::ios::app);
 	}
   if (myfile3.is_open())
       	{

@@ -37,6 +37,7 @@
 #include <vector>
 
 class B1RunAction;
+class G4GenericMessenger;
 
 /// Event action class
 ///
@@ -55,12 +56,13 @@ class B1EventAction : public G4UserEventAction
     virtual void TimeScatterer(G4double timeScatterer, int copyNo);
     virtual void TimeDetector(G4double timeDetector, int copyNo);
     virtual void PeakBroad(double g, double c, bool scatter);
+    virtual void SetOutput(std::string folderName);
 
 
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
     void Vector(G4ThreeVector Pos){posList.push_back(Pos);};
     void Count(){N += 1;};
-
+  
   private:
     B1RunAction* fRunAction;
     G4double     fEdepScatterer;
@@ -78,6 +80,8 @@ class B1EventAction : public G4UserEventAction
     std::string scatName;
     int N;
     std::vector<G4ThreeVector> posList;
+    G4GenericMessenger* fMessenger;
+    std::string fOutput;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
