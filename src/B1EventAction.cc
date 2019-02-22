@@ -56,8 +56,9 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fMessenger(0)
 {
 fFirstWrite = true;
-fPeakBroaden = true;
+fPeakBroaden = false;
 fFirstWritePosCount = true;
+fFirstWritePosCount2 = true;
 fOutput = "";
 // Event action generic messenger - by Jack
  fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
@@ -229,9 +230,30 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 	}
 	myfile3.close();
 	}
-   else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
+
+  std::ofstream myfile4;
+
+ if(fFirstWritePosCount2)
+	{
+          myfile4.open("Scat_PosCount2.txt");
+	}
+  else
+	{
+	  myfile4.open("Scat_PosCount2.txt", std::ios::app);
+	}
+  if (myfile4.is_open())
+      	{
+	myfile4 << "New Event" << "\n";
+	for(unsigned int j=0; j<posList2.size(); j++)
+	{
+	  myfile4 << posList2[j] << "\n";
+	}
+	myfile4.close();
+	}
+  else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
   fFirstWrite = false;
   fFirstWritePosCount = false;
+  fFirstWritePosCount2 = false;
    }
 
 }
