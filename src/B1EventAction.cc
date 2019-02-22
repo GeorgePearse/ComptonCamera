@@ -64,6 +64,7 @@ fPeakBroaden = false;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
 fOutput = "";
+counter = 0; 
 // Event action generic messenger - by Jack
  fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
  auto& outputCommand = fMessenger->DeclareMethod("setOutput", &B1EventAction::SetOutput, "sets output folder");
@@ -149,6 +150,11 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   N = 0.;
   fBeginTime = fRunTime;
   posList.clear();
+  counter += 1; 
+  if (counter%5000 == 0)
+  {
+  std::cout << " total event counter = " << counter << std::endl;
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

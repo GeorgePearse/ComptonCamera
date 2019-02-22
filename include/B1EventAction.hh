@@ -80,6 +80,7 @@ class B1EventAction : public G4UserEventAction
     std::string absorbName;
     std::string scatName;
     int N;
+    int counter;
     std::vector<G4ThreeVector> posList;
     std::vector<G4ThreeVector> posList2;
     G4GenericMessenger* fMessenger;
