@@ -109,8 +109,8 @@ fScatPolarPhi = 9000;
 fScatRotX = 90*deg;
 fScatRotY = 0;
 fScatRotZ = 0;
-fScatRad = 21.5*mm;
-fScatHeight = 14*mm;
+fScatRad = 7*mm;
+fScatHeight = 21.5*mm;
 fDetXPos = -10*cm;
 fDetYPos = 7*cm;
 fDetPolarR = 0;
@@ -119,7 +119,7 @@ fDetRotX = 0;
 fDetRotY = 0;
 fDetRotZ = 0;
 fDetRad = 1.905*cm;
-fDetHeight = 3.81*cm;
+fDetHeight = 1.905*cm;
 
 }
 

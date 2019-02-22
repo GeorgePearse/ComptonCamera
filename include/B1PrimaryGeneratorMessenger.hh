@@ -23,72 +23,42 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file B1PrimaryGeneratorMessenger.hh
+/// \brief Definition of the B1PrimaryGeneratorMessenger class
 //
-/// \file B1EventAction.hh
-/// \brief Definition of the B1EventAction class
+//
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef B1EventAction_h
-#define B1EventAction_h 1
+#ifndef B1PrimaryGeneratorMessenger_h
+#define B1PrimaryGeneratorMessenger_h 1
 
-#include "G4UserEventAction.hh"
+#include "G4UImessenger.hh"
 #include "globals.hh"
-#include "G4ThreeVector.hh"
 
-#include <vector>
+class B1PrimaryGeneratorAction;
+class G4UIdirectory;
+class G4UIcmdWithADoubleAndUnit;
 
-class B1RunAction;
-class G4GenericMessenger;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-/// Event action class
-///
-
-class B1EventAction : public G4UserEventAction
+class B1PrimaryGeneratorMessenger: public G4UImessenger
 {
   public:
-    B1EventAction(B1RunAction* runAction);
-    virtual ~B1EventAction();
-
-    virtual void BeginOfEventAction(const G4Event* event);
-    virtual void EndOfEventAction(const G4Event* event);
-
-    virtual void AddEdepScatterer(G4double edep, int copyNo);
-    virtual void AddEdepDetector(G4double edep, int copyNo);
-    virtual void TimeScatterer(G4double timeScatterer, int copyNo);
-    virtual void TimeDetector(G4double timeDetector, int copyNo);
-    virtual void PeakBroad(double g, double c, bool scatter);
-    virtual void SetOutput(std::string folderName);
-
-
-    void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
-    void Vector(G4ThreeVector Pos){posList.push_back(Pos);};
-    void Vector2(G4ThreeVector Pos2){posList2.push_back(Pos2);};
-    void Count(){N += 1;};
-  
+    B1PrimaryGeneratorMessenger(B1PrimaryGeneratorAction*);
+   ~B1PrimaryGeneratorMessenger();
+    
+    virtual void SetNewValue(G4UIcommand*, G4String);
+    
   private:
-    B1RunAction* fRunAction;
-    G4double     fEdepScatterer;
-    G4double     fEdepDetector;
-    G4double fTimeScatterer;
-    G4double fTimeDetector;
-    G4double fRunTime;
-    G4double fBeginTime;
-    G4bool fFirstWrite;
-    G4bool fPeakBroaden;
-    G4bool fFirstWritePosCount;
-    G4bool fFirstWritePosCount2;
-    std::string fScatCopyNo;
-    std::string fAbsorbCopyNo;
-    std::string absorbName;
-    std::string scatName;
-    int N;
-    std::vector<G4ThreeVector> posList;
-    std::vector<G4ThreeVector> posList2;
-    G4GenericMessenger* fMessenger;
-    std::string fOutput;
+    B1PrimaryGeneratorAction*    fAction;
+    
+    G4UIdirectory*             fGunDir;      
+    G4UIcmdWithADoubleAndUnit* fXPos;
+    G4UIcmdWithADoubleAndUnit* fYPos;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
 
-    

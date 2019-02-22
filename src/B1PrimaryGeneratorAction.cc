@@ -39,6 +39,8 @@
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 
+#include "B1PrimaryGeneratorMessenger.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
@@ -57,6 +59,11 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
   fParticleGun->SetParticleDefinition(particle);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
   fParticleGun->SetParticleEnergy(6.*MeV);
+
+  fPrimaryGeneratorMessenger = new B1PrimaryGeneratorMessenger(this);
+
+  fXPos = 0;
+  fYPos = -29.7*cm;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -64,6 +71,7 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
 B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
 {
   delete fParticleGun;
+  delete fPrimaryGeneratorMessenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -106,8 +114,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double z0 = -0.5 * envSizeZ;
 
   //fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-  //fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, -50*cm));
-  fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, -29.7*cm));
+  fParticleGun->SetParticlePosition(G4ThreeVector(fXPos, 0, fYPos));
 
   // By Ben
   G4double pi = CLHEP::pi;
