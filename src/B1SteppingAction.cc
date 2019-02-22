@@ -60,19 +60,6 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 { // track runtime of event by summing delta times in each step - by Jack
   G4double deltaTime = step->GetDeltaTime();
   fEventAction->TotalTime(deltaTime);
-  //Getting G4ThreeVector for the first step of each photon 
-  G4int stepID = step->GetTrack()->GetCurrentStepNumber(); //
-  G4int trackID = step->GetTrack()->GetTrackID();
-  if(stepID==1 and trackID==1){G4ThreeVector firstPos = step->GetPreStepPoint()->GetPosition();
-  fEventAction->GetFirstVector(firstPos); //
-  std::cout<<"firstPosition="<<firstPos<< "\n";};
-               
-
-
-    // Check whether a process shifted the position 
-    // since the last step -- by physics processes
-    // 
-  
   // get physical and logical volume of the current step
   G4VPhysicalVolume* volumePhys 
     = step->GetPreStepPoint()->GetTouchableHandle()
@@ -122,6 +109,11 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
+	if (procName == "phot")
+	{
+		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
+		fEventAction->Vector2(Pos2);	
+	}
     }
 }
 

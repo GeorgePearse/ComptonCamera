@@ -40,6 +40,8 @@
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 
+#include "B1PrimaryGeneratorMessenger.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
@@ -57,11 +59,12 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
     = particleTable->FindParticle(particleName="gamma");
   fParticleGun->SetParticleDefinition(particle);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-  fParticleGun->SetParticleEnergy(0.622*MeV);
-  
-  //fParticleGun2 = new G4GeneralParticleSource(); //NEW
-  //fParticleGun2->SetCurrentSourceIntensity(1); //NEW
-  //fParticleGun2->SetParticlePosition(G4ThreeVector()); //NEW
+  fParticleGun->SetParticleEnergy(6.*MeV);
+
+  fPrimaryGeneratorMessenger = new B1PrimaryGeneratorMessenger(this);
+
+  fXPos = 0;
+  fYPos = -29.7*cm;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -69,7 +72,7 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
 B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
 {
   delete fParticleGun;
-  delete fParticleGun2; //NEW
+  delete fPrimaryGeneratorMessenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -114,23 +117,19 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   //G4double z0 = -0.5 * envSizeZ;
 
   //fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-  //G4double randomPlainX = 0.5*envSizeXY * (G4UniformRand()-0.5);
-   //G4double randomPlainX = 60*(G4UniformRand()-0.5);
-  //G4double randomPlainY = 0.5*envSizeXY * (G4UniformRand()-0.5);
-   //G4double randomPlainY = 60*(G4UniformRand()-0.5);
-  //fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, -50*cm)); Original settings pre-George
-   fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, -50*cm)); // here she is 
+  fParticleGun->SetParticlePosition(G4ThreeVector(fXPos, 0, fYPos));
 
   // By Ben
   G4double pi = CLHEP::pi;
   G4double psi = 2*pi*G4UniformRand();
-  G4double theta = (pi/18)*G4UniformRand();
+  G4double theta = (pi/36)*G4UniformRand(); //change back to 18 later
   //std::cout << "Theta = " << theta*(180/pi) << ", Psi = " << psi*(180/pi) << std::endl;
   G4double cos_theta = 1 - 2*(theta/pi);
   G4double sin_theta = std::sqrt(1 - cos_theta*cos_theta);
   G4ThreeVector dir(sin_theta*std::cos(psi), sin_theta*std::sin(psi), cos_theta);
 
   fParticleGun->SetParticleMomentumDirection(dir);
+  //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }

@@ -36,6 +36,8 @@
 #include "G4UnitsTable.hh"
 #include <G4SystemOfUnits.hh>
 
+#include "G4GenericMessenger.hh"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -44,6 +46,9 @@
 #include "G4Track.hh"
 #include "G4Step.hh"
 #include "B1SteppingAction.hh"
+
+#include <stdlib.h>
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1EventAction::B1EventAction(B1RunAction* runAction)
@@ -51,18 +56,25 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fRunAction(runAction),
   fEdepScatterer(0.),
   fEdepDetector(0.),
-  fRunTime(0.)
+  fRunTime(0.),
+  fMessenger(0)
 {
 fFirstWrite = true;
-fPeakBroaden = true;
+fPeakBroaden = false;
 fFirstWritePosCount = true;
-fFirstWritefirstPos = true;
+fFirstWritePosCount2 = true;
+fOutput = "";
+// Event action generic messenger - by Jack
+ fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
+ auto& outputCommand = fMessenger->DeclareMethod("setOutput", &B1EventAction::SetOutput, "sets output folder");
 } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1EventAction::~B1EventAction()
-{}
+{
+  delete fMessenger;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -82,13 +94,6 @@ void B1EventAction::TimeScatterer(G4double timeScatterer, int copyNo)
   fTimeScatterer = timeScatterer;
   fScatCopyNo = std::to_string(copyNo);
 }
-
-//Completely by George
-void B1EventAction::GetFirstVector(G4ThreeVector firstPos) //HERE IT IS
-{
-  ffirstPos = firstPos;
-}
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // Originally by Jack, generalised with copy number by Douglas
 void B1EventAction::AddEdepDetector(G4double edep, int copyNo)
@@ -113,19 +118,26 @@ void B1EventAction::PeakBroad(double g, double c, bool scatter = true)
 {
 if(scatter == true)
     {
-    std::cout << " dirac scat peak = " << fEdepScatterer/keV << std::endl;
+    //std::cout << " dirac scat peak = " << fEdepScatterer/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g))/2.35482;
     fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma)/1000;
-    std::cout << " broad scat peak = " << fEdepScatterer << std::endl;
+    //std::cout << " broad scat peak = " << fEdepScatterer << std::endl;
     }
 else
 
     {
-    std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
+    //std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
     fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma)/1000;
-    std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
+    //std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
     }
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void B1EventAction::SetOutput(std::string folderName)
+{
+  fOutput = folderName;
+  system(("mkdir " + fOutput).c_str());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -145,49 +157,17 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 void B1EventAction::EndOfEventAction(const G4Event*)
 { // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
-    {  
-      if(N==1){fRunAction->CountUseful();
-      std::cout<<"Coincident="<<ffirstPos<< "\n"; //George 
-      std::cout<<"fEdepScatterer"<<fEdepScatterer<< "\n"; 
-        std::cout<<"IT HAPPENED"<<ffirstPos<< "\n"; 
-   // Text file writer for potential sources of coincident events - adapted by George (from above)
-  std::ofstream myfile4; //Don't know what this does
-  // Special condition for first write to create file
-  if(fFirstWritefirstPos)
-	{
-          myfile4.open("firstPos.txt");
-	}
-  else
-	{
-	  myfile4.open("firstPos.txt", std::ios::app);
-	}
-  if (myfile4.is_open())
-      	{
-	myfile4 << "New Event" << "\n";
-	//for(unsigned int i=0; i<firstposList.size(); i++)
-	{
-	  myfile4 << ffirstPos << "|" << fEdepScatterer << "|" << "\n"; //firstposList[i] before 
-	}
-	myfile4.close();
-	}
-  else std::cerr << "Unable to open firstPos file" << std::endl;
-  fFirstWrite = false; //May have to edit this line 
-  fFirstWritefirstPos = false;}; //End of George's file writer, only gets source position if coincident.
-
-
-      if(N>1){fRunAction->CountUseless();}; // write code to see how many times this runs
-      fRunAction->Count(); // checking how many times this runs
-
+    { 
       if(fPeakBroaden == true)
       {
-	B1EventAction::PeakBroad(0.4209, 0.1962, true);
-	B1EventAction::PeakBroad(0.3974, 0.04931, false);
+	B1EventAction::PeakBroad(0.5254, 0.7222, true);
+	B1EventAction::PeakBroad(0.3871, -0.5296, false);
       }
       
       // Text file writer for Scatterer
       std::ofstream myfile;
-      scatName = "scatter" + fScatCopyNo + "data.txt";
-      absorbName = "absorb" + fAbsorbCopyNo + "data.txt";
+      scatName = fOutput + "scatter" + fScatCopyNo + "data.txt";
+      absorbName = fOutput + "absorb" + fAbsorbCopyNo + "data.txt";
       // Special condition for first write to create file
       if(fFirstWrite)
 	{
@@ -225,8 +205,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
         }
 	else std::cerr << "Unable to open absorb file" << std::endl;
 
-      std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
-      std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
+      //std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
+      //std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
   // Text file writer for Scatterer Position and Count - by Ben
@@ -234,11 +214,11 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   // Special condition for first write to create file
   if(fFirstWritePosCount)
 	{
-          myfile3.open("Scat_PosCount.txt");
+          myfile3.open(fOutput + "Scat_PosCount.txt");
 	}
   else
 	{
-	  myfile3.open("Scat_PosCount.txt", std::ios::app);
+	  myfile3.open(fOutput + "Scat_PosCount.txt", std::ios::app);
 	}
   if (myfile3.is_open())
       	{
@@ -249,9 +229,30 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 	}
 	myfile3.close();
 	}
-   else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
+
+  std::ofstream myfile4;
+
+ if(fFirstWritePosCount2)
+	{
+          myfile4.open(fOutput + "Scat_PosCount2.txt");
+	}
+  else
+	{
+	  myfile4.open(fOutput + "Scat_PosCount2.txt", std::ios::app);
+	}
+  if (myfile4.is_open())
+      	{
+	myfile4 << "New Event" << "\n";
+	for(unsigned int j=0; j<posList2.size(); j++)
+	{
+	  myfile4 << posList2[j] << "\n";
+	}
+	myfile4.close();
+	}
+  else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
   fFirstWrite = false;
   fFirstWritePosCount = false;
+  fFirstWritePosCount2 = false;
    }
 
 }

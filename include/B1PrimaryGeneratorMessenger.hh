@@ -23,53 +23,42 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file B1PrimaryGeneratorMessenger.hh
+/// \brief Definition of the B1PrimaryGeneratorMessenger class
 //
-/// \file B1PrimaryGeneratorAction.hh
-/// \brief Definition of the B1PrimaryGeneratorAction class
+//
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef B1PrimaryGeneratorAction_h
-#define B1PrimaryGeneratorAction_h //1
+#ifndef B1PrimaryGeneratorMessenger_h
+#define B1PrimaryGeneratorMessenger_h 1
 
-#include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4ParticleGun.hh"
-#include "G4GeneralParticleSource.hh"
+#include "G4UImessenger.hh"
 #include "globals.hh"
 
-#include "B1PrimaryGeneratorMessenger.hh"
+class B1PrimaryGeneratorAction;
+class G4UIdirectory;
+class G4UIcmdWithADoubleAndUnit;
 
-class G4ParticleGun;
-class G4Event;
-class G4Box;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-/// The primary generator action class with particle gun.
-///
-/// The default kinematic is a 6 MeV gamma, randomly distribued 
-/// in front of the phantom across 80% of the (X,Y) phantom size.
-
-class B1PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction //SAME
+class B1PrimaryGeneratorMessenger: public G4UImessenger
 {
   public:
-    B1PrimaryGeneratorAction(); //SAME
-    virtual ~B1PrimaryGeneratorAction(); //KEEP
-
-    // method from the base class
-    virtual void GeneratePrimaries(G4Event*);   //KEEP
-  
-    // method to access particle gun
-    const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
-
-    void SetXPos(G4double val){fXPos = val;};
-    void SetYPos(G4double val){fYPos = val;};
-  
+    B1PrimaryGeneratorMessenger(B1PrimaryGeneratorAction*);
+   ~B1PrimaryGeneratorMessenger();
+    
+    virtual void SetNewValue(G4UIcommand*, G4String);
+    
   private:
-    G4GeneralParticleSource* fParticleGun2; //pointer to G4particleSource NEW
-    G4ParticleGun* fParticleGun; // pointer a to G4 gun class
-    G4Box* fEnvelopeBox;
-
-    B1PrimaryGeneratorMessenger* fPrimaryGeneratorMessenger;
-    G4double fXPos, fYPos;
+    B1PrimaryGeneratorAction*    fAction;
+    
+    G4UIdirectory*             fGunDir;      
+    G4UIcmdWithADoubleAndUnit* fXPos;
+    G4UIcmdWithADoubleAndUnit* fYPos;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
+
