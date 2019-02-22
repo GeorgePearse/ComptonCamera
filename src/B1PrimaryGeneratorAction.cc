@@ -34,6 +34,7 @@
 #include "G4Box.hh"
 #include "G4RunManager.hh"
 #include "G4ParticleGun.hh"
+#include "G4GeneralParticleSource.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
@@ -56,7 +57,11 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
     = particleTable->FindParticle(particleName="gamma");
   fParticleGun->SetParticleDefinition(particle);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-  fParticleGun->SetParticleEnergy(6.*MeV);
+  fParticleGun->SetParticleEnergy(0.622*MeV);
+  
+  //fParticleGun2 = new G4GeneralParticleSource(); //NEW
+  //fParticleGun2->SetCurrentSourceIntensity(1); //NEW
+  //fParticleGun2->SetParticlePosition(G4ThreeVector()); //NEW
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -64,6 +69,7 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
 B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
 {
   delete fParticleGun;
+  delete fParticleGun2; //NEW
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -76,7 +82,9 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // In order to avoid dependence of PrimaryGeneratorAction
   // on DetectorConstruction class we get Envelope volume
   // from G4LogicalVolumeStore.
-  
+  //fParticleGun2->GeneratePrimaryVertex(anEvent); //NEW 
+
+
   G4double envSizeXY = 0;
   G4double envSizeZ = 0;
 
@@ -100,13 +108,18 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
      "MyCode0002",JustWarning,msg);
   }
 
-  G4double size = 0.008; 
-  G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
-  G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
-  G4double z0 = -0.5 * envSizeZ;
+  //G4double size = 0.008; 
+  //G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
+  //G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
+  //G4double z0 = -0.5 * envSizeZ;
 
   //fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-  fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, -50*cm));
+  //G4double randomPlainX = 0.5*envSizeXY * (G4UniformRand()-0.5);
+   //G4double randomPlainX = 60*(G4UniformRand()-0.5);
+  //G4double randomPlainY = 0.5*envSizeXY * (G4UniformRand()-0.5);
+   //G4double randomPlainY = 60*(G4UniformRand()-0.5);
+  //fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, -50*cm)); Original settings pre-George
+   fParticleGun->SetParticlePosition(G4ThreeVector(0, 0, -50*cm)); // here she is 
 
   // By Ben
   G4double pi = CLHEP::pi;

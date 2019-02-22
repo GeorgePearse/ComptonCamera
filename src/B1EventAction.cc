@@ -41,6 +41,9 @@
 #include <string>
 #include <vector>
 
+#include "G4Track.hh"
+#include "G4Step.hh"
+#include "B1SteppingAction.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1EventAction::B1EventAction(B1RunAction* runAction)
@@ -53,6 +56,7 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
 fFirstWrite = true;
 fPeakBroaden = true;
 fFirstWritePosCount = true;
+fFirstWritefirstPos = true;
 } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -79,6 +83,11 @@ void B1EventAction::TimeScatterer(G4double timeScatterer, int copyNo)
   fScatCopyNo = std::to_string(copyNo);
 }
 
+//Completely by George
+void B1EventAction::GetFirstVector(G4ThreeVector firstPos) //HERE IT IS
+{
+  ffirstPos = firstPos;
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // Originally by Jack, generalised with copy number by Douglas
@@ -136,7 +145,36 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 void B1EventAction::EndOfEventAction(const G4Event*)
 { // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
-    { if(N==1){fRunAction->CountUseful();}; 
+    {  
+      if(N==1){fRunAction->CountUseful();
+      std::cout<<"Coincident="<<ffirstPos<< "\n"; //George 
+      std::cout<<"fEdepScatterer"<<fEdepScatterer<< "\n"; 
+        std::cout<<"IT HAPPENED"<<ffirstPos<< "\n"; 
+   // Text file writer for potential sources of coincident events - adapted by George (from above)
+  std::ofstream myfile4; //Don't know what this does
+  // Special condition for first write to create file
+  if(fFirstWritefirstPos)
+	{
+          myfile4.open("firstPos.txt");
+	}
+  else
+	{
+	  myfile4.open("firstPos.txt", std::ios::app);
+	}
+  if (myfile4.is_open())
+      	{
+	myfile4 << "New Event" << "\n";
+	//for(unsigned int i=0; i<firstposList.size(); i++)
+	{
+	  myfile4 << ffirstPos << "|" << fEdepScatterer << "|" << "\n"; //firstposList[i] before 
+	}
+	myfile4.close();
+	}
+  else std::cerr << "Unable to open firstPos file" << std::endl;
+  fFirstWrite = false; //May have to edit this line 
+  fFirstWritefirstPos = false;}; //End of George's file writer, only gets source position if coincident.
+
+
       if(N>1){fRunAction->CountUseless();}; // write code to see how many times this runs
       fRunAction->Count(); // checking how many times this runs
 

@@ -55,10 +55,13 @@ class B1EventAction : public G4UserEventAction
     virtual void TimeScatterer(G4double timeScatterer, int copyNo);
     virtual void TimeDetector(G4double timeDetector, int copyNo);
     virtual void PeakBroad(double g, double c, bool scatter);
-
-
+    virtual void GetFirstVector(G4ThreeVector firstPos); //Hopefully this does it, declares here too
+    //G4ThreeVector GetFirstVector() 
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
     void Vector(G4ThreeVector Pos){posList.push_back(Pos);};
+   
+    //void firstVector(G4ThreeVector firstPos){firstPos}; 
+    //void firstVector(G4ThreeVector firstPos){firstposList.push_back(firstPos);}; //copied 
     void Count(){N += 1;};
 
   private:
@@ -72,12 +75,19 @@ class B1EventAction : public G4UserEventAction
     G4bool fFirstWrite;
     G4bool fPeakBroaden;
     G4bool fFirstWritePosCount;
+    G4bool fFirstWritefirstPos;
     std::string fScatCopyNo;
     std::string fAbsorbCopyNo;
     std::string absorbName;
     std::string scatName;
     int N;
     std::vector<G4ThreeVector> posList;
+    G4ThreeVector ffirstPos;
+    //G4ThreeVector firstPos2;
+    //G4ThreeVector firstPos;
+    //std::vector<G4ThreeVector> firstposList;
+ 
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
