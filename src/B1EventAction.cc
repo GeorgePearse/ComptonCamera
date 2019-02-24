@@ -150,8 +150,9 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   N = 0.;
   fBeginTime = fRunTime;
   posList.clear();
+  posList2.clear();
   counter += 1; 
-  if (counter%5000 == 0)
+  if (counter%50000 == 0)
   {
   std::cout << " total event counter = " << counter << std::endl;
   }

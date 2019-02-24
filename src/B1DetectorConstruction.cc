@@ -116,7 +116,7 @@ fDetYPos = 26.205*cm;
 fDetPolarR = 0;
 fDetPolarPhi = 9000;
 fDetRotX = 0;
-fDetRotY = 0;
+fDetRotY = 30*deg;
 fDetRotZ = 0;
 fDetRad = 1.905*cm;
 fDetHeight = 1.905*cm;
@@ -286,7 +286,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   new G4PVPlacement(rot2,                       //no rotation
                     G4ThreeVector(pos2->x(), pos2->y(), pos2->z()),                    //at position
                     logicShape2,             //its logical volume
-                    "Shape2",                //its name
+                    "Absorber",                //its name
                     logicEnv,                //its mother  volume
                     false,                   //no boolean operation
                     0,                       //copy number
