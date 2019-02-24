@@ -152,7 +152,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   posList.clear();
   posList2.clear();
   counter += 1; 
-  if (counter%50000 == 0)
+  if (counter%50000 == 0 || counter==0)
   {
   std::cout << " total event counter = " << counter << std::endl;
   }
