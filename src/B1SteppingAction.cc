@@ -99,7 +99,14 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 		fEventAction->Vector(Pos);
 		fEventAction->Count();
 	}
-
+	// Finding details of processes that cause energy deposition that aren't Compton to solve the 0 scatter coincidence problem - by Jack
+	else
+	{
+	  if (edepStep!=0)
+	    {
+	      fEventAction->ZeroScatterInfo(procName, step->GetPreStepPoint()->GetPosition());
+	    }
+	}
     }
   // detector energy
   if (volume->GetName() == "Absorber")

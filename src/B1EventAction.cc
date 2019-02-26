@@ -141,6 +141,12 @@ void B1EventAction::SetOutput(std::string folderName)
   system(("mkdir " + fOutput).c_str());
 }
 
+void B1EventAction::ZeroScatterInfo(std::string procName, G4ThreeVector pos)
+{
+  posListNotCompt.push_back(pos);
+  procListNotCompt(procName);
+}
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1EventAction::BeginOfEventAction(const G4Event*)
@@ -151,11 +157,13 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fBeginTime = fRunTime;
   posList.clear();
   posList2.clear();
-  counter += 1; 
-  if (counter%50000 == 0 || counter==0)
+  posListNotCompt.clear();
+  procListNotCompt.clear();
+  if (counter%50000 == 0)
   {
   std::cout << " total event counter = " << counter << std::endl;
   }
+  counter += 1;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
