@@ -75,10 +75,12 @@ class B1EventAction : public G4UserEventAction
     G4bool fPeakBroaden;
     G4bool fFirstWritePosCount;
     G4bool fFirstWritePosCount2;
+    G4bool coincidence;
     std::string fScatCopyNo;
     std::string fAbsorbCopyNo;
     std::string absorbName;
     std::string scatName;
+    std::string totalscatName;
     int N;
     int counter;
     std::vector<G4ThreeVector> posList;

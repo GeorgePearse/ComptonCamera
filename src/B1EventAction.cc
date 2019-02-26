@@ -63,6 +63,7 @@ fFirstWrite = true;
 fPeakBroaden = false;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
+coincidence = false;
 fOutput = "";
 counter = 0; 
 // Event action generic messenger - by Jack
@@ -261,6 +262,37 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   fFirstWrite = false;
   fFirstWritePosCount = false;
   fFirstWritePosCount2 = false;
+   }
+
+// condition to print all scatter events into a file coincident and non-coincident.
+// By Douglas
+if (coincidence == false)
+   { if(fPeakBroaden == true)
+      {
+	B1EventAction::PeakBroad(0.5254, 0.7222, true);
+	B1EventAction::PeakBroad(0.3871, -0.5296, false);
+      }
+      
+      // Text file writer for Scatterer
+      std::ofstream myfiletotal;
+      totalscatName = fOutput + "totalscatter" + fScatCopyNo + "data.txt";
+      // Special condition for first write to create file
+      if(fFirstWrite)
+	{
+		myfiletotal.open(totalscatName);
+	}
+	else
+	{
+		myfiletotal.open (totalscatName, std::ios::app);
+	}
+      	if (myfiletotal.is_open())
+      	{
+          myfiletotal << (fTimeScatterer + fBeginTime)/1000  << " "
+	  << fEdepScatterer/keV << "\n";
+	  myfiletotal.close();
+        }
+	else std::cerr << "Unable to open scatter file" << std::endl;
+
    }
 
 }
