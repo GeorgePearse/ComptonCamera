@@ -143,6 +143,7 @@ void B1EventAction::SetOutput(std::string folderName)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// By Douglas
 void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
   fEdepScatterer = 0.;
