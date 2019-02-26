@@ -99,6 +99,26 @@ G4Material* LaBr =
 new G4Material("Lanthanum_Bromide", 5.06*g/cm3, 2, kStateSolid);
 LaBr->AddElement( Br, 0.6036373016896684);
 LaBr->AddElement( La, 0.39636269831033155);
+
+//More Materials - George
+//G4double a;  // atomic mass
+//G4double z;  // atomic number
+//G4double density,ncomponents,fractionmass,nel, symbol;
+
+//G4Element* elGe = new G4Element("Ge", 32, 72.64*g/mole);
+//G4Element* elBi = new G4Element("Bi", 83, 208.9*g/mole);
+//G4Element* O = new G4Element("O", 8, 16.00*g/mole);
+//G4Material* BGO = new G4Material("BGO", 7.13*g/cm3, 3);
+//BGO->AddElement(elBi, 4);//no. el.
+//BGO->AddElement(elGe, 3);
+//BGO->AddElement(O, 12);
+
+//G4Element* Pb = new G4Element("Pb", 82, 207.20*g/mole); //different format
+//G4Element* W  = new G4Element("W" , 74, 183.84*g/mole);
+//G4Material* PWOD = new G4Material("PbWO" , 8.300*g/cm3, 3);
+//PWOD->AddElement(Pb, fractionmass=0.455);
+//PWOD->AddElement(W , fractionmass=0.404);
+//PWOD->AddElement(O , fractionmass=0.141);
  
 fDetectorMessenger = new B1DetectorMessenger(this);
  
@@ -213,7 +233,14 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
- 
+
+  G4RotationMatrix* rot1 = new G4RotationMatrix();
+  rot1->rotateX(fScatRotX);
+  rot1->rotateY(fScatRotY);
+  rot1->rotateZ(fScatRotZ);
+  
+  
+  //
   //     
   // Shape 1
   //  
@@ -227,10 +254,6 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
     {
       pos1->setTheta(fScatPolarPhi);
     }
-  G4RotationMatrix* rot1 = new G4RotationMatrix();
-  rot1->rotateX(fScatRotX);
-  rot1->rotateY(fScatRotY);
-  rot1->rotateZ(fScatRotZ);
         
   // Tube section shape       
   G4double shape1_rmina =  0.*cm, shape1_rmaxa = fScatRad;
@@ -252,6 +275,29 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
+
+  //
+  // Body (George) 
+  //
+
+  G4bool wantBody = false; 
+  if(wantBody==true){
+	G4Material* bodyMat = nist->FindOrBuildMaterial("G4_A-150_TISSUE");
+	G4ThreeVector* bodyPos = new G4ThreeVector(0.*cm,0.*cm,0.*cm); //needs to be around source
+	G4double bodyHeight = 10*cm;
+	G4double bodyRadius = 18*cm; //Average according to some website - get proper source
+	G4Tubs* bodyShape =    
+    new G4Tubs("Body", 0*cm, bodyRadius/2, bodyHeight/2, 0*deg, 360*deg);
+	G4LogicalVolume* bodyVolume = new G4LogicalVolume(bodyShape,bodyMat,"Body"); 
+	new G4PVPlacement(rot1,                    //rotation
+                    G4ThreeVector(bodyPos->x(), bodyPos->y(), bodyPos->z()),  //at position
+                    bodyVolume,             //its logical volume
+                    "Body",                //its name
+                    logicEnv,                //its mother  volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+	};
 
   //     
   // Shape 2
@@ -284,7 +330,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                         "Absorber");           //its name
                
   new G4PVPlacement(rot2,                       //no rotation
-                    G4ThreeVector(pos2->x(), pos2->y(), pos2->z()),                    //at position
+                    G4ThreeVector(pos2->x(), pos2->y(), pos2->z()),        		//at position
                     logicShape2,             //its logical volume
                     "Absorber",                //its name
                     logicEnv,                //its mother  volume
@@ -294,7 +340,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 
   
   //Varying step length depending on the logical volume 
-  G4double stepLength = 0.001*mm;
+  G4double stepLength = 0.0005*mm;
   G4UserLimits* maxStep = new G4UserLimits(stepLength); 
   logicShape1->SetUserLimits(maxStep);
   logicShape2->SetUserLimits(maxStep);
