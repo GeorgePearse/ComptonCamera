@@ -105,18 +105,18 @@ fDetectorMessenger = new B1DetectorMessenger(this);
 fScatXPos = 0;
 fScatYPos = 0;
 fScatPolarR = 0;
-fScatPolarPhi = 9000;
+fScatPolarPhi = 9000; // 9000 is a default value to get the code to ignore this if we use cartesian
 fScatRotX = 90*deg;
 fScatRotY = 0;
 fScatRotZ = 0;
 fScatRad = 7*mm;
 fScatHeight = 21.5*mm;
-fDetXPos = -10*cm;
-fDetYPos = 7*cm;
+fDetXPos = -12.15*cm;
+fDetYPos = 26.205*cm;
 fDetPolarR = 0;
-fDetPolarPhi = 0;
+fDetPolarPhi = 9000;
 fDetRotX = 0;
-fDetRotY = 0;
+fDetRotY = 30*deg;
 fDetRotZ = 0;
 fDetRad = 1.905*cm;
 fDetHeight = 1.905*cm;
@@ -286,7 +286,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   new G4PVPlacement(rot2,                       //no rotation
                     G4ThreeVector(pos2->x(), pos2->y(), pos2->z()),                    //at position
                     logicShape2,             //its logical volume
-                    "Shape2",                //its name
+                    "Absorber",                //its name
                     logicEnv,                //its mother  volume
                     false,                   //no boolean operation
                     0,                       //copy number
