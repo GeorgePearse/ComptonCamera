@@ -56,6 +56,7 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fRunAction(runAction),
   fEdepScatterer(0.),
   fEdepDetector(0.),
+  fEdepBody(0.),
   fRunTime(0.),
   fMessenger(0)
 {
@@ -63,7 +64,8 @@ fFirstWrite = true;
 fPeakBroaden = false;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
-coincidence = false;
+coincidence = true;
+fFirstWrite2 = true;
 fOutput = "";
 counter = 0; 
 // Event action generic messenger - by Jack
@@ -102,6 +104,10 @@ void B1EventAction::AddEdepDetector(G4double edep, int copyNo)
 {
   fEdepDetector += edep;
   fAbsorbCopyNo = std::to_string(copyNo);
+}
+//Written by George
+void B1EventAction::AddEdepBody(G4double edep)
+{fEdepBody += edep;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -149,6 +155,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
   fEdepScatterer = 0.;
   fEdepDetector = 0.;
+  fEdepBody = 0.;
   N = 0.;
   fBeginTime = fRunTime;
   posList.clear();
@@ -158,15 +165,20 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   {
   std::cout << " total event counter = " << counter << std::endl;
   }
+  fRunAction->Count(); //scared this may double count something??
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
 void B1EventAction::EndOfEventAction(const G4Event*)
-{ // By Douglas
+{ 
+
+
+
+// By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
-    { 
+    { if(N==1){fRunAction->CountUseful();}else{fRunAction->CountUseless();};
       if(fPeakBroaden == true)
       {
 	B1EventAction::PeakBroad(0.5254, 0.7222, true);
@@ -219,49 +231,55 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
   // Text file writer for Scatterer Position and Count - by Ben
-  std::ofstream myfile3;
   // Special condition for first write to create file
-  if(fFirstWritePosCount)
+  if (posList.size() > 0)
 	{
-          myfile3.open(fOutput + "Scat_PosCount.txt");
-	}
-  else
-	{
-	  myfile3.open(fOutput + "Scat_PosCount.txt", std::ios::app);
-	}
-  if (myfile3.is_open())
-      	{
-	myfile3 << "New Event" << "\n";
-	for(unsigned int i=0; i<posList.size(); i++)
-	{
-	  myfile3 << posList[i] << "\n";
-	}
-	myfile3.close();
+  	std::ofstream myfile3;
+  	if(fFirstWritePosCount)
+		{
+        	  myfile3.open(fOutput + "Scat_PosCount.txt");
+		}
+  	else
+		{
+		  myfile3.open(fOutput + "Scat_PosCount.txt", std::ios::app);
+		}
+  	if (myfile3.is_open())
+      		{
+		myfile3 << "New Event" << "\n";
+		for(unsigned int i=0; i<posList.size(); i++)
+		{
+		  myfile3 << posList[i] << "\n";
+		}
+		myfile3.close();
+		}
+  	else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
+  	fFirstWritePosCount = false;
 	}
 
-  std::ofstream myfile4;
-
- if(fFirstWritePosCount2)
+  if (posList2.size() > 0)
 	{
-          myfile4.open(fOutput + "Scat_PosCount2.txt");
+	std::ofstream myfile4;
+ 	if(fFirstWritePosCount2)
+		{
+        	  myfile4.open(fOutput + "Scat_PosCount2.txt");
+		}
+  	else
+		{
+		  myfile4.open(fOutput + "Scat_PosCount2.txt", std::ios::app);
+		}
+  	if (myfile4.is_open())
+      		{
+		myfile4 << "New Event" << "\n";
+		for(unsigned int j=0; j<posList2.size(); j++)
+		{
+		  myfile4 << posList2[j] << "\n";
+		}
+		myfile4.close();
+		}
+  	else std::cerr << "Unable to open Scat_PosCount2 file" << std::endl;
+  	fFirstWritePosCount2 = false;
 	}
-  else
-	{
-	  myfile4.open(fOutput + "Scat_PosCount2.txt", std::ios::app);
-	}
-  if (myfile4.is_open())
-      	{
-	myfile4 << "New Event" << "\n";
-	for(unsigned int j=0; j<posList2.size(); j++)
-	{
-	  myfile4 << posList2[j] << "\n";
-	}
-	myfile4.close();
-	}
-  else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
   fFirstWrite = false;
-  fFirstWritePosCount = false;
-  fFirstWritePosCount2 = false;
    }
 
 // condition to print all scatter events into a file coincident and non-coincident.
