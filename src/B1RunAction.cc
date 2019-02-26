@@ -45,7 +45,11 @@
 B1RunAction::B1RunAction()
 : G4UserRunAction(),
   fEdep(0.),
-  fEdep2(0.)
+  fEdep2(0.),
+  count(0.),
+  numberUseful(0.),
+  numberUseless(0.)
+
 { 
   // add new units for dose
   // 
@@ -63,9 +67,10 @@ B1RunAction::B1RunAction()
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
   accumulableManager->RegisterAccumulable(fEdep);
   accumulableManager->RegisterAccumulable(fEdep2);
-  //int count;
+  //int counter; //may not be needed
   //int numberUseful;
   //int numberUseless; 
+  G4bool ffirstWrite3 = true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -121,10 +126,36 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
     G4double particleEnergy = particleGun->GetParticleEnergy();
     runCondition += G4BestUnit(particleEnergy,"Energy");
   }
+   std::ofstream myfile6;
+   if(ffirstWrite3)
+	{
+		myfile6.open("Efficiency.txt");
+	}
+	else
+	{
+		myfile6.open ("Efficiency.txt", std::ios::app);
+	}
+      	if (myfile6.is_open())
+      	{
+          myfile6 << count << " " << numberUseless << " " << numberUseful << "\n" ;
+	  myfile6.close();
+        }
+	else std::cerr << "Unable to open Efficiency file" << std::endl;
+	ffirstWrite3 = false;
 
-  //std::cout<<"numberUseful="<<numberUseful<< "\n"; //George 
-  //std::cout<<"numberUseless="<<numberUseless<< "\n"; //George 
-  //std::cout<<"count="<<count<< "\n"; //George 
+	//G4ofstreamDestinationBase(Efficiency.txt,true)
+    	//	{
+        //	  G4cerrbuf.SetDestination(count);
+    	//	}
+
+	//G4UImanager::GetUIpointer();
+        //G4iosInitialization();
+        //G4CoutToFile myout("MyOut_out.log")
+        //G4CoutToFile("Efficiency.txt", true);
+
+  std::cout<<"numberUseful="<<numberUseful<< "\n"; //George 
+  std::cout<<"numberUseless="<<numberUseless<< "\n"; //George 
+  //std::cout<<"count="<<count<< "\n"; //George you were using count somewhere?
         
   // Print
   //  
