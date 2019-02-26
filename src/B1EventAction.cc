@@ -149,6 +149,7 @@ void B1EventAction::SetOutput(std::string folderName)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+// By Douglas
 void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
   fEdepScatterer = 0.;
@@ -157,8 +158,9 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   N = 0.;
   fBeginTime = fRunTime;
   posList.clear();
+  posList2.clear();
   counter += 1; 
-  if (counter%5000 == 0)
+  if (counter%50000 == 0 || counter==0)
   {
   std::cout << " total event counter = " << counter << std::endl;
   }

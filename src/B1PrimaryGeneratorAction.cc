@@ -61,6 +61,8 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
   fParticleGun->SetParticleEnergy(0.622*MeV);
 
+ 
+
   fPrimaryGeneratorMessenger = new B1PrimaryGeneratorMessenger(this);
 
   fXPos = 0;
