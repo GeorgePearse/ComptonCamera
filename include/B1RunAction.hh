@@ -58,9 +58,12 @@ class B1RunAction : public G4UserRunAction
     void Count(){count+=1;};
 
   private:
-    int count = 0; // think this might reset it to 0 every time the function is called?
+    G4bool ffirstWrite3; //This is needed
+    int count = 0; 
+    //int counter = 0;
     int numberUseful = 0; 
     int numberUseless = 0;
+    //G4int totalNumber;
     G4Accumulable<G4double> fEdep;
     G4Accumulable<G4double> fEdep2;
 };
