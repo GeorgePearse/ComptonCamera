@@ -217,49 +217,55 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
   // Text file writer for Scatterer Position and Count - by Ben
-  std::ofstream myfile3;
   // Special condition for first write to create file
-  if(fFirstWritePosCount)
+  if (posList.size() > 0)
 	{
-          myfile3.open(fOutput + "Scat_PosCount.txt");
-	}
-  else
-	{
-	  myfile3.open(fOutput + "Scat_PosCount.txt", std::ios::app);
-	}
-  if (myfile3.is_open())
-      	{
-	myfile3 << "New Event" << "\n";
-	for(unsigned int i=0; i<posList.size(); i++)
-	{
-	  myfile3 << posList[i] << "\n";
-	}
-	myfile3.close();
+  	std::ofstream myfile3;
+  	if(fFirstWritePosCount)
+		{
+        	  myfile3.open(fOutput + "Scat_PosCount.txt");
+		}
+  	else
+		{
+		  myfile3.open(fOutput + "Scat_PosCount.txt", std::ios::app);
+		}
+  	if (myfile3.is_open())
+      		{
+		myfile3 << "New Event" << "\n";
+		for(unsigned int i=0; i<posList.size(); i++)
+		{
+		  myfile3 << posList[i] << "\n";
+		}
+		myfile3.close();
+		}
+  	else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
+  	fFirstWritePosCount = false;
 	}
 
-  std::ofstream myfile4;
-
- if(fFirstWritePosCount2)
+  if (posList2.size() > 0)
 	{
-          myfile4.open(fOutput + "Scat_PosCount2.txt");
+	std::ofstream myfile4;
+ 	if(fFirstWritePosCount2)
+		{
+        	  myfile4.open(fOutput + "Scat_PosCount2.txt");
+		}
+  	else
+		{
+		  myfile4.open(fOutput + "Scat_PosCount2.txt", std::ios::app);
+		}
+  	if (myfile4.is_open())
+      		{
+		myfile4 << "New Event" << "\n";
+		for(unsigned int j=0; j<posList2.size(); j++)
+		{
+		  myfile4 << posList2[j] << "\n";
+		}
+		myfile4.close();
+		}
+  	else std::cerr << "Unable to open Scat_PosCount2 file" << std::endl;
+  	fFirstWritePosCount2 = false;
 	}
-  else
-	{
-	  myfile4.open(fOutput + "Scat_PosCount2.txt", std::ios::app);
-	}
-  if (myfile4.is_open())
-      	{
-	myfile4 << "New Event" << "\n";
-	for(unsigned int j=0; j<posList2.size(); j++)
-	{
-	  myfile4 << posList2[j] << "\n";
-	}
-	myfile4.close();
-	}
-  else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
   fFirstWrite = false;
-  fFirstWritePosCount = false;
-  fFirstWritePosCount2 = false;
    }
 
 }

@@ -297,6 +297,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   G4double stepLength = 0.001*mm;
   G4UserLimits* maxStep = new G4UserLimits(stepLength); 
   logicShape1->SetUserLimits(maxStep);
+  logicShape2->SetUserLimits(maxStep);
  
 
   //
