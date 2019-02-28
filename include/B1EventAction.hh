@@ -53,9 +53,11 @@ class B1EventAction : public G4UserEventAction
 
     virtual void AddEdepScatterer(G4double edep, int copyNo);
     virtual void AddEdepDetector(G4double edep, int copyNo);
-    virtual void AddEdepBody(G4double edep);
+    //virtual void AddEdepPixelated(G4double edep, int copyNo);
+   // virtual void AddEdepBody(G4double edep);
     virtual void TimeScatterer(G4double timeScatterer, int copyNo);
     virtual void TimeDetector(G4double timeDetector, int copyNo);
+    //virtual void TimePixelated(G4double timePixelated, int copyNo);
     virtual void PeakBroad(double g, double c, bool scatter);
     virtual void SetOutput(std::string folderName);
 
@@ -63,14 +65,17 @@ class B1EventAction : public G4UserEventAction
     void Vector(G4ThreeVector Pos){posList.push_back(Pos);};
     void Vector2(G4ThreeVector Pos2){posList2.push_back(Pos2);};
     void Count(){N += 1;};
+    
   
   private:
     B1RunAction* fRunAction;
     G4double     fEdepScatterer;
     G4double     fEdepDetector;
-    G4double	 fEdepBody;
+    //G4double	 fEdepPixelated; Really don't think these are a necessity. Nice formatting
+    //G4double	 fEdepBody;
     G4double fTimeScatterer;
     G4double fTimeDetector;
+    //G4double fTimePixelated;
     G4double fRunTime;
     G4double fBeginTime;
     G4bool fFirstWrite;
@@ -78,6 +83,7 @@ class B1EventAction : public G4UserEventAction
     G4bool fFirstWritePosCount;
     G4bool fFirstWritePosCount2;
     G4bool fFirstWrite2;
+    G4bool fGeorgeFirstWrite;
     std::string fScatCopyNo;
     std::string fAbsorbCopyNo;
     std::string absorbName;
@@ -86,6 +92,11 @@ class B1EventAction : public G4UserEventAction
     int counter;
     std::vector<G4ThreeVector> posList;
     std::vector<G4ThreeVector> posList2;
+
+    G4double PixelatedA[32][3] = {};
+    //G4double fTimePixelated;
+    //G4double fEdepPixelated;
+
     G4GenericMessenger* fMessenger;
     std::string fOutput;
 };

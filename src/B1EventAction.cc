@@ -56,7 +56,7 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fRunAction(runAction),
   fEdepScatterer(0.),
   fEdepDetector(0.),
-  fEdepBody(0.),
+  //fEdepBody(0.),
   fRunTime(0.),
   fMessenger(0)
 {
@@ -65,8 +65,12 @@ fPeakBroaden = false;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
 fFirstWrite2 = true;
+fGeorgeFirstWrite = true; 
 fOutput = "";
 counter = 0; 
+
+
+
 // Event action generic messenger - by Jack
  fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
  auto& outputCommand = fMessenger->DeclareMethod("setOutput", &B1EventAction::SetOutput, "sets output folder");
@@ -103,10 +107,6 @@ void B1EventAction::AddEdepDetector(G4double edep, int copyNo)
 {
   fEdepDetector += edep;
   fAbsorbCopyNo = std::to_string(copyNo);
-}
-//Written by George
-void B1EventAction::AddEdepBody(G4double edep)
-{fEdepBody += edep;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -154,7 +154,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
   fEdepScatterer = 0.;
   fEdepDetector = 0.;
-  fEdepBody = 0.;
+  //fEdepBody = 0.;
   N = 0.;
   fBeginTime = fRunTime;
   posList.clear();
@@ -166,6 +166,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   }
   fRunAction->Count(); //scared this may double count something??
 }
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -274,27 +275,34 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   fFirstWritePosCount = false;
   fFirstWritePosCount2 = false;
 
-} //to escape if edepscatter and edepabsorber!=0 
+} 
 //Energy deposited in body by George
 //if(fEdepBody!=0){
-G4bool patientBody = false;
-if(patientBody == true){
- std::ofstream myfile5;
-if(fFirstWrite2)
-	{
-		myfile5.open("energyBody.txt");
-	}
-	else
-	{
-		myfile5.open ("energyBody.txt", std::ios::app);
-	}
-      	if (myfile5.is_open())
-      	{
-          myfile5 << fEdepBody/keV << "\n";
-	  myfile5.close();
-        }
-	else std::cerr << "Unable to open energyBody file" << std::endl;
-	fFirstWrite2 = false;};//}
+//G4bool patientBody = false;
+//if(patientBody == true){
+ //std::ofstream myfile5;
+//if(fFirstWrite2)
+//	{
+//		myfile5.open("energyBody.txt");
+//	}
+//	else
+//	{
+//		myfile5.open ("energyBody.txt", std::ios::app);
+//	}
+  //    	if (myfile5.is_open())
+    //  	{
+     //     myfile5 << fEdepBody/keV << "\n";
+//	  myfile5.close();
+ //       }
+//	else std::cerr << "Unable to open energyBody file" << std::endl;
+//	fFirstWrite2 = false;};//}
+
+
+
+
+
+ 
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.x.....cc

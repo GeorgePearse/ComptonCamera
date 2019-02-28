@@ -79,24 +79,15 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   }
 
 
-  // dose in body George
-  if (volume->GetName() == "Body")
- 	{G4double edepStep = step->GetTotalEnergyDeposit();
-      	fEventAction->AddEdepBody(edepStep);} //Have a look at AddEdepDetector. 
-
- // End of dose in body George
-
-
   // check if we are in scoring volume
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
+ 
 
   // collect energy deposited in step - originally by Jack, generalised with copy number by Douglas
   // scatterer energy
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
-      
-    { G4double stepLength = step->GetStepLength(); //George checking step length
-      std::cout<<"stepLength="<<stepLength/mm<< "\n"; //George checking step length
+      { 
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);
