@@ -13,7 +13,7 @@
 // * work  make  any representation or  warranty, express or implied, *
 // * regarding  this  software system or assume any liability for its *
 // * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
+// * for the full disclaimer and the 8ation of liability.         *
 // *                                                                  *
 // * This  code  implementation is the result of  the  scientific and *
 // * technical work of the GEANT4 collaboration.                      *
@@ -109,9 +109,9 @@ LaBr->AddElement( La, 0.39636269831033155);
 //G4double z;  // atomic number
 //G4double density,ncomponents,fractionmass,nel, symbol;
 
-//G4Element* elGe = new G4Element("Ge", 32, 72.64*g/mole);
-//G4Element* elBi = new G4Element("Bi", 83, 208.9*g/mole);
-//G4Element* O = new G4Element("O", 8, 16.00*g/mole);
+//G4Element* elGe = new G4Element("Ge", 32, 72, 72.64*g/mole);
+//G4Element* elBi = new G4Element("Bi", 83, 208, 208.9*g/mole);
+//G4Element* O = new G4Element("O", 8, 16, 16.00*g/mole);
 //G4Material* BGO = new G4Material("BGO", 7.13*g/cm3, 3);
 //BGO->AddElement(elBi, 4);//no. el.
 //BGO->AddElement(elGe, 3);
@@ -287,31 +287,54 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     "Scatterer",                //its name
                     logicEnv,                //its mother  volume
                     false,                   //no boolean operation
-                    0,                       //copy number
+                    0,                       //copy number (should be 1
                     checkOverlaps);          //overlaps checking
 
   //
   // Body (George) 
   //
 
-  G4bool wantBody = false; 
-  if(wantBody==true){
-	G4Material* bodyMat = nist->FindOrBuildMaterial("G4_A-150_TISSUE");
-	G4ThreeVector* bodyPos = new G4ThreeVector(0.*cm,0.*cm,0.*cm); //needs to be around source
-	G4double bodyHeight = 10*cm;
-	G4double bodyRadius = 18*cm; //Average according to some website - get proper source
-	G4Tubs* bodyShape =    
-    new G4Tubs("Body", 0*cm, bodyRadius/2, bodyHeight/2, 0*deg, 360*deg);
-	G4LogicalVolume* bodyVolume = new G4LogicalVolume(bodyShape,bodyMat,"Body"); 
-	new G4PVPlacement(rot1,                    //rotation
-                    G4ThreeVector(bodyPos->x(), bodyPos->y(), bodyPos->z()),  //at position
-                    bodyVolume,             //its logical volume
-                    "Body",                //its name
-                    logicEnv,                //its mother  volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
-	};
+//  G4bool wantBody = false; 
+//  if(wantBody==true){
+//	G4Material* bodyMat = nist->FindOrBuildMaterial("G4_A-150_TISSUE");
+//	G4ThreeVector* bodyPos = new G4ThreeVector(0.*cm,0.*cm,0.*cm); //needs to be around source
+//	G4double bodyHeight = 10*cm;
+//	G4double bodyRadius = 18*cm; //Average according to some website - get proper source
+//	G4Tubs* bodyShape =    
+//    new G4Tubs("Body", 0*cm, bodyRadius/2, bodyHeight/2, 0*deg, 360*deg);
+//	G4LogicalVolume* bodyVolume = new G4LogicalVolume(bodyShape,bodyMat,"Body"); 
+//	new G4PVPlacement(rot1,                    //rotation
+        //            G4ThreeVector(bodyPos->x(), bodyPos->y(), bodyPos->z()),  //at position
+        //            bodyVolume,             //its logical volume
+        //            "Body",                //its name
+        //            logicEnv,                //its mother  volume
+        //            false,                   //no boolean operation
+        //            0,                       //copy number
+        //            checkOverlaps);          //overlaps checking
+	//};
+
+	//Pixelated Detector (Sorting out file writing)
+//	G4double pixelWidth = 0.55*cm;
+//        G4double pixelHeight = 1.26*cm;
+//        G4double pixelDepth = 1.5*cm; // will do for now
+//	G4Box* solidCrystal = new G4Box("Scatterer", pixelWidth/2, pixelHeight/2, pixelDepth/2); 
+//	G4LogicalVolume* logicCrystal = new G4LogicalVolume(solidCrystal,shape1_mat,"Scatterer");
+//        int HoriNofCrystals = 8; //George
+//        int VertNofCrystals = 4; //George 
+//	G4double xSizeArray = 1.26*4; // was 1.26 but made it a little smaller
+//	G4double ySizeArray = 0.55*8; // x and y defined opposite to how you think. 
+//        for (int j=0;j<VertNofCrystals;j++) { //George 
+//        for (int i=0;i<HoriNofCrystals;i++) { //George
+//        G4double x2 = ((i-3.5)*0.56)*cm; //George, one above actual
+//	G4double y2 = ((j-1.5)*1.27)*cm; //George, one above actual
+	//G4double x2 = (i-VertNofCrystals/2)*1.26*cm; //George (are these labelled correct way round
+	//G4double y2 = j*1.26*cm; //George
+//	G4ThreeVector centreOfPixel = G4ThreeVector(x2,y2,-15.);  //should be (x2,y2,Z2)
+//        G4VPhysicalVolume* physiCryst = new G4PVPlacement(rot1, centreOfPixel,logicCrystal, //George
+//                        "Scatterer",logicEnv, //George //Pixelated detector to crystal
+//                        false,1+i+8*j,checkOverlaps); }}//change the  name? 
+
+
 
   //     
   // Shape 2
@@ -358,10 +381,15 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 
   
   //Varying step length depending on the logical volume 
-  G4double stepLength = 0.0005*mm;
-  G4UserLimits* maxStep = new G4UserLimits(stepLength); 
-  //logicShape1->SetUserLimits(maxStep);
-  logicShape2->SetUserLimits(maxStep);
+    //G4double stepLength = 0.0003*mm; //trying the default value 
+    //G4UserLimits* maxStep = new G4UserLimits(stepLength); 
+    //logicShape2->SetUserLimits(maxStep);
+
+     G4UserLimits* userLimits = new G4UserLimits();
+     G4double maxStep = 0.001*mm;
+     userLimits->SetMaxAllowedStep(maxStep);
+     logicShape1->SetUserLimits(userLimits);
+ 
  
 
   //
