@@ -363,23 +363,12 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 
   
   //Varying step length depending on the logical volume 
-<<<<<<< HEAD
-  G4double stepLength = 0.0005*mm;
-  G4UserLimits* maxStep = new G4UserLimits(stepLength); 
-  //logicShape1->SetUserLimits(maxStep);
-  logicShape2->SetUserLimits(maxStep);
-=======
-    //G4double stepLength = 0.0003*mm; //trying the default value 
-    //G4UserLimits* maxStep = new G4UserLimits(stepLength); 
-    //logicShape2->SetUserLimits(maxStep);
+
 
      G4UserLimits* userLimits = new G4UserLimits();
      G4double maxStep = 0.001*mm;
      userLimits->SetMaxAllowedStep(maxStep);
      logicShape1->SetUserLimits(userLimits);
- 
- 
->>>>>>> 3b3d9ea671f4cf16296d6d1e786fea523b49615b
 
   //
   //always return the physical World
