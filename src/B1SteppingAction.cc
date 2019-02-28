@@ -96,21 +96,24 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   if (volume->GetName() == "Scatterer")
       
     { G4double stepLength = step->GetStepLength(); //George checking step length
-      std::cout<<"stepLength="<<stepLength/mm<< "\n"; //George checking step length
+//      std::cout<<"stepLength="<<stepLength/mm<< "\n"; //George checking step length
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);
-	if (procName == "compt")
-	{
-		G4double timeScatterer = step->GetTrack()->GetGlobalTime();
-		G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
-		fEventAction->TimeScatterer(timeScatterer, copyNo);
-		fEventAction->Vector(Pos);
-		fEventAction->Count();
+//        f (procName =! "Transportation")
+//		{
+//		std::cout << procName << " Scatterer" << std::endl;
+		if (procName == "compt")
+			{
+			//std:: cout << procName << "something" << std::endl;
+			G4double timeScatterer = step->GetTrack()->GetGlobalTime();
+			G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
+			fEventAction->TimeScatterer(timeScatterer, copyNo);
+			fEventAction->Vector(Pos);
+			fEventAction->Count();
+			}
+//		}
 	}
-
-    }
-
   // detector energy
   if (volume->GetName() == "Absorber")
     {
@@ -119,11 +122,16 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
-	if (procName == "phot")
-	{
-		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
-		fEventAction->Vector2(Pos2);	
-	}
+//	if (procName =! "Transportation")
+//		{
+//		std::cout << procName << " Absorber" << std::endl;
+		if (procName == "phot")
+			{
+			//std::cout << procName << " Fred Hoyle" << std::endl;
+			G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
+			fEventAction->Vector2(Pos2);	
+			}
+//		}
     }
 }
 
