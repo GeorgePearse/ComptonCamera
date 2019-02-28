@@ -56,7 +56,7 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fRunAction(runAction),
   fEdepScatterer(0.),
   fEdepDetector(0.),
-  fEdepBody(0.),
+  //fEdepBody(0.),
   fRunTime(0.),
   fMessenger(0)
 {
@@ -66,11 +66,16 @@ fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
 coincidence = true;
 fFirstWrite2 = true;
+G4bool fGeorgeFirstWrite = true; 
 fOutput = "";
 counter = 0; 
+
+
+
 // Event action generic messenger - by Jack
  fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
  auto& outputCommand = fMessenger->DeclareMethod("setOutput", &B1EventAction::SetOutput, "sets output folder");
+ std::cout.precision(15);
 } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -104,10 +109,6 @@ void B1EventAction::AddEdepDetector(G4double edep, int copyNo)
 {
   fEdepDetector += edep;
   fAbsorbCopyNo = std::to_string(copyNo);
-}
-//Written by George
-void B1EventAction::AddEdepBody(G4double edep)
-{fEdepBody += edep;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -161,7 +162,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
   fEdepScatterer = 0.;
   fEdepDetector = 0.;
-  fEdepBody = 0.;
+  //fEdepBody = 0.;
   N = 0.;
   fBeginTime = fRunTime;
   posList.clear();
@@ -176,6 +177,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fRunAction->Count(); //scared this may double count something??
 }
 
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
@@ -186,10 +188,11 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
 // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
-    {
-      if(N==1)
+    {std::cout << "doubleDep" << "\n";
+      if(N==1) // N never equals 1? 
 	{
 	  fRunAction->CountUseful();
+	  std::cout << "usefulEvent" << "\n";
 	}
       else
 	{
@@ -295,30 +298,61 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   	else std::cerr << "Unable to open Scat_PosCount2 file" << std::endl;
   	fFirstWritePosCount2 = false;
 	}
-  fFirstWrite = false;
-  if (procListNotCompt.size() > 0)
-    {
-      std::ofstream myfileJack;
-      if(fFirstWriteNotCompt)
-	{
-	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt");
-	}
-      else
-	{
-	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt", std::ios::app); 
-	}
-      if (myfileJack.is_open())
-	{
-	  myfileJack << "New Event\n";
-	  for(unsigned int i=0; i<posListNotCompt.size(); i++)
-	    {
-	      myfileJack << posListNotCompt[i] << " " << procListNotCompt[i] << "\n";
-	    }
-	  myfileJack.close();
-      }
-    fFirstWriteNotCompt = false;
-    }
-    }
+
+ // fFirstWrite = false;
+ // if (procListNotCompt.size() > 0)
+ //   {
+ //     std::ofstream myfileJack;
+ //     if(fFirstWriteNotCompt)
+ //	{
+ //	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt");
+ //	}
+ //     else
+ //	{
+ //	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt", std::ios::app); 
+ //	}
+ // else std::cerr << "Unable to open Scat_PosCount file" << std::endl; //George debugger wanted }
+ // fFirstWrite = false;
+ // fFirstWritePosCount = false;
+ // fFirstWritePosCount2 = false;
+
+//} 
+//Energy deposited in body by George
+//if(fEdepBody!=0){
+//G4bool patientBody = false;
+//if(patientBody == true){
+ //std::ofstream myfile5;
+//if(fFirstWrite2)
+//	{
+//		myfile5.open("energyBody.txt");
+//	}
+//	else
+//	{
+//		myfile5.open ("energyBody.txt", std::ios::app);
+//	}
+  //    	if (myfile5.is_open())
+    //  	{
+     //     myfile5 << fEdepBody/keV << "\n";
+//	  myfile5.close();
+ //       }
+//	else std::cerr << "Unable to open energyBody file" << std::endl;
+//	fFirstWrite2 = false;};//}
+
+
+
+
+
+//      if (myfileJack.is_open())
+//	{
+//	  myfileJack << "New Event\n";
+//	  for(unsigned int i=0; i<posListNotCompt.size(); i++)
+//	    {
+//	      myfileJack << posListNotCompt[i] << " " << procListNotCompt[i] << "\n";
+//	    }
+//	  myfileJack.close();
+//      }
+//    fFirstWriteNotCompt = false;
+//    }
 
 // condition to print all scatter events into a file coincident and non-coincident.
 // By Douglas
@@ -349,7 +383,7 @@ if (coincidence == false)
         }
 	else std::cerr << "Unable to open scatter file" << std::endl;
 
-   }
+   } }
 
 }
 

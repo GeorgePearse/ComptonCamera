@@ -70,7 +70,6 @@ B1RunAction::B1RunAction()
   //int counter; //may not be needed
   //int numberUseful;
   //int numberUseless; 
-  G4bool ffirstWrite3 = true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
