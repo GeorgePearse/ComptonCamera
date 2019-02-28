@@ -78,7 +78,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     }
   }
 
-
+  //std::cout << procName << "\n";
   // check if we are in scoring volume
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
  
@@ -87,19 +87,26 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // scatterer energy
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
-      { 
+    { 
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);
 	if (procName == "compt")
-	{
+	{	//std::cout << "Compton" << "\n"; 
 		G4double timeScatterer = step->GetTrack()->GetGlobalTime();
 		G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
 		fEventAction->TimeScatterer(timeScatterer, copyNo);
 		fEventAction->Vector(Pos);
 		fEventAction->Count();
 	}
-
+	// Finding details of processes that cause energy deposition that aren't Compton to solve the 0 scatter coincidence problem - by Jack
+	else
+	{
+	  if (edepStep!=0)
+	    {
+	      fEventAction->ZeroScatterInfo(procName, step->GetPreStepPoint()->GetPosition());
+	    }
+	}
     }
 
   // detector energy
@@ -111,7 +118,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
 	if (procName == "phot")
-	{
+	{	//std::cout << "Photoelectric" << "\n"; 
 		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
 		fEventAction->Vector2(Pos2);	
 	}
