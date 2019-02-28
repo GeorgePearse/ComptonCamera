@@ -149,10 +149,11 @@ void B1EventAction::SetOutput(std::string folderName)
   system(("mkdir " + fOutput).c_str());
 }
 
-void B1EventAction::ZeroScatterInfo(G4String procName, G4ThreeVector pos)
+void B1EventAction::ZeroScatterInfo(G4double edep, G4String procName, G4ThreeVector pos)
 {
   posListNotCompt.push_back(pos);
   procListNotCompt.push_back(procName);
+  edepListNotCompt.push_back(edep);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -169,6 +170,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   posList2.clear();
   posListNotCompt.clear();
   procListNotCompt.clear();
+  edepListNotCompt.clear();
   if (counter%50000 == 0)
   {
   std::cout << " total event counter = " << counter << std::endl;
@@ -298,6 +300,29 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   	else std::cerr << "Unable to open Scat_PosCount2 file" << std::endl;
   	fFirstWritePosCount2 = false;
 	}
+  fFirstWrite = false;
+  if (procListNotCompt.size() > 0)
+    {
+      std::ofstream myfileJack;
+      if(fFirstWriteNotCompt)
+	{
+	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt");
+	}
+      else
+	{
+	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt", std::ios::app); 
+	}
+      if (myfileJack.is_open())
+	{
+	  myfileJack << "New Event\n";
+	  for(unsigned int i=0; i<posListNotCompt.size(); i++)
+	    {
+	      myfileJack << edepListNotCompt[i] << posListNotCompt[i] << " " << procListNotCompt[i] << std::endl;
+	    }
+	  myfileJack.close();
+      }
+    fFirstWriteNotCompt = false;
+    }
 
  // fFirstWrite = false;
  // if (procListNotCompt.size() > 0)

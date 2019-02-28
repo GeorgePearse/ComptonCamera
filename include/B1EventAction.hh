@@ -57,7 +57,7 @@ class B1EventAction : public G4UserEventAction
     virtual void TimeDetector(G4double timeDetector, int copyNo);
     virtual void PeakBroad(double g, double c, bool scatter);
     virtual void SetOutput(std::string folderName);
-    virtual void ZeroScatterInfo(G4String procName, G4ThreeVector pos);
+    virtual void ZeroScatterInfo(G4double edep, G4String procName, G4ThreeVector pos);
 
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
     void Vector(G4ThreeVector Pos){posList.push_back(Pos);};
@@ -91,6 +91,7 @@ class B1EventAction : public G4UserEventAction
     std::vector<G4ThreeVector> posList2;
     std::vector<G4ThreeVector> posListNotCompt;
     std::vector<G4String> procListNotCompt;
+    std::vector<G4double> edepListNotCompt;
     G4GenericMessenger* fMessenger;
     std::string fOutput;
 };

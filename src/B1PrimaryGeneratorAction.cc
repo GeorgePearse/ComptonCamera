@@ -59,14 +59,15 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
     = particleTable->FindParticle(particleName="gamma");
   fParticleGun->SetParticleDefinition(particle);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-  fParticleGun->SetParticleEnergy(0.622*MeV);
+  fParticleGun->SetParticleEnergy(662*keV);
 
  
 
   fPrimaryGeneratorMessenger = new B1PrimaryGeneratorMessenger(this);
 
   fXPos = 0;
-  fYPos = -29.7*cm;
+  fYPos = 0;
+  fZPos = -29.7*cm;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -119,7 +120,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   //G4double z0 = -0.5 * envSizeZ;
 
   //fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-  fParticleGun->SetParticlePosition(G4ThreeVector(fXPos, 0, fYPos));
+  fParticleGun->SetParticlePosition(G4ThreeVector(fXPos, fYPos, fZPos));
 
   // By Ben
   G4double pi = CLHEP::pi;
