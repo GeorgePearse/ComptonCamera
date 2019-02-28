@@ -64,8 +64,10 @@ B1DetectorConstruction::B1DetectorConstruction()
   fScoringVolume(0),
   fScatXPos(0),
   fScatYPos(0),
+  fScatZPos(0),
   fScatPolarR(0),
   fScatPolarPhi(0),
+  fScatPolarTheta(0),
   fScatRotX(0),
   fScatRotY(0),
   fScatRotZ(0),
@@ -73,8 +75,10 @@ B1DetectorConstruction::B1DetectorConstruction()
   fScatHeight(0),
   fDetXPos(0),
   fDetYPos(0),
+  fDetZPos(0),
   fDetPolarR(0),
   fDetPolarPhi(0),
+  fDetPolarTheta(0),
   fDetRotX(0),
   fDetRotY(0),
   fDetRotZ(0),
@@ -124,17 +128,21 @@ fDetectorMessenger = new B1DetectorMessenger(this);
  
 fScatXPos = 0;
 fScatYPos = 0;
+fScatZPos = 0;
 fScatPolarR = 0;
 fScatPolarPhi = 9000; // 9000 is a default value to get the code to ignore this if we use cartesian
+fScatPolarTheta = 9000;
 fScatRotX = 90*deg;
 fScatRotY = 0;
 fScatRotZ = 0;
 fScatRad = 7*mm;
 fScatHeight = 21.5*mm;
 fDetXPos = -12.15*cm;
-fDetYPos = 26.205*cm;
+fDetYPos = 0;
+fDetZPos = 26.205*cm;
 fDetPolarR = 0;
 fDetPolarPhi = 9000;
+fDetPolarTheta = 9000;
 fDetRotX = 0;
 fDetRotY = 30*deg;
 fDetRotZ = 0;
@@ -146,7 +154,9 @@ fDetHeight = 1.905*cm;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1DetectorConstruction::~B1DetectorConstruction()
-{delete fDetectorMessenger;}
+{
+  delete fDetectorMessenger;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -245,7 +255,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   // Shape 1
   //  
   G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
-  G4ThreeVector* pos1 = new G4ThreeVector(fScatXPos, 0*cm, fScatYPos);
+  G4ThreeVector* pos1 = new G4ThreeVector(fScatXPos, fScatYPos, fScatZPos);
   if(fScatPolarR!=0)
     {
       pos1->setMag(fScatPolarR);
@@ -253,6 +263,10 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   if(fScatPolarPhi!=9000)
     {
       pos1->setTheta(fScatPolarPhi);
+    }
+  if(fScatPolarTheta!=9000)
+    {
+      pos1->setPhi(fScatPolarTheta);
     }
         
   // Tube section shape       
@@ -302,7 +316,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   //     
   // Shape 2
   //
-  G4ThreeVector* pos2 = new G4ThreeVector(fDetXPos, 0*cm, fDetYPos);
+  G4ThreeVector* pos2 = new G4ThreeVector(fDetXPos, fDetYPos, fDetZPos);
   if(fDetPolarR!=0)
     {
       pos2->setMag(fDetPolarR);
@@ -310,6 +324,10 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   if(fDetPolarPhi!=9000)
     {
       pos2->setTheta(fDetPolarPhi);
+    }
+  if(fDetPolarTheta!=9000)
+    {
+      pos2->setPhi(fDetPolarTheta);
     }
   G4Material* shape2_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide");
   G4RotationMatrix* rot2 = new G4RotationMatrix();
@@ -369,6 +387,13 @@ void B1DetectorConstruction::SetScatYPos(G4double val)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+void B1DetectorConstruction::SetScatZPos(G4double val)
+{
+  fScatZPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 void B1DetectorConstruction::SetScatPolarR(G4double val)
 {
   fScatPolarR = val;
@@ -379,6 +404,13 @@ void B1DetectorConstruction::SetScatPolarR(G4double val)
 void B1DetectorConstruction::SetScatPolarPhi(G4double val)
 {
   fScatPolarPhi = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScatPolarTheta(G4double val)
+{
+  fScatPolarTheta = val;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -432,6 +464,13 @@ void B1DetectorConstruction::SetDetYPos(G4double val)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+void B1DetectorConstruction::SetDetZPos(G4double val)
+{
+  fDetZPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 void B1DetectorConstruction::SetDetPolarR(G4double val)
 {
   fDetPolarR = val;
@@ -442,6 +481,13 @@ void B1DetectorConstruction::SetDetPolarR(G4double val)
 void B1DetectorConstruction::SetDetPolarPhi(G4double val)
 {
   fDetPolarPhi = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDetPolarTheta(G4double val)
+{
+  fDetPolarTheta = val;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

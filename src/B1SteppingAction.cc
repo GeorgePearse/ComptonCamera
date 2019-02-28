@@ -113,7 +113,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 	{
 	  if (edepStep!=0)
 	    {
-	      fEventAction->ZeroScatterInfo(procName, step->GetPreStepPoint()->GetPosition());
+	      fEventAction->ZeroScatterInfo(edepStep, procName, step->GetPreStepPoint()->GetPosition());
 	    }
 	}
     }
