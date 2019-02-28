@@ -111,7 +111,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 
   // detector energy
   if (volume->GetName() == "Absorber")
-    {
+    { //std::cout<< "Absorbed" << "\n";
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       G4double timeDetector = step->GetTrack()->GetGlobalTime();

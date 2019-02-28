@@ -255,7 +255,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 	{
   	std::ofstream myfile3;
   	if(fFirstWritePosCount)
-		{
+		{ 
         	  myfile3.open(fOutput + "Scat_PosCount.txt");
 		}
   	else
