@@ -63,6 +63,11 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fScatYPos->SetGuidance("Set Y position of the scatterer");
   fScatYPos->SetParameterName("ScatYPos", false);  
   fScatYPos->SetUnitCategory("Length");
+
+  fScatZPos = new G4UIcmdWithADoubleAndUnit("/B1/scat/setZ", this);
+  fScatZPos->SetGuidance("Set Z position of the scatterer");
+  fScatZPos->SetParameterName("ScatZPos", false);  
+  fScatZPos->SetUnitCategory("Length");
   
   // Set scatterer position in polar coordinates
   fScatPolarR = new G4UIcmdWithADoubleAndUnit("/B1/scat/setPolarR", this);
@@ -74,6 +79,11 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fScatPolarPhi->SetGuidance("Set phi coordinate of the scatterer (polar coordinates)");
   fScatPolarPhi->SetParameterName("ScatPolarPhi", false);  
   fScatPolarPhi->SetUnitCategory("Angle");
+
+  fScatPolarTheta = new G4UIcmdWithADoubleAndUnit("/B1/scat/setPolarTheta", this);
+  fScatPolarTheta->SetGuidance("Set theta coordinate of the scatterer (polar coordinates)");
+  fScatPolarTheta->SetParameterName("ScatPolarTheta", false);  
+  fScatPolarTheta->SetUnitCategory("Angle");
 
   // Set scatterer rotation
   fScatRotX = new G4UIcmdWithADoubleAndUnit("/B1/scat/setRotX", this);
@@ -117,6 +127,11 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fDetYPos->SetParameterName("DetYPos", false);
   fDetYPos->SetUnitCategory("Length");
 
+  fDetZPos = new G4UIcmdWithADoubleAndUnit("/B1/det/setZ", this);
+  fDetZPos->SetGuidance("Set Z position of the detector");
+  fDetZPos->SetParameterName("DetZPos", false);
+  fDetZPos->SetUnitCategory("Length");
+
   // Set detector position in polar coordinates
   fDetPolarR = new G4UIcmdWithADoubleAndUnit("/B1/det/setPolarR", this);
   fDetPolarR->SetGuidance("Set R coordinate of the detector (polar coordinates)");
@@ -127,6 +142,11 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fDetPolarPhi->SetGuidance("Set phi coordinate of the detector (polar coordinates)");
   fDetPolarPhi->SetParameterName("DetPolarPhi", false);  
   fDetPolarPhi->SetUnitCategory("Angle");
+
+  fDetPolarTheta = new G4UIcmdWithADoubleAndUnit("/B1/det/setPolarTheta", this);
+  fDetPolarTheta->SetGuidance("Set theta coordinate of the detector (polar coordinates)");
+  fDetPolarTheta->SetParameterName("DetPolarTheta", false);  
+  fDetPolarTheta->SetUnitCategory("Angle");
 
   // Set detector rotation
   fDetRotX = new G4UIcmdWithADoubleAndUnit("/B1/det/setRotX", this);
@@ -168,8 +188,10 @@ B1DetectorMessenger::~B1DetectorMessenger()
 {
   delete fScatXPos;
   delete fScatYPos;
+  delete fScatZPos;
   delete fScatPolarR;
   delete fScatPolarPhi;
+  delete fScatPolarTheta;
   delete fScatRotX;
   delete fScatRotY;
   delete fScatRotZ;
@@ -177,8 +199,10 @@ B1DetectorMessenger::~B1DetectorMessenger()
   delete fScatHeight;
   delete fDetXPos;
   delete fDetYPos;
+  delete fDetZPos;
   delete fDetPolarR;
   delete fDetPolarPhi;
+  delete fDetPolarTheta;
   delete fDetRotX;
   delete fDetRotY;
   delete fDetRotZ;
@@ -201,11 +225,17 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   if ( command == fScatYPos )
    {fDetector->SetScatYPos(fScatYPos->GetNewDoubleValue(newValue));}
 
+  if ( command == fScatZPos )
+   {fDetector->SetScatZPos(fScatZPos->GetNewDoubleValue(newValue));}
+
   if ( command == fScatPolarR )
    {fDetector->SetScatPolarR(fScatPolarR->GetNewDoubleValue(newValue));}
 
   if ( command == fScatPolarPhi )
    {fDetector->SetScatPolarPhi(fScatPolarPhi->GetNewDoubleValue(newValue));}
+
+  if ( command == fScatPolarTheta )
+   {fDetector->SetScatPolarTheta(fScatPolarTheta->GetNewDoubleValue(newValue));}
 
   if ( command == fScatRotX )
    {fDetector->SetScatRotX(fScatRotX->GetNewDoubleValue(newValue));}
@@ -228,11 +258,17 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   if ( command == fDetYPos )
    {fDetector->SetDetYPos(fDetYPos->GetNewDoubleValue(newValue));}
 
+  if ( command == fDetZPos )
+   {fDetector->SetDetZPos(fDetZPos->GetNewDoubleValue(newValue));}
+
   if ( command == fDetPolarR )
    {fDetector->SetDetPolarR(fDetPolarR->GetNewDoubleValue(newValue));}
 
   if ( command == fDetPolarPhi )
    {fDetector->SetDetPolarPhi(fDetPolarPhi->GetNewDoubleValue(newValue));}
+
+  if ( command == fDetPolarTheta )
+   {fDetector->SetDetPolarTheta(fDetPolarTheta->GetNewDoubleValue(newValue));}
 
   if ( command == fDetRotX )
    {fDetector->SetDetRotX(fDetRotX->GetNewDoubleValue(newValue));}

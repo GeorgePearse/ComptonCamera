@@ -58,7 +58,7 @@ class B1RunAction : public G4UserRunAction
     void Count(){count+=1;};
 
   private:
-    G4bool ffirstWrite3; //This is needed
+    G4bool ffirstWrite3 = true; //This is needed
     int count = 0; 
     //int counter = 0;
     int numberUseful = 0; 

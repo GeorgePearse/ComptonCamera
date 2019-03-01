@@ -49,8 +49,10 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
 
     virtual void SetScatXPos(G4double);
     virtual void SetScatYPos(G4double);
+    virtual void SetScatZPos(G4double);
     virtual void SetScatPolarR(G4double);
     virtual void SetScatPolarPhi(G4double);
+    virtual void SetScatPolarTheta(G4double);
     virtual void SetScatRotX(G4double);
     virtual void SetScatRotY(G4double);
     virtual void SetScatRotZ(G4double);
@@ -58,8 +60,10 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
     virtual void SetScatHeight(G4double);
     virtual void SetDetXPos(G4double);
     virtual void SetDetYPos(G4double);
+    virtual void SetDetZPos(G4double);
     virtual void SetDetPolarR(G4double);
     virtual void SetDetPolarPhi(G4double);
+    virtual void SetDetPolarTheta(G4double);
     virtual void SetDetRotX(G4double);
     virtual void SetDetRotY(G4double);
     virtual void SetDetRotZ(G4double);
@@ -75,8 +79,10 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
   private:
   G4double fScatXPos;
   G4double fScatYPos;
+  G4double fScatZPos;
   G4double fScatPolarR;
   G4double fScatPolarPhi;
+  G4double fScatPolarTheta;
   G4double fScatRotX;
   G4double fScatRotY;
   G4double fScatRotZ;
@@ -84,8 +90,10 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
   G4double fScatHeight;
   G4double fDetXPos;
   G4double fDetYPos;
+  G4double fDetZPos;
   G4double fDetPolarR;
   G4double fDetPolarPhi;
+  G4double fDetPolarTheta;
   G4double fDetRotX;
   G4double fDetRotY;
   G4double fDetRotZ;
