@@ -248,8 +248,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
   // Text file writer for Scatterer Position and Count - by Ben
   // Special condition for first write to create file
-  if (posList.size() > 0)
-	{
+  
+	
   	std::ofstream myfile3;
   	if(fFirstWritePosCount)
 		{
@@ -270,7 +270,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 		}
   	else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
   	fFirstWritePosCount = false;
-	}
+	
 
   if (posList2.size() > 0)
 	{
