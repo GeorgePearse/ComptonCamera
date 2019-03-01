@@ -287,7 +287,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     "Scatterer",                //its name
                     logicEnv,                //its mother  volume
                     false,                   //no boolean operation
-                    0,                       //copy number (should be 1
+                    7,                       //copy number (should be 1
                     checkOverlaps);          //overlaps checking
 
   //
@@ -376,7 +376,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     "Absorber",                //its name
                     logicEnv,                //its mother  volume
                     false,                   //no boolean operation
-                    0,                       //copy number
+                    7,                       //copy number
                     checkOverlaps);          //overlaps checking
 
   

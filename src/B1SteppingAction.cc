@@ -57,7 +57,8 @@ B1SteppingAction::~B1SteppingAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1SteppingAction::UserSteppingAction(const G4Step* step)
-{ // track runtime of event by summing delta times in each step - by Jack
+{ 
+  // track runtime of event by summing delta times in each step - by Jack
   G4double deltaTime = step->GetDeltaTime();
   fEventAction->TotalTime(deltaTime);
   // get physical and logical volume of the current step
@@ -66,7 +67,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       ->GetVolume();
   G4LogicalVolume* volume = volumePhys->GetLogicalVolume();
 
-  // Code to fix Segmentation Faults
+  //Code to fix Segmentation Faults
   G4String procName = "";
   G4StepPoint* preStep = step->GetPreStepPoint();
   if(preStep!= nullptr)
@@ -75,9 +76,14 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     if(proc != nullptr)
     {
       procName = proc->GetProcessName();
+      if(procName=="phot "){std::cout<<"Photoelectric"<<" "<<"\n";};
+      //if(procName=="msc"){std::cout<<"MSC"<<" "<<"\n";};
     }
-  }
+  };
 
+  //procName = proc->GetProcessName();
+  if(procName=="phot "){std::cout<<"Photoelectric"<<" "<<"\n";};
+  
   //std::cout << procName << "\n";
   // check if we are in scoring volume
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
@@ -87,7 +93,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // scatterer energy
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
-    { 
+    { if(procName=="phot "){std::cout<<"Photoelectric"<<" "<<"\n";};
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);
@@ -111,14 +117,15 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 
   // detector energy
   if (volume->GetName() == "Absorber")
-    { //std::cout<< "Absorbed" << "\n";
-      G4double edepStep = step->GetTotalEnergyDeposit();
+    { G4double edepStep = step->GetTotalEnergyDeposit();
+      //if(procName=="msc"){std::cout<<edepStep/keV<<" "<<"\n";};
       int copyNo = volumePhys->GetCopyNo();
+      //std::cout<<procName<< "\n";
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
-	if (procName == "phot")
-	{	//std::cout << "Photoelectric" << "\n"; 
+	if (procName == "phot ")
+	{	std::cout << "Photoelectric" << "\n"; 
 		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
 		fEventAction->Vector2(Pos2);	
 	}
