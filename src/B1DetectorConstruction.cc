@@ -84,6 +84,17 @@ B1DetectorConstruction::B1DetectorConstruction()
   fDetRotZ(0),
   fDetRad(0),
   fDetHeight(0),
+  fDet2XPos(0),
+  fDet2YPos(0),
+  fDet2ZPos(0),
+  fDet2PolarR(0),
+  fDet2PolarPhi(0),
+  fDet2PolarTheta(0),
+  fDet2RotX(0),
+  fDet2RotY(0),
+  fDet2RotZ(0),
+  fDet2Rad(0),
+  fDet2Height(0),
   fDetectorMessenger(0)
 {
 //Material Definition  of Lanthanum(III) Bromide - by Ben
@@ -148,6 +159,18 @@ fDetRotY = 30*deg;
 fDetRotZ = 0;
 fDetRad = 1.905*cm;
 fDetHeight = 1.905*cm;
+fDet2XPos = 12.15*cm;
+fDet2YPos = 0;
+fDet2ZPos = 26.205*cm;
+fDet2PolarR = 0;
+fDet2PolarPhi = 9000;
+fDet2PolarTheta = 9000;
+fDet2RotX = 0;
+fDet2RotY = -30*deg;
+fDet2RotZ = 0;
+fDet2Rad = 1.905*cm;
+fDet2Height = 1.905*cm;
+fDet2Bool = false;
 
 }
 
@@ -252,7 +275,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   
   //
   //     
-  // Shape 1
+  // Scatterer
   //  
   G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
   G4ThreeVector* pos1 = new G4ThreeVector(fScatXPos, fScatYPos, fScatZPos);
@@ -337,7 +360,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 
 
   //     
-  // Shape 2
+  // Absorber
   //
   G4ThreeVector* pos2 = new G4ThreeVector(fDetXPos, fDetYPos, fDetZPos);
   if(fDetPolarR!=0)
@@ -379,6 +402,52 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
 
+  //     
+  // Absorber 2 - by Jack
+  //
+  /*if (fDet2Bool == true)
+    {
+      G4ThreeVector* pos4 = new G4ThreeVector(fDet2XPos, fDet2YPos, fDet2ZPos);
+      if(fDet2PolarR!=0)
+	{
+	  pos4->setMag(fDet2PolarR);
+	}
+      if(fDet2PolarPhi!=9000)
+	{
+	  pos4->setTheta(fDet2PolarPhi);
+	}
+      if(fDet2PolarTheta!=9000)
+	{
+	  // To be written by Douglas
+	}
+      G4Material* shape4_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide");
+      G4RotationMatrix* rot4 = new G4RotationMatrix();
+      rot4->rotateX(fDet2RotX);
+      rot4->rotateY(fDet2RotY);
+      rot4->rotateZ(fDet2RotZ);
+
+      G4double shape4_rmina =  0.*cm, shape4_rmaxa = fDet2Rad;
+      G4double shape4_hz = fDet2Height;
+      G4double shape4_phimin = 0.*deg, shape4_phimax = 360.*deg;
+      G4Tubs* solidShape4 =    new G4Tubs("Shape4",
+					  shape4_rmina, shape4_rmaxa, shape4_hz,
+					  shape4_phimin, shape4_phimax);
+                
+      G4LogicalVolume* logicShape4 =                         
+	new G4LogicalVolume(solidShape4,         //its solid
+			    shape4_mat,          //its material
+			    "Absorber");           //its name
+               
+      new G4PVPlacement(rot4,                       //no rotation
+			G4ThreeVector(pos4->x(), pos4->y(), pos4->z()),        		//at position
+			logicShape4,             //its logical volume
+			"Absorber",                //its name
+			logicEnv,                //its mother  volume
+			false,                   //no boolean operation
+			1,                       //copy number
+			checkOverlaps);          //overlaps checking
+    }
+  */
   
   //Varying step length depending on the logical volume 
     //G4double stepLength = 0.0003*mm; //trying the default value 

@@ -324,23 +324,6 @@ void B1EventAction::EndOfEventAction(const G4Event*)
     fFirstWriteNotCompt = false;
     }
 
- // fFirstWrite = false;
- // if (procListNotCompt.size() > 0)
- //   {
- //     std::ofstream myfileJack;
- //     if(fFirstWriteNotCompt)
- //	{
- //	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt");
- //	}
- //     else
- //	{
- //	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt", std::ios::app); 
- //	}
- // else std::cerr << "Unable to open Scat_PosCount file" << std::endl; //George debugger wanted }
- // fFirstWrite = false;
- // fFirstWritePosCount = false;
- // fFirstWritePosCount2 = false;
-
 //} 
 //Energy deposited in body by George
 //if(fEdepBody!=0){
@@ -362,22 +345,6 @@ void B1EventAction::EndOfEventAction(const G4Event*)
  //       }
 //	else std::cerr << "Unable to open energyBody file" << std::endl;
 //	fFirstWrite2 = false;};//}
-
-
-
-
-
-//      if (myfileJack.is_open())
-//	{
-//	  myfileJack << "New Event\n";
-//	  for(unsigned int i=0; i<posListNotCompt.size(); i++)
-//	    {
-//	      myfileJack << posListNotCompt[i] << " " << procListNotCompt[i] << "\n";
-//	    }
-//	  myfileJack.close();
-//      }
-//    fFirstWriteNotCompt = false;
-//    }
 
 // condition to print all scatter events into a file coincident and non-coincident.
 // By Douglas
