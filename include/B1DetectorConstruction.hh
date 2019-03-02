@@ -99,18 +99,6 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
   G4double fDetRotZ;
   G4double fDetRad;
   G4double fDetHeight;
-  G4double fDet2XPos;
-  G4double fDet2YPos;
-  G4double fDet2ZPos;
-  G4double fDet2PolarR;
-  G4double fDet2PolarPhi;
-  G4double fDet2PolarTheta;
-  G4double fDet2RotX;
-  G4double fDet2RotY;
-  G4double fDet2RotZ;
-  G4double fDet2Rad;
-  G4double fDet2Height;
-  G4bool fDet2Bool;
   B1DetectorMessenger* fDetectorMessenger;
   
   protected:

@@ -76,29 +76,27 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     if(proc != nullptr)
     {
       procName = proc->GetProcessName();
-      if(procName=="phot "){std::cout<<"Photoelectric"<<" "<<"\n";};
-      //if(procName=="msc"){std::cout<<"MSC"<<" "<<"\n";};
     }
-  };
-
-  //procName = proc->GetProcessName();
-  if(procName=="phot "){std::cout<<"Photoelectric"<<" "<<"\n";};
-  
-  //std::cout << procName << "\n";
-  // check if we are in scoring volume
+  }
+  // dose in body George
+  if (volume->GetName() == "Body")
+ 	{G4double edepStep = step->GetTotalEnergyDeposit();
+      	fEventAction->AddEdepBody(edepStep);} //Have a look at AddEdepDetector. 
+ // End of dose in body George
+ // check if we are in scoring volume
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
- 
 
   // collect energy deposited in step - originally by Jack, generalised with copy number by Douglas
   // scatterer energy
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
-    { if(procName=="phot "){std::cout<<"Photoelectric"<<" "<<"\n";};
+    { G4double stepLength = step->GetStepLength(); //George checking step length
+      //std::cout<<"stepLength="<<stepLength/mm<< "\n"; //George checking step length
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);
 	if (procName == "compt")
-	{	//std::cout << "Compton" << "\n"; 
+	{
 		G4double timeScatterer = step->GetTrack()->GetGlobalTime();
 		G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
 		fEventAction->TimeScatterer(timeScatterer, copyNo);
@@ -124,10 +122,10 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
-	if (procName == "phot ")
-	{	std::cout << "Photoelectric" << "\n"; 
-		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
-		fEventAction->Vector2(Pos2);	
+	if (procName == "phot")
+	{
+	  G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
+	  fEventAction->Vector2(Pos2);	
 	}
     }
 }
