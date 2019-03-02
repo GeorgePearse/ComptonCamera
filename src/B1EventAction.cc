@@ -253,7 +253,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   // Special condition for first write to create file
   
 	
-  	std::ofstream myfile3;
+	std::ofstream myfile3;
   	if(fFirstWritePosCount)
 		{ 
         	  myfile3.open(fOutput + "Scat_PosCount.txt");
