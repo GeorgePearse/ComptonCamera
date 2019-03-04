@@ -87,29 +87,22 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // scatterer energy
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
-      
-    { G4double stepLength = step->GetStepLength(); //George checking step length
-      //std::cout<<"stepLength="<<stepLength/mm<< "\n"; //George checking step length
-
+      {
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);
-	if (procName =! "Transportation")
-		{
-		//std::cout << procName << " Scatterer" << std::endl;
-		if (procName == "compt")
-		{
-			std:: cout << procName << " SCATTERER COMPT" << std::endl;
-			G4double timeScatterer = step->GetTrack()->GetGlobalTime();
-			G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
-			fEventAction->TimeScatterer(timeScatterer, copyNo);
-			fEventAction->Vector(Pos);
-			fEventAction->Count();
-		}
-		}
+	if (procName == "compt")
+	{
+		G4double timeScatterer = step->GetTrack()->GetGlobalTime();
+		G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
+		fEventAction->TimeScatterer(timeScatterer, copyNo);
+		fEventAction->Vector(Pos);
+		fEventAction->Count();
+	}
+
 
 	// Finding details of processes that cause energy deposition that aren't Compton to solve the 0 scatter coincidence problem - by Jack
-          else
+	else
 	{
 	  if (edepStep!=0)
 	    {
@@ -126,18 +119,13 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
-	if (procName =! "Transportation")
-		{
-		//std::cout << procName << " Absorber" << std::endl;
-		if (procName == "phot")
-			{
-			std::cout << procName << " ABSORBER PHOT" << std::endl;
-			G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
-			fEventAction->Vector2(Pos2);	
-			}
-		}
-
-    }
+	
+	if (procName != "Transportation")
+	{
+		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
+		fEventAction->Vector2(Pos2);
+			
+	}
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

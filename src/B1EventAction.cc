@@ -301,8 +301,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
  // fFirstWrite = false;
  // if (procListNotCompt.size() > 0)
- //   {
- //     std::ofstream myfileJack;
+ //   { //     std::ofstream myfileJack;
  //     if(fFirstWriteNotCompt)
  //	{
  //	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt");
