@@ -73,6 +73,18 @@ B1DetectorConstruction::B1DetectorConstruction()
   fScatRotZ(0),
   fScatRad(0),
   fScatHeight(0),
+  fScat2XPos(0),
+  fScat2YPos(0),
+  fScat2ZPos(0),
+  fScat2PolarR(0),
+  fScat2PolarPhi(0),
+  fScat2PolarTheta(0),
+  fScat2RotX(0),
+  fScat2RotY(0),
+  fScat2RotZ(0),
+  fScat2Rad(0),
+  fScat2Height(0),
+  fScat2Bool(0),
   fDetXPos(0),
   fDetYPos(0),
   fDetZPos(0),
@@ -84,6 +96,18 @@ B1DetectorConstruction::B1DetectorConstruction()
   fDetRotZ(0),
   fDetRad(0),
   fDetHeight(0),
+  fDet2XPos(0),
+  fDet2YPos(0),
+  fDet2ZPos(0),
+  fDet2PolarR(0),
+  fDet2PolarPhi(0),
+  fDet2PolarTheta(0),
+  fDet2RotX(0),
+  fDet2RotY(0),
+  fDet2RotZ(0),
+  fDet2Rad(0),
+  fDet2Height(0),
+  fDet2Bool(0),
   fDetectorMessenger(0)
 {
 //Material Definition  of Lanthanum(III) Bromide - by Ben
@@ -137,6 +161,20 @@ fScatRotY = 0;
 fScatRotZ = 0;
 fScatRad = 7*mm;
 fScatHeight = 21.5*mm;
+
+fScat2XPos = 10*cm;
+fScat2YPos = 0;
+fScat2ZPos = 0;
+fScat2PolarR = 0;
+fScat2PolarPhi = 9000; // 9000 is a default value to get the code to ignore this if we use cartesian
+fScat2PolarTheta = 9000;
+fScat2RotX = 90*deg;
+fScat2RotY = 0;
+fScat2RotZ = 0;
+fScat2Rad = 7*mm;
+fScat2Height = 21.5*mm;
+fScat2Bool = false;
+
 fDetXPos = -12.15*cm;
 fDetYPos = 0;
 fDetZPos = 26.205*cm;
@@ -148,6 +186,19 @@ fDetRotY = 30*deg;
 fDetRotZ = 0;
 fDetRad = 1.905*cm;
 fDetHeight = 1.905*cm;
+
+fDet2XPos = 12.15*cm;
+fDet2YPos = 0;
+fDet2ZPos = 26.205*cm;
+fDet2PolarR = 0;
+fDet2PolarPhi = 9000;
+fDet2PolarTheta = 9000;
+fDet2RotX = 0;
+fDet2RotY = -30*deg;
+fDet2RotZ = 0;
+fDet2Rad = 1.905*cm;
+fDet2Height = 1.905*cm;
+fDet2Bool = false;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -247,6 +298,11 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   rot1->rotateX(fScatRotX);
   rot1->rotateY(fScatRotY);
   rot1->rotateZ(fScatRotZ);
+
+  G4RotationMatrix* rot3 = new G4RotationMatrix();
+  rot3->rotateX(fScat2RotX);
+  rot3->rotateY(fScat2RotY);
+  rot3->rotateZ(fScat2RotZ);
   
   
   //
@@ -288,6 +344,50 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
+
+  //
+  //     
+  // Scatterer 2 - By Jack
+  //
+  if (fScat2Bool == true)
+    {
+      G4Material* shape3_mat = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
+      G4ThreeVector* pos3 = new G4ThreeVector(fScat2XPos, fScat2YPos, fScat2ZPos);
+      if(fScat2PolarR!=0)
+	{
+	  pos3->setMag(fScat2PolarR);
+	}
+      if(fScat2PolarPhi!=9000)
+	{
+	  pos3->setTheta(fScat2PolarPhi);
+	}
+      if(fScat2PolarTheta!=9000)
+	{
+	  pos3->setPhi(fScat2PolarTheta);
+	}
+        
+      // Tube section shape       
+      G4double shape3_rmina =  0.*cm, shape3_rmaxa = fScat2Rad;
+      G4double shape3_hz = fScat2Height;
+      G4double shape3_phimin = 0.*deg, shape3_phimax = 360.*deg;
+      G4Tubs* solidShape3 =    
+	new G4Tubs("Shape3", shape3_rmina, shape3_rmaxa, shape3_hz, shape3_phimin, shape3_phimax);
+                      
+      G4LogicalVolume* logicShape3 =                         
+	new G4LogicalVolume(solidShape3,         //its solid
+			    shape3_mat,          //its material
+			    "Scatterer");           //its name
+               
+      new G4PVPlacement(rot3,                    //rotation
+			G4ThreeVector(pos3->x(), pos3->y(), pos3->z()),  //at position
+			logicShape3,             //its logical volume
+			"Scatterer",                //its name
+			logicEnv,                //its mother  volume
+			false,                   //no boolean operation
+			1,                       //copy number
+			checkOverlaps);          //overlaps checking
+    }
+
 
   //
   // Body (George) 
@@ -358,7 +458,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   //     
   // Absorber 2 - by Jack
   //
-  /*if (fDet2Bool == true)
+  if (fDet2Bool == true)
     {
       G4ThreeVector* pos4 = new G4ThreeVector(fDet2XPos, fDet2YPos, fDet2ZPos);
       if(fDet2PolarR!=0)
@@ -371,7 +471,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 	}
       if(fDet2PolarTheta!=9000)
 	{
-	  // To be written by Douglas
+	  pos4->setPhi(fDet2PolarTheta);
 	}
       G4Material* shape4_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide");
       G4RotationMatrix* rot4 = new G4RotationMatrix();
@@ -400,7 +500,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 			1,                       //copy number
 			checkOverlaps);          //overlaps checking
     }
-  */
+  
   
   //Varying step length depending on the logical volume 
   G4double stepLength = 0.0005*mm;
@@ -495,6 +595,90 @@ void B1DetectorConstruction::SetScatHeight(G4double val)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+void B1DetectorConstruction::SetScat2XPos(G4double val)
+{
+  fScat2XPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScat2YPos(G4double val)
+{
+  fScat2YPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScat2ZPos(G4double val)
+{
+  fScat2ZPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScat2PolarR(G4double val)
+{
+  fScat2PolarR = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScat2PolarPhi(G4double val)
+{
+  fScat2PolarPhi = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScat2PolarTheta(G4double val)
+{
+  fScat2PolarTheta = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScat2RotX(G4double val)
+{
+  fScat2RotX = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScat2RotY(G4double val)
+{
+  fScat2RotY = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScat2RotZ(G4double val)
+{
+  fScat2RotZ = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScat2Rad(G4double val)
+{
+  fScat2Rad = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScat2Height(G4double val)
+{
+  fScat2Height = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetScat2Bool(G4bool val)
+{
+  fScat2Bool = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 void B1DetectorConstruction::SetDetXPos(G4double val)
 {
   fDetXPos = val;
@@ -568,6 +752,90 @@ void B1DetectorConstruction::SetDetRad(G4double val)
 void B1DetectorConstruction::SetDetHeight(G4double val)
 {
   fDetHeight = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2XPos(G4double val)
+{
+  fDet2XPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2YPos(G4double val)
+{
+  fDet2YPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2ZPos(G4double val)
+{
+  fDet2ZPos = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2PolarR(G4double val)
+{
+  fDet2PolarR = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2PolarPhi(G4double val)
+{
+  fDet2PolarPhi = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2PolarTheta(G4double val)
+{
+  fDet2PolarTheta = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2RotX(G4double val)
+{
+  fDet2RotX = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2RotY(G4double val)
+{
+  fDet2RotY = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2RotZ(G4double val)
+{
+  fDet2RotZ = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2Rad(G4double val)
+{
+  fDet2Rad = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2Height(G4double val)
+{
+  fDet2Height = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2Bool(G4bool val)
+{
+  fDet2Bool = val;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
