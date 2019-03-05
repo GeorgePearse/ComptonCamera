@@ -57,6 +57,8 @@
 #include "G4StepStatus.hh" //George
 #include "G4StepPoint.hh"
 
+#include <cmath> // Douglas
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1DetectorConstruction::B1DetectorConstruction()
@@ -265,7 +267,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
       pos1->setTheta(fScatPolarPhi);
     }
   if(fScatPolarTheta!=9000)
-    {
+    {// theta of scatterer by Doug
       pos1->setPhi(fScatPolarTheta);
     }
         
@@ -349,7 +351,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
       pos2->setTheta(fDetPolarPhi);
     }
   if(fDetPolarTheta!=9000)
-    {
+    {// theta of absorber by Doug
       pos2->setPhi(fDetPolarTheta);
     }
   G4Material* shape2_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide");
