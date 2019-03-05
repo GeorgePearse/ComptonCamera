@@ -78,10 +78,11 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       procName = proc->GetProcessName();
     }
   }
-  // dose in body George
+
+  // dose in body George 
   if (volume->GetName() == "Body")
  	{G4double edepStep = step->GetTotalEnergyDeposit();
-      	fEventAction->AddEdepBody(edepStep);} //Have a look at AddEdepDetector. 
+     	fEventAction->AddEdepBody(edepStep);} //Have a look at AddEdepDetector. 
  // End of dose in body George
  // check if we are in scoring volume
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
@@ -91,7 +92,6 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
     { G4double stepLength = step->GetStepLength(); //George checking step length
-      //std::cout<<"stepLength="<<stepLength/mm<< "\n"; //George checking step length
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);
@@ -109,6 +109,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 		fEventAction->Vector(Pos);
 		fEventAction->Count();
 	}
+
 	// Finding details of processes that cause energy deposition that aren't Compton to solve the 0 scatter coincidence problem - by Jack
 	else
 	{
@@ -128,13 +129,12 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
-	if (procName == "phot")
-	{
-	  G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
-	  fEventAction->Vector2(Pos2);	
-	}
+	if (procName != "Transportation")
+		{
+		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
+		fEventAction->Vector2(Pos2);
+		fEventAction->Proc2(procName);
+		}
     }
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

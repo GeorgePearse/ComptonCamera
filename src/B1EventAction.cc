@@ -258,8 +258,9 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
   // Text file writer for Scatterer Position and Count - by Ben
   // Special condition for first write to create file
-  
-	
+
+  if (posList2.size() > 0)
+	{	
 	std::ofstream myfile3;
   	if(fFirstWritePosCount)
 		{ 
@@ -280,7 +281,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 		}
   	else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
   	fFirstWritePosCount = false;
-	
+	}
 
   if (posList2.size() > 0)
 	{
@@ -298,36 +299,37 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 		myfile4 << "New Event" << "\n";
 		for(unsigned int j=0; j<posList2.size(); j++)
 		{
-		  myfile4 << posList2[j] << "\n";
+		  myfile4 << posList2[j] << procList2[j] << "\n";
 		}
 		myfile4.close();
 		}
   	else std::cerr << "Unable to open Scat_PosCount2 file" << std::endl;
   	fFirstWritePosCount2 = false;
 	}
-  fFirstWrite = false;
-  if (procListNotCompt.size() > 0)
-    {
-      std::ofstream myfileJack;
-      if(fFirstWriteNotCompt)
-	{
-	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt");
-	}
-      else
-	{
-	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt", std::ios::app); 
-	}
-      if (myfileJack.is_open())
-	{
-	  myfileJack << "New Event\n";
-	  for(unsigned int i=0; i<posListNotCompt.size(); i++)
-	    {
-	      myfileJack << edepListNotCompt[i] << posListNotCompt[i] << " " << procListNotCompt[i] << std::endl;
-	    }
-	  myfileJack.close();
-      }
-    fFirstWriteNotCompt = false;
-    }
+
+//  fFirstWrite = false;
+//  if (procListNotCompt.size() > 0)
+//    {
+//      std::ofstream myfileJack;
+//      if(fFirstWriteNotCompt)
+//	{
+//	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt");
+//	}
+//      else
+//	{
+//	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt", std::ios::app); 
+//	}
+//      if (myfileJack.is_open())
+//	{
+//	  myfileJack << "New Event\n";
+//	  for(unsigned int i=0; i<posListNotCompt.size(); i++)
+//	    {
+//	      myfileJack << edepListNotCom t[i] << posListNotCompt[i] << " " << procListNotCompt[i] << std::endl;
+//	    }
+//	  myfileJack.close();
+//      }
+//    fFirstWriteNotCompt = false;
+//    }
   
 //Energy deposited in body by George
 //if(fEdepBody!=0){
