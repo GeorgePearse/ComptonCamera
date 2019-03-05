@@ -39,6 +39,7 @@ class G4UIdirectory;
 class G4UIcmdWithAString;
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithoutParameter;
+class G4UIcmdWithABool;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -55,26 +56,59 @@ class B1DetectorMessenger: public G4UImessenger
     
     G4UIdirectory*             fB1Dir;
     G4UIdirectory*             fScatDir;
+    G4UIdirectory*             fScat2Dir;
     G4UIdirectory*             fDetDir;
+    G4UIdirectory*             fDet2Dir;
 
     G4UIcmdWithADoubleAndUnit* fScatXPos;
     G4UIcmdWithADoubleAndUnit* fScatYPos;
+    G4UIcmdWithADoubleAndUnit* fScatZPos;
     G4UIcmdWithADoubleAndUnit* fScatPolarR;
     G4UIcmdWithADoubleAndUnit* fScatPolarPhi;
+    G4UIcmdWithADoubleAndUnit* fScatPolarTheta;
     G4UIcmdWithADoubleAndUnit* fScatRotX;
     G4UIcmdWithADoubleAndUnit* fScatRotY;
     G4UIcmdWithADoubleAndUnit* fScatRotZ;
     G4UIcmdWithADoubleAndUnit* fScatRad;
     G4UIcmdWithADoubleAndUnit* fScatHeight;
+
+    G4UIcmdWithADoubleAndUnit* fScat2XPos;
+    G4UIcmdWithADoubleAndUnit* fScat2YPos;
+    G4UIcmdWithADoubleAndUnit* fScat2ZPos;
+    G4UIcmdWithADoubleAndUnit* fScat2PolarR;
+    G4UIcmdWithADoubleAndUnit* fScat2PolarPhi;
+    G4UIcmdWithADoubleAndUnit* fScat2PolarTheta;
+    G4UIcmdWithADoubleAndUnit* fScat2RotX;
+    G4UIcmdWithADoubleAndUnit* fScat2RotY;
+    G4UIcmdWithADoubleAndUnit* fScat2RotZ;
+    G4UIcmdWithADoubleAndUnit* fScat2Rad;
+    G4UIcmdWithADoubleAndUnit* fScat2Height;
+    G4UIcmdWithABool*          fScat2Bool;
+  
     G4UIcmdWithADoubleAndUnit* fDetXPos;
     G4UIcmdWithADoubleAndUnit* fDetYPos;
+    G4UIcmdWithADoubleAndUnit* fDetZPos;
     G4UIcmdWithADoubleAndUnit* fDetPolarR;
     G4UIcmdWithADoubleAndUnit* fDetPolarPhi;
+    G4UIcmdWithADoubleAndUnit* fDetPolarTheta;
     G4UIcmdWithADoubleAndUnit* fDetRotX;
     G4UIcmdWithADoubleAndUnit* fDetRotY;
     G4UIcmdWithADoubleAndUnit* fDetRotZ;
     G4UIcmdWithADoubleAndUnit* fDetRad;
     G4UIcmdWithADoubleAndUnit* fDetHeight;
+
+    G4UIcmdWithADoubleAndUnit* fDet2XPos;
+    G4UIcmdWithADoubleAndUnit* fDet2YPos;
+    G4UIcmdWithADoubleAndUnit* fDet2ZPos;
+    G4UIcmdWithADoubleAndUnit* fDet2PolarR;
+    G4UIcmdWithADoubleAndUnit* fDet2PolarPhi;
+    G4UIcmdWithADoubleAndUnit* fDet2PolarTheta;
+    G4UIcmdWithADoubleAndUnit* fDet2RotX;
+    G4UIcmdWithADoubleAndUnit* fDet2RotY;
+    G4UIcmdWithADoubleAndUnit* fDet2RotZ;
+    G4UIcmdWithADoubleAndUnit* fDet2Rad;
+    G4UIcmdWithADoubleAndUnit* fDet2Height;
+    G4UIcmdWithABool*          fDet2Bool;
   
     G4UIcmdWithoutParameter*   fUpdateCmd;
 

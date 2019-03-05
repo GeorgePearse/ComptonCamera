@@ -44,7 +44,7 @@ B1PrimaryGeneratorMessenger::B1PrimaryGeneratorMessenger(
                                                   B1PrimaryGeneratorAction* Gun)
 :fAction(Gun), fGunDir(0), fXPos(0), fYPos(0)
 {
-  fGunDir = new G4UIdirectory("/B1/source");
+  fGunDir = new G4UIdirectory("/B1/source/");
   fGunDir->SetGuidance("source control");
   
   fXPos = new G4UIcmdWithADoubleAndUnit("/B1/source/setXPos",this);
@@ -56,6 +56,11 @@ B1PrimaryGeneratorMessenger::B1PrimaryGeneratorMessenger(
   fYPos->SetGuidance("set Y pos of the point source");
   fYPos->SetParameterName("YPos",false);
   fYPos->SetUnitCategory("Length");
+
+  fZPos = new G4UIcmdWithADoubleAndUnit("/B1/source/setZPos",this);
+  fZPos->SetGuidance("set Z pos of the point source");
+  fZPos->SetParameterName("ZPos",false);
+  fZPos->SetUnitCategory("Length");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -64,6 +69,7 @@ B1PrimaryGeneratorMessenger::~B1PrimaryGeneratorMessenger()
 {
   delete fXPos;
   delete fYPos;
+  delete fZPos;
   delete fGunDir;    
 }
 
@@ -77,6 +83,9 @@ void B1PrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
 
   if (command == fYPos)
    { fAction->SetYPos(fYPos->GetNewDoubleValue(newValue));}
+
+  if (command == fZPos)
+   { fAction->SetZPos(fZPos->GetNewDoubleValue(newValue));}
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

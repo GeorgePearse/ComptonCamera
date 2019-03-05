@@ -56,6 +56,7 @@ class B1PrimaryGeneratorMessenger: public G4UImessenger
     G4UIdirectory*             fGunDir;      
     G4UIcmdWithADoubleAndUnit* fXPos;
     G4UIcmdWithADoubleAndUnit* fYPos;
+    G4UIcmdWithADoubleAndUnit* fZPos;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
