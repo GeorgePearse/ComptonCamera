@@ -128,16 +128,16 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
     runCondition += G4BestUnit(particleEnergy,"Energy");
   }
 
-char date[9];
-_strdate(date);
-Scent = (numberUseless/count)*100 
-Lcent = (numberUseless/count)*100 
+
+//G4int N;
+//G4double Scent = (numberUseless/count)*100;
+//G4double Lcent = (numberUseless/count)*100;
 
    std::ofstream myfile6;
    if(ffirstWrite3)
 	{
 		myfile6.open("Efficiency.txt");
-		N ++;
+//		N ++;
 	}
 	else
 	{
@@ -145,10 +145,11 @@ Lcent = (numberUseless/count)*100
 	}
       	if (myfile6.is_open())
       	{
-	if (N=1){
-		myfile6 << "N0. Date Count Useless Useless(%) Useful Useful(%)" << "\n";
-		}
-	myfile6 << N << "" << date << " " << count << " " << numberUseless << " " << Scent << " " << numberUseful << "" << Lcent << "\n";
+//	if (N=1){
+//		myfile6 << "N0. time Count Useless Useless(%) Useful Useful(%)" << "\n";
+//		}
+//	myfile6 << N << "" << time(NULL) << " " << count << " " << numberUseless << " " << Scent << " " << numberUseful << "" << Lcent << "\n";
+/	myfile6 << count << " " << numberUseless << " " << numberUseful << "" << "\n";
 	myfile6.close();
         }
 	else std::cerr << "Unable to open Efficiency file" << std::endl;
