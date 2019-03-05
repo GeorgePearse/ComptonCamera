@@ -61,6 +61,8 @@ class B1PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction //SAME
     void SetXPos(G4double val){fXPos = val;};
     void SetYPos(G4double val){fYPos = val;};
     void SetZPos(G4double val){fZPos = val;};
+    void SetSourceSize(G4double val){fSourceSize = val;};
+    void SetConeSource(G4bool val){fConeSource = val;};
   
   private:
     G4GeneralParticleSource* fParticleGun2; //pointer to G4particleSource NEW
@@ -68,7 +70,7 @@ class B1PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction //SAME
     G4Box* fEnvelopeBox;
 
     B1PrimaryGeneratorMessenger* fPrimaryGeneratorMessenger;
-    G4double fXPos, fYPos, fZPos;
+    G4double fXPos, fYPos, fZPos, fSourceSize;
     G4bool fConeSource;
 };
 

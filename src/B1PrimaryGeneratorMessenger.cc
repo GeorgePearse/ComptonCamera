@@ -70,6 +70,7 @@ B1PrimaryGeneratorMessenger::B1PrimaryGeneratorMessenger(
 
   fConeSource = new G4UIcmdWithABool("/B1/source/setConeSource", this);
   fConeSource->SetGuidance("set cone/beam source");
+  fConeSource->SetParameterName("ConeSource", false);
   
 }
 
@@ -98,6 +99,12 @@ void B1PrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
 
   if (command == fZPos)
    { fAction->SetZPos(fZPos->GetNewDoubleValue(newValue));}
+
+  if (command == fSourceSize)
+   { fAction->SetSourceSize(fSourceSize->GetNewDoubleValue(newValue));}
+
+  if (command == fConeSource)
+   { fAction->SetConeSource(fConeSource->GetNewBoolValue(newValue));}
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

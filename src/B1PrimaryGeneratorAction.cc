@@ -68,6 +68,8 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
   fXPos = 0;
   fYPos = 0;
   fZPos = -29.7*cm;
+  fSourceSize = 0;
+  fConeSource = true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -132,8 +134,10 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4ThreeVector dir(sin_theta*std::cos(psi), sin_theta*std::sin(psi), cos_theta);
 
   fParticleGun->SetParticleMomentumDirection(dir);
-  //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
-
+  if(fConeSource == false)
+    {
+      fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
+    }
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
