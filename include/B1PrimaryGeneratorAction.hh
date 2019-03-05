@@ -69,6 +69,7 @@ class B1PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction //SAME
 
     B1PrimaryGeneratorMessenger* fPrimaryGeneratorMessenger;
     G4double fXPos, fYPos, fZPos;
+    G4bool fConeSource;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
