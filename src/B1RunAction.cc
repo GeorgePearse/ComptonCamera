@@ -39,7 +39,8 @@
 #include "G4LogicalVolume.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
-
+#include "time.h" 
+#include "iostream"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1RunAction::B1RunAction()
@@ -126,10 +127,17 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
     G4double particleEnergy = particleGun->GetParticleEnergy();
     runCondition += G4BestUnit(particleEnergy,"Energy");
   }
+
+char date[9];
+_strdate(date);
+Scent = (numberUseless/count)*100 
+Lcent = (numberUseless/count)*100 
+
    std::ofstream myfile6;
    if(ffirstWrite3)
 	{
 		myfile6.open("Efficiency.txt");
+		N ++;
 	}
 	else
 	{
@@ -137,8 +145,11 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 	}
       	if (myfile6.is_open())
       	{
-          myfile6 << count << " " << numberUseless << " " << numberUseful << "\n" ;
-	  myfile6.close();
+	if (N=1){
+		myfile6 << "N0. Date Count Useless Useless(%) Useful Useful(%)" << "\n";
+		}
+	myfile6 << N << "" << date << " " << count << " " << numberUseless << " " << Scent << " " << numberUseful << "" << Lcent << "\n";
+	myfile6.close();
         }
 	else std::cerr << "Unable to open Efficiency file" << std::endl;
 	ffirstWrite3 = false;
