@@ -43,7 +43,13 @@
 
 B1PrimaryGeneratorMessenger::B1PrimaryGeneratorMessenger(
                                                   B1PrimaryGeneratorAction* Gun)
-:fAction(Gun), fGunDir(0), fXPos(0), fYPos(0)
+  :fAction(Gun),
+   fGunDir(0),
+   fXPos(0),
+   fYPos(0),
+   fZPos(0),
+   fSourceSize(0),
+   fConeSource(0)
 {
   fGunDir = new G4UIdirectory("/B1/source/");
   fGunDir->SetGuidance("source control");
