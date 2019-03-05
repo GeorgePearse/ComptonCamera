@@ -44,7 +44,7 @@ B1PrimaryGeneratorMessenger::B1PrimaryGeneratorMessenger(
                                                   B1PrimaryGeneratorAction* Gun)
 :fAction(Gun), fGunDir(0), fXPos(0), fYPos(0)
 {
-  fGunDir = new G4UIdirectory("/B1/source");
+  fGunDir = new G4UIdirectory("/B1/source/");
   fGunDir->SetGuidance("source control");
   
   fXPos = new G4UIcmdWithADoubleAndUnit("/B1/source/setXPos",this);

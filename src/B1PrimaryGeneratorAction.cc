@@ -125,14 +125,14 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // By Ben
   G4double pi = CLHEP::pi;
   G4double psi = 2*pi*G4UniformRand();
-  G4double theta = (pi/36)*G4UniformRand(); //change back to 18 later
+  G4double theta = (pi/18)*G4UniformRand();
   //std::cout << "Theta = " << theta*(180/pi) << ", Psi = " << psi*(180/pi) << std::endl;
   G4double cos_theta = 1 - 2*(theta/pi);
   G4double sin_theta = std::sqrt(1 - cos_theta*cos_theta);
   G4ThreeVector dir(sin_theta*std::cos(psi), sin_theta*std::sin(psi), cos_theta);
 
   fParticleGun->SetParticleMomentumDirection(dir);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
+  //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
