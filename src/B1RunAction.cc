@@ -48,7 +48,8 @@ B1RunAction::B1RunAction()
   fEdep2(0.),
   count(0.),
   numberUseful(0.),
-  numberUseless(0.)
+  numberUseless(0.),
+  photonScattererCount(0.)
 
 { 
   // add new units for dose
@@ -70,7 +71,8 @@ B1RunAction::B1RunAction()
   //int counter; //may not be needed
   //int numberUseful;
   //int numberUseless; 
-  G4bool ffirstWrite3 = true;
+  ffirstWrite3 = true;
+  fFirstWriteJack = true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -88,6 +90,8 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   // reset accumulables to their initial values
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
   accumulableManager->Reset();
+
+  photonScattererCount = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -129,11 +133,11 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
    std::ofstream myfile6;
    if(ffirstWrite3)
 	{
-		myfile6.open("Efficiency.txt");
+		myfile6.open(fOutput + "Efficiency.txt");
 	}
 	else
 	{
-		myfile6.open ("Efficiency.txt", std::ios::app);
+		myfile6.open (fOutput + "Efficiency.txt", std::ios::app);
 	}
       	if (myfile6.is_open())
       	{
@@ -142,6 +146,24 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
         }
 	else std::cerr << "Unable to open Efficiency file" << std::endl;
 	ffirstWrite3 = false;
+
+   // File writer for number of photons in scatterer total
+   std::ofstream myfileJack;
+   if(fFirstWriteJack)
+     {
+       myfileJack.open(fOutput + "scattererTotalPhotons.txt");
+     }
+   else
+     {
+       myfileJack.open(fOutput + "scattererTotalPhotons.txt", std::ios::app);
+     }
+   if(myfileJack.is_open())
+     {
+       myfileJack << photonScattererCount << std::endl;
+       myfileJack.close();
+     }
+   else std::cerr << "Unable to open photon scatterer count file" << std::endl;
+   fFirstWriteJack = false;
 
 	//G4ofstreamDestinationBase(Efficiency.txt,true)
     	//	{

@@ -147,6 +147,7 @@ void B1EventAction::SetOutput(std::string folderName)
 {
   fOutput = folderName;
   system(("mkdir " + fOutput).c_str());
+  fRunAction->OutputFolder(fOutput);
 }
 
 void B1EventAction::ZeroScatterInfo(G4double edep, G4String procName, G4ThreeVector pos)
@@ -165,6 +166,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fEdepDetector = 0.;
   fEdepBody = 0.;
   N = 0.;
+  photonScattererCount = 0.;
   fBeginTime = fRunTime;
   posList.clear();
   posList2.clear();
@@ -190,6 +192,11 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
     {
+      // Counting total number of photons in scatterer - by Jack
+      if(photonScattererCount==1)
+	{
+	  fRunAction->PhotonScattererCount();
+	}
       if(N==1)
 	{
 	  fRunAction->CountUseful();
