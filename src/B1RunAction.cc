@@ -133,16 +133,17 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   }
 
 std::ofstream Efficiency;
-using std::chrono::system_clock;
-std::time_t tt = system_clock::to_time_t (system_clock::now());
-struct std::tm * ptm = std::localtime(&tt);
+// using std::chrono::system_clock;
+// std::time_t tt = system_clock::to_time_t (system_clock::now());
+// struct std::tm * ptm = std::localtime(&tt);
 G4double Scent = (numberUseless / count)*100;
 G4double Lcent = (numberUseful / count)*100;
 
   Efficiency.open("Efficiency.txt", std::ios_base::app);
   if (Efficiency.is_open()){
 	//File Prints: Time/Date Count Useless Useless(%) Useful Useful(%)
-  	Efficiency<<std::put_time(ptm,"%c ")<<count<<" "<<numberUseless<<" "<<Scent<<" "	 	 <<numberUseful<<" "<<Lcent<<" \n";
+	//put_time(ptm,"%c ")
+  	Efficiency<<count<<" "<<numberUseless<<" "<<Scent<<" "<<numberUseful<<" "<<Lcent<<" \n";
   	}
   else Efficiency << "Unable to open file\n";
 
