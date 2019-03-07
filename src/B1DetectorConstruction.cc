@@ -133,23 +133,23 @@ LaBr->AddElement( La, 0.39636269831033155);
 //More Materials - George
 
 
- //G4NistManager* nist = G4NistManager::Instance();
- //G4Material* CeF3 = nist->FindOrBuildMaterial("G4_CERIUM_FLUORIDE");
- //G4Material* CI = nist->FindOrBuildMaterial("G4_CESIUM_IODIDE");
- //G4Material* CaF2 = nist->FindOrBuildMaterial("G4_CALCIUM_FLUORIDE");
- //G4Material* BaF2 = nist->FindOrBuildMaterial("G4_BARIUM_FLUORIDE");
- //G4Material* CdWO4 = nist->FindOrBuildMaterial("G4_CADMIUM_TUNGSTATE");
+ G4NistManager* nist = G4NistManager::Instance();
+ G4Material* CeF3 = nist->FindOrBuildMaterial("G4_CERIUM_FLUORIDE");
+ G4Material* CI = nist->FindOrBuildMaterial("G4_CESIUM_IODIDE");
+ G4Material* CaF2 = nist->FindOrBuildMaterial("G4_CALCIUM_FLUORIDE");
+ G4Material* BaF2 = nist->FindOrBuildMaterial("G4_BARIUM_FLUORIDE");
+ G4Material* CdWO4 = nist->FindOrBuildMaterial("G4_CADMIUM_TUNGSTATE");
 
- //G4Element* Lu = nist->FindOrBuildElement("G4_Lu");
- //G4Element* Y = nist->FindOrBuildElement("G4_Y");
- //G4Element* Si = nist->FindOrBuildElement("G4_Si");
- //G4Element* O = nist->FindOrBuildElement("G4_O");
- //G4Material* LYSO = 
- //new G4Material("LYSO",  3.67*g/cm3, 4, kStateSolid);
- //LYSO->AddElement(Lu, 0.625); 
- //LYSO->AddElement(Y, 0.0529);
- //LYSO->AddElement(Si, 0.2385);
- //LYSO->AddElement(O, 0.0836);
+ G4Element* Lu = nist->FindOrBuildElement("G4_Lu");
+ G4Element* Y = nist->FindOrBuildElement("G4_Y");
+ G4Element* Si = nist->FindOrBuildElement("G4_Si");
+ G4Element* O = nist->FindOrBuildElement("G4_O");
+ G4Material* LYSO = 
+ new G4Material("LYSO",  3.67*g/cm3, 4, kStateSolid);
+ LYSO->AddElement( Lu, 0.625); 
+ LYSO->AddElement( Y, 0.0529);
+ LYSO->AddElement( Si, 0.2385);
+ LYSO->AddElement( O, 0.0836);
 
  //G4Element* Pb = nist->FindOrBuildElement("G4_Pb");
  //G4Element* W  = nist->FindOrBuildElement("G4_W");
