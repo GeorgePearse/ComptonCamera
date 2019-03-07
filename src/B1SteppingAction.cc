@@ -106,7 +106,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 	  fEventAction->PhotonScatterer();
 	}
 	if (procName == "compt")
-	{ std::cout<<"WORKS"<<"\n";
+	{ //std::cout<<"WORKS"<<"\n";
 		G4double timeScatterer = step->GetTrack()->GetGlobalTime();
 		G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
 		fEventAction->TimeScatterer(timeScatterer, copyNo);
