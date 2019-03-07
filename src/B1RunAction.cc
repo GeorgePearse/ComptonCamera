@@ -39,7 +39,12 @@
 #include "G4LogicalVolume.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "time.h" 
+#include "iostream"
 
+#include <iomanip>      // put_time
+#include <ctime>        // time_t
+#include <chrono>       // system_clock
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1RunAction::B1RunAction()
@@ -48,8 +53,7 @@ B1RunAction::B1RunAction()
   fEdep2(0.),
   count(0.),
   numberUseful(0.),
-  numberUseless(0.),
-  photonScattererCount(0.)
+  numberUseless(0.)
 
 { 
   // add new units for dose
@@ -71,8 +75,7 @@ B1RunAction::B1RunAction()
   //int counter; //may not be needed
   //int numberUseful;
   //int numberUseless; 
-  ffirstWrite3 = true;
-  fFirstWriteJack = true;
+  //G4bool ffirstWrite3 = true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -90,8 +93,6 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   // reset accumulables to their initial values
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
   accumulableManager->Reset();
-
-  photonScattererCount = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -130,40 +131,20 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
     G4double particleEnergy = particleGun->GetParticleEnergy();
     runCondition += G4BestUnit(particleEnergy,"Energy");
   }
-   std::ofstream myfile6;
-   if(ffirstWrite3)
-	{
-		myfile6.open(fOutput + "Efficiency.txt");
-	}
-	else
-	{
-		myfile6.open (fOutput + "Efficiency.txt", std::ios::app);
-	}
-      	if (myfile6.is_open())
-      	{
-          myfile6 << count << " " << numberUseless << " " << numberUseful << "\n" ;
-	  myfile6.close();
-        }
-	else std::cerr << "Unable to open Efficiency file" << std::endl;
-	ffirstWrite3 = false;
 
-   // File writer for number of photons in scatterer total
-   std::ofstream myfileJack;
-   if(fFirstWriteJack)
-     {
-       myfileJack.open(fOutput + "scattererTotalPhotons.txt");
-     }
-   else
-     {
-       myfileJack.open(fOutput + "scattererTotalPhotons.txt", std::ios::app);
-     }
-   if(myfileJack.is_open())
-     {
-       myfileJack << photonScattererCount << std::endl;
-       myfileJack.close();
-     }
-   else std::cerr << "Unable to open photon scatterer count file" << std::endl;
-   fFirstWriteJack = false;
+std::ofstream Efficiency;
+using std::chrono::system_clock;
+std::time_t tt = system_clock::to_time_t (system_clock::now());
+struct std::tm * ptm = std::localtime(&tt);
+G4double Scent = (numberUseless / count)*100;
+G4double Lcent = (numberUseful / count)*100;
+
+  Efficiency.open("Efficiency.txt", std::ios_base::app);
+  if (Efficiency.is_open()){
+	//File Prints: Time/Date Count Useless Useless(%) Useful Useful(%)
+  	Efficiency<<std::put_time(ptm,"%c ")<<count<<" "<<numberUseless<<" "<<Scent<<" "	 	 <<numberUseful<<" "<<Lcent<<" \n";
+  	}
+  else Efficiency << "Unable to open file\n";
 
 	//G4ofstreamDestinationBase(Efficiency.txt,true)
     	//	{
