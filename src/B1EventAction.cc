@@ -61,11 +61,13 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fMessenger(0)
 {
 fFirstWrite = true;
-fPeakBroaden = false;
+fPeakBroaden = true;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
-coincidence = true;
+coincidence = false;
 fFirstWrite2 = true;
+fFirstWriteTotal = true;
+fFirstWriteTotal2 = true;
 fOutput = "";
 counter = 0; 
 // Event action generic messenger - by Jack
@@ -185,6 +187,67 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 void B1EventAction::EndOfEventAction(const G4Event*)
 { 
 
+// condition to print all scatter events into a file coincident and non-coincident.
+// By Douglas
+if (coincidence == false)
+   {  
+     if(fEdepScatterer != 0)
+      {
+        if(fPeakBroaden == true)
+       {
+	B1EventAction::PeakBroad(0.5254, 0.7222, true);
+       }
+      // Text file writer for total Scatterer
+      std::ofstream myfiletotal;
+      totalscatName = fOutput + "totalscatter" + fScatCopyNo + "data.txt";
+      // Special condition for first write to create file
+      if(fFirstWriteTotal)
+	{
+		myfiletotal.open(totalscatName);
+	}
+	else
+	{
+		myfiletotal.open (totalscatName, std::ios::app);
+	}
+      	if (myfiletotal.is_open())
+      	{
+          myfiletotal << (fTimeScatterer + fBeginTime)/1000  << " " << fEdepScatterer/keV << "\n";
+	  myfiletotal.close();
+        }
+	else std::cerr << "Unable to open scatter file" << std::endl;
+        fFirstWriteTotal = false;
+        }
+
+      if(fEdepDetector != 0)
+       {
+        if(fPeakBroaden == true)
+        {
+          B1EventAction::PeakBroad(0.3871, -0.5296, false);
+         }
+        // Text file writer for Absorber
+       std::ofstream myfiletotal2;
+       totalabsorbName = fOutput + "totalabsorb" + fAbsorbCopyNo + "data.txt";
+       // Special condition for first write to create file
+       if(fFirstWriteTotal2)
+	{
+		myfiletotal2.open(totalabsorbName);
+	}
+	else
+	{
+		myfiletotal2.open (totalabsorbName, std::ios::app);
+	}
+      	if (myfiletotal2.is_open())
+      	{
+          myfiletotal2 << (fTimeDetector + fBeginTime)/1000 << " "
+	  << fEdepDetector/keV << "\n";
+	  myfiletotal2.close();
+        }
+	else std::cerr << "Unable to open absorb file" << std::endl;
+        fFirstWriteTotal2 = false;
+        }
+   }
+
+
 
 
 // By Douglas
@@ -224,6 +287,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 	  myfile.close();
         }
 	else std::cerr << "Unable to open scatter file" << std::endl;
+       
 
 
        // Text file writer for Absorber
@@ -244,6 +308,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 	  myfile2.close();
         }
 	else std::cerr << "Unable to open absorb file" << std::endl;
+        
+       fFirstWrite = false;
 
       //std::cout << "EndOfEvent fEdepScatterer = " << G4BestUnit(fEdepScatterer, "Energy") <<" at time " << G4BestUnit(fTimeScatterer + fBeginTime, "Time") << std::endl;
       //std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
@@ -300,29 +366,28 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   	fFirstWritePosCount2 = false;
 	}
 
-//  fFirstWrite = false;
-//  if (procListNotCompt.size() > 0)
-//    {
-//      std::ofstream myfileJack;
-//      if(fFirstWriteNotCompt)
-//	{
-//	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt");
-//	}
-//      else
-//	{
-//	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt", std::ios::app); 
-//	}
-//      if (myfileJack.is_open())
-//	{
-//	  myfileJack << "New Event\n";
-//	  for(unsigned int i=0; i<posListNotCompt.size(); i++)
-//	    {
-//	      myfileJack << edepListNotCom t[i] << posListNotCompt[i] << " " << procListNotCompt[i] << std::endl;
-//	    }
-//	  myfileJack.close();
-//      }
-//    fFirstWriteNotCompt = false;
-//    }
+  if (procListNotCompt.size() > 0)
+    {
+      std::ofstream myfileJack;
+      if(fFirstWriteNotCompt)
+	{
+	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt");
+	}
+      else
+	{
+	  myfileJack.open(fOutput + "scatPosProcNameNoCompt.txt", std::ios::app); 
+	}
+      if (myfileJack.is_open())
+	{
+	  myfileJack << "New Event\n";
+	  for(unsigned int i=0; i<posListNotCompt.size(); i++)
+	    {
+	      myfileJack << edepListNotCompt[i] << posListNotCompt[i] << " " << procListNotCompt[i] << std::endl;
+	    }
+	  myfileJack.close();
+      }
+    fFirstWriteNotCompt = false;
+    }
   
 //Energy deposited in body by George
 //if(fEdepBody!=0){
@@ -344,36 +409,6 @@ void B1EventAction::EndOfEventAction(const G4Event*)
  //       }
 //	else std::cerr << "Unable to open energyBody file" << std::endl;
 //	fFirstWrite2 = false;};//}
-  
-// condition to print all scatter events into a file coincident and non-coincident.
-// By Douglas
-if (coincidence == false)
-   {
-     if(fPeakBroaden == true)
-      {
-	B1EventAction::PeakBroad(0.5254, 0.7222, true);
-	B1EventAction::PeakBroad(0.3871, -0.5296, false);
-      }
-      
-      // Text file writer for Scatterer
-      std::ofstream myfiletotal;
-      totalscatName = fOutput + "totalscatter" + fScatCopyNo + "data.txt";
-      // Special condition for first write to create file
-      if(fFirstWrite)
-	{
-		myfiletotal.open(totalscatName);
-	}
-	else
-	{
-		myfiletotal.open (totalscatName, std::ios::app);
-	}
-      	if (myfiletotal.is_open())
-      	{
-          myfiletotal << (fTimeScatterer + fBeginTime)/1000  << " " << fEdepScatterer/keV << "\n";
-	  myfiletotal.close();
-        }
-	else std::cerr << "Unable to open scatter file" << std::endl;
-   }
 
   }
 }

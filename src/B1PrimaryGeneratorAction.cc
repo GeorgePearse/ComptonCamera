@@ -131,6 +131,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double sin_theta = std::sqrt(1 - cos_theta*cos_theta);
   G4ThreeVector dir(sin_theta*std::cos(psi), sin_theta*std::sin(psi), cos_theta);
 
+  // The comment below gives us a particle gun/laser source. Un comment to have laser source.
   fParticleGun->SetParticleMomentumDirection(dir);
   if(fConeSource == false)
     {
