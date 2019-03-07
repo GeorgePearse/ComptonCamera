@@ -113,7 +113,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 	// Finding details of processes that cause energy deposition that aren't Compton to solve the 0 scatter coincidence problem - by Jack
 	else
 	{
-	  if (edepStep!=0)
+	  if (edepStep!=0 && procName != "StepLimiter")
 	    {
 	      fEventAction->ZeroScatterInfo(edepStep, procName, step->GetPreStepPoint()->GetPosition());
 	    }
@@ -129,7 +129,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
-	if (procName != "Transportation")
+	if (procName != "Transportation" && procName != "StepLimiter")
 		{
 		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
 		fEventAction->Vector2(Pos2);
