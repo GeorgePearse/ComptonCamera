@@ -37,12 +37,19 @@
 #include "B1PrimaryGeneratorAction.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
+#include "G4UIcmdWithABool.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1PrimaryGeneratorMessenger::B1PrimaryGeneratorMessenger(
                                                   B1PrimaryGeneratorAction* Gun)
-:fAction(Gun), fGunDir(0), fXPos(0), fYPos(0)
+  :fAction(Gun),
+   fGunDir(0),
+   fXPos(0),
+   fYPos(0),
+   fZPos(0),
+   fSourceSize(0),
+   fConeSource(0)
 {
   fGunDir = new G4UIdirectory("/B1/source/");
   fGunDir->SetGuidance("source control");
@@ -61,6 +68,16 @@ B1PrimaryGeneratorMessenger::B1PrimaryGeneratorMessenger(
   fZPos->SetGuidance("set Z pos of the point source");
   fZPos->SetParameterName("ZPos",false);
   fZPos->SetUnitCategory("Length");
+
+  fSourceSize = new G4UIcmdWithADoubleAndUnit("/B1/source/setSourceSize", this);
+  fSourceSize->SetGuidance("set size of the source");
+  fSourceSize->SetParameterName("SourceSize", false);
+  fSourceSize->SetUnitCategory("Length");
+
+  fConeSource = new G4UIcmdWithABool("/B1/source/setConeSource", this);
+  fConeSource->SetGuidance("set cone/beam source");
+  fConeSource->SetParameterName("ConeSource", false);
+  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -70,6 +87,8 @@ B1PrimaryGeneratorMessenger::~B1PrimaryGeneratorMessenger()
   delete fXPos;
   delete fYPos;
   delete fZPos;
+  delete fSourceSize;
+  delete fConeSource;
   delete fGunDir;    
 }
 
@@ -86,6 +105,12 @@ void B1PrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
 
   if (command == fZPos)
    { fAction->SetZPos(fZPos->GetNewDoubleValue(newValue));}
+
+  if (command == fSourceSize)
+   { fAction->SetSourceSize(fSourceSize->GetNewDoubleValue(newValue));}
+
+  if (command == fConeSource)
+   { fAction->SetConeSource(fConeSource->GetNewBoolValue(newValue));}
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

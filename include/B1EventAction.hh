@@ -63,7 +63,9 @@ class B1EventAction : public G4UserEventAction
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
     void Vector(G4ThreeVector Pos){posList.push_back(Pos);};
     void Vector2(G4ThreeVector Pos2){posList2.push_back(Pos2);};
+    void Proc2(G4String procName){procList2.push_back(procName);};
     void Count(){N += 1;};
+    void PhotonScatterer(){photonScattererCount+=1;};
   
   private:
     B1RunAction* fRunAction;
@@ -91,10 +93,12 @@ class B1EventAction : public G4UserEventAction
     std::string totalabsorbName;
     int N;
     int counter;
+    int photonScattererCount;
     std::vector<G4ThreeVector> posList;
     std::vector<G4ThreeVector> posList2;
     std::vector<G4ThreeVector> posListNotCompt;
     std::vector<G4String> procListNotCompt;
+    std::vector<G4String> procList2;
     std::vector<G4double> edepListNotCompt;
     G4GenericMessenger* fMessenger;
     std::string fOutput;

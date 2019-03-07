@@ -317,8 +317,9 @@ if (coincidence == false)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
   // Text file writer for Scatterer Position and Count - by Ben
   // Special condition for first write to create file
-  
-	
+
+  if (posList2.size() > 0)
+	{	
 	std::ofstream myfile3;
   	if(fFirstWritePosCount)
 		{ 
@@ -339,7 +340,7 @@ if (coincidence == false)
 		}
   	else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
   	fFirstWritePosCount = false;
-	
+	}
 
   if (posList2.size() > 0)
 	{
@@ -357,7 +358,7 @@ if (coincidence == false)
 		myfile4 << "New Event" << "\n";
 		for(unsigned int j=0; j<posList2.size(); j++)
 		{
-		  myfile4 << posList2[j] << "\n";
+		  myfile4 << posList2[j] << procList2[j] << "\n";
 		}
 		myfile4.close();
 		}

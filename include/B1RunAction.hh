@@ -56,16 +56,21 @@ class B1RunAction : public G4UserRunAction
     void CountUseful(){numberUseful+=1;};
     void CountUseless(){numberUseless+=1;};
     void Count(){count+=1;};
+    void PhotonScattererCount(){photonScattererCount+=1;};
+    void OutputFolder(std::string folderName){fOutput = folderName;};
 
   private:
     G4bool ffirstWrite3; //This is needed
+    G4bool fFirstWriteJack;
     int count = 0; 
     //int counter = 0;
     int numberUseful = 0; 
     int numberUseless = 0;
+    int photonScattererCount;
     //G4int totalNumber;
     G4Accumulable<G4double> fEdep;
     G4Accumulable<G4double> fEdep2;
+    std::string fOutput;
 };
 
 #endif
