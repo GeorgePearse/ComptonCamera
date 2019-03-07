@@ -68,6 +68,8 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
   fXPos = 0;
   fYPos = 0;
   fZPos = -29.7*cm;
+  fSourceSize = 0;
+  fConeSource = true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -114,26 +116,26 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
      "MyCode0002",JustWarning,msg);
   }
 
-  //G4double size = 0.008; 
-  //G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
-  //G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
-  //G4double z0 = -0.5 * envSizeZ;
+  // By Ben
+  G4double size = 1*mm; 
+  G4double xpos = (size * (G4UniformRand()-0.5)) + fXPos;
+  G4double ypos = (size * (G4UniformRand()-0.5)) + fYPos;
+  fParticleGun->SetParticlePosition(G4ThreeVector(xpos, ypos, fZPos));
 
-  //fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-  fParticleGun->SetParticlePosition(G4ThreeVector(fXPos, fYPos, fZPos));
 
   // By Ben
   G4double pi = CLHEP::pi;
   G4double psi = 2*pi*G4UniformRand();
   G4double theta = (pi/18)*G4UniformRand();
-  //std::cout << "Theta = " << theta*(180/pi) << ", Psi = " << psi*(180/pi) << std::endl;
   G4double cos_theta = 1 - 2*(theta/pi);
   G4double sin_theta = std::sqrt(1 - cos_theta*cos_theta);
   G4ThreeVector dir(sin_theta*std::cos(psi), sin_theta*std::sin(psi), cos_theta);
 
   fParticleGun->SetParticleMomentumDirection(dir);
-  //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
-
+  if(fConeSource == false)
+    {
+      fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
+    }
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 

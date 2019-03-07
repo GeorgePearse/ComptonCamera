@@ -39,7 +39,12 @@
 #include "G4LogicalVolume.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "time.h" 
+#include "iostream"
 
+#include <iomanip>      // put_time
+#include <ctime>        // time_t
+#include <chrono>       // system_clock
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1RunAction::B1RunAction()
@@ -70,7 +75,7 @@ B1RunAction::B1RunAction()
   //int counter; //may not be needed
   //int numberUseful;
   //int numberUseless; 
-  G4bool ffirstWrite3 = true;
+  //G4bool ffirstWrite3 = true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -126,22 +131,20 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
     G4double particleEnergy = particleGun->GetParticleEnergy();
     runCondition += G4BestUnit(particleEnergy,"Energy");
   }
-   std::ofstream myfile6;
-   if(ffirstWrite3)
-	{
-		myfile6.open("Efficiency.txt");
-	}
-	else
-	{
-		myfile6.open ("Efficiency.txt", std::ios::app);
-	}
-      	if (myfile6.is_open())
-      	{
-          myfile6 << count << " " << numberUseless << " " << numberUseful << "\n" ;
-	  myfile6.close();
-        }
-	else std::cerr << "Unable to open Efficiency file" << std::endl;
-	ffirstWrite3 = false;
+
+std::ofstream Efficiency;
+using std::chrono::system_clock;
+std::time_t tt = system_clock::to_time_t (system_clock::now());
+struct std::tm * ptm = std::localtime(&tt);
+G4double Scent = (numberUseless / count)*100;
+G4double Lcent = (numberUseful / count)*100;
+
+  Efficiency.open("Efficiency.txt", std::ios_base::app);
+  if (Efficiency.is_open()){
+	//File Prints: Time/Date Count Useless Useless(%) Useful Useful(%)
+  	Efficiency<<std::put_time(ptm,"%c ")<<count<<" "<<numberUseless<<" "<<Scent<<" "	 	 <<numberUseful<<" "<<Lcent<<" \n";
+  	}
+  else Efficiency << "Unable to open file\n";
 
 	//G4ofstreamDestinationBase(Efficiency.txt,true)
     	//	{

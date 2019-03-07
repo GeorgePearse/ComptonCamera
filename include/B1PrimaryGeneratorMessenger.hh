@@ -39,6 +39,7 @@
 class B1PrimaryGeneratorAction;
 class G4UIdirectory;
 class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithABool;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -57,6 +58,8 @@ class B1PrimaryGeneratorMessenger: public G4UImessenger
     G4UIcmdWithADoubleAndUnit* fXPos;
     G4UIcmdWithADoubleAndUnit* fYPos;
     G4UIcmdWithADoubleAndUnit* fZPos;
+    G4UIcmdWithADoubleAndUnit* fSourceSize;
+    G4UIcmdWithABool*          fConeSource;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

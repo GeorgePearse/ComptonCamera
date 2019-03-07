@@ -192,7 +192,7 @@ fDetPolarR = 0;
 fDetPolarPhi = 9000;
 fDetPolarTheta = 9000;
 fDetRotX = 0;
-fDetRotY = 30*deg;
+fDetRotY = 0;
 fDetRotZ = 0;
 fDetRad = 1.905*cm;
 fDetHeight = 1.905*cm;
@@ -516,9 +516,9 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   //Varying step length depending on the logical volume 
   G4double stepLength = 0.0005*mm;
   G4UserLimits* maxStep = new G4UserLimits(stepLength); 
-  //logicShape1->SetUserLimits(maxStep);
-  //logicShape2->SetUserLimits(maxStep);
- 
+  logicShape1->SetUserLimits(maxStep);
+  logicShape2->SetUserLimits(maxStep);
+
 
   //
   //always return the physical World

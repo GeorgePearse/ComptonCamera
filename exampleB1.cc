@@ -59,7 +59,7 @@ int main(int argc,char** argv)
     ui = new G4UIExecutive(argc, argv);
   }
 
-  // Choose the Random engine
+  // Choose the Random engine - Ben
   time_t systime = time(NULL);
   long seed = (long) systime;
   G4Random::setTheEngine(new CLHEP::RanecuEngine);

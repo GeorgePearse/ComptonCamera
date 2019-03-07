@@ -1,0 +1,35 @@
+# Macro file for example B1
+# 
+# Can be run in batch, without graphic
+# or interactively: Idle> /control/execute run1.mac
+#
+# Change the default number of workers (in multi-threading mode) 
+#/run/numberOfWorkers 4
+#
+# Initialize kernel
+/run/initialize
+#
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+# 
+# gamma 6 MeV to the direction (0.,0.,1.)
+#
+# Set output folder
+/B1/eventAction/setOutput test/
+
+# Set absorber position
+/B1/det/setPolarR 26.205 cm
+/B1/det/setPolarPhi 30 deg
+# Set absorber rotation
+/B1/det/setRotY 30 deg
+
+# Update geometry
+/B1/update
+
+/gun/particle gamma
+/gun/energy 662 keV
+#
+/run/beamOn 50000000
+
