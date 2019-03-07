@@ -131,24 +131,32 @@ LaBr->AddElement( Br, 0.6036373016896684);
 LaBr->AddElement( La, 0.39636269831033155);
 
 //More Materials - George
-//G4double a;  // atomic mass
-//G4double z;  // atomic number
-//G4double density,ncomponents,fractionmass,nel, symbol;
 
-//G4Element* elGe = new G4Element("Ge", 32, 72.64*g/mole);
-//G4Element* elBi = new G4Element("Bi", 83, 208.9*g/mole);
-//G4Element* O = new G4Element("O", 8, 16.00*g/mole);
-//G4Material* BGO = new G4Material("BGO", 7.13*g/cm3, 3);
-//BGO->AddElement(elBi, 4);//no. el.
-//BGO->AddElement(elGe, 3);
-//BGO->AddElement(O, 12);
 
-//G4Element* Pb = new G4Element("Pb", 82, 207.20*g/mole); //different format
-//G4Element* W  = new G4Element("W" , 74, 183.84*g/mole);
-//G4Material* PWOD = new G4Material("PbWO" , 8.300*g/cm3, 3);
-//PWOD->AddElement(Pb, fractionmass=0.455);
-//PWOD->AddElement(W , fractionmass=0.404);
-//PWOD->AddElement(O , fractionmass=0.141);
+ //G4NistManager* nist = G4NistManager::Instance();
+ //G4Material* CeF3 = nist->FindOrBuildMaterial("G4_CERIUM_FLUORIDE");
+ //G4Material* CI = nist->FindOrBuildMaterial("G4_CESIUM_IODIDE");
+ //G4Material* CaF2 = nist->FindOrBuildMaterial("G4_CALCIUM_FLUORIDE");
+ //G4Material* BaF2 = nist->FindOrBuildMaterial("G4_BARIUM_FLUORIDE");
+ //G4Material* CdWO4 = nist->FindOrBuildMaterial("G4_CADMIUM_TUNGSTATE");
+
+ //G4Element* Lu = nist->FindOrBuildElement("G4_Lu");
+ //G4Element* Y = nist->FindOrBuildElement("G4_Y");
+ //G4Element* Si = nist->FindOrBuildElement("G4_Si");
+ //G4Element* O = nist->FindOrBuildElement("G4_O");
+ //G4Material* LYSO = 
+ //new G4Material("LYSO",  3.67*g/cm3, 4, kStateSolid);
+ //LYSO->AddElement(Lu, 0.625); 
+ //LYSO->AddElement(Y, 0.0529);
+ //LYSO->AddElement(Si, 0.2385);
+ //LYSO->AddElement(O, 0.0836);
+
+ //G4Element* Pb = nist->FindOrBuildElement("G4_Pb");
+ //G4Element* W  = nist->FindOrBuildElement("G4_W");
+ //G4Material* PbWO4 = new G4Material("PbWO4",8.28,3);
+ //PbWO4->AddElement(Pb,1);
+ //PbWO4->AddElement(W,1);
+ //PbWO4->AddElement(O,4);
  
 fDetectorMessenger = new B1DetectorMessenger(this);
  
@@ -229,6 +237,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   
   // Get nist material manager
   G4NistManager* nist = G4NistManager::Instance();
+
   
   // Envelope parameters
   //
