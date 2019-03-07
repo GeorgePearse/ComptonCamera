@@ -365,8 +365,9 @@ if (coincidence == false)
   	else std::cerr << "Unable to open Scat_PosCount2 file" << std::endl;
   	fFirstWritePosCount2 = false;
 	}
-
-  if (procListNotCompt.size() > 0)
+// DEBUG STUFF BECAUSE DOUGLAS CODE RUNNING SLOW
+  G4bool debug = false;
+  if (procListNotCompt.size() > 0 && debug==true)
     {
       std::ofstream myfileJack;
       if(fFirstWriteNotCompt)
