@@ -65,6 +65,7 @@ class B1EventAction : public G4UserEventAction
     void Vector2(G4ThreeVector Pos2){posList2.push_back(Pos2);};
     void Proc2(G4String procName){procList2.push_back(procName);};
     void Count(){N += 1;};
+    void PhotonScatterer(){photonScattererCount+=1;};
   
   private:
     B1RunAction* fRunAction;
@@ -89,6 +90,7 @@ class B1EventAction : public G4UserEventAction
     std::string totalscatName;
     int N;
     int counter;
+    int photonScattererCount;
     std::vector<G4ThreeVector> posList;
     std::vector<G4ThreeVector> posList2;
     std::vector<G4ThreeVector> posListNotCompt;
