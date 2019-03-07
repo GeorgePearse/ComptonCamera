@@ -253,14 +253,14 @@ if (coincidence == false)
 // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
     {
-      if(N==1)
+      if(N==1) // By George 
 	{
 	  fRunAction->CountUseful();
 	}
       else
 	{
 	  fRunAction->CountUseless();
-	}
+	} // End of by George
       if(fPeakBroaden == true)
       {
 	B1EventAction::PeakBroad(0.5254, 0.7222, true);
