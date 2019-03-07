@@ -84,7 +84,7 @@ B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
 
 void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  //this function is called at the begining of ecah event
+  //this function is called at the begining of each event
   //
 
   // In order to avoid dependence of PrimaryGeneratorAction
@@ -117,7 +117,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
   // By Ben
-  G4double size = 1*mm; 
+  G4double size = fSourceSize; 
   G4double xpos = (size * (G4UniformRand()-0.5)) + fXPos;
   G4double ypos = (size * (G4UniformRand()-0.5)) + fYPos;
   fParticleGun->SetParticlePosition(G4ThreeVector(xpos, ypos, fZPos));
