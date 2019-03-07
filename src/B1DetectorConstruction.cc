@@ -140,16 +140,16 @@ LaBr->AddElement( La, 0.39636269831033155);
  G4Material* BaF2 = nist->FindOrBuildMaterial("G4_BARIUM_FLUORIDE");
  G4Material* CdWO4 = nist->FindOrBuildMaterial("G4_CADMIUM_TUNGSTATE");
 
- G4Element* Lu = nist->FindOrBuildElement("G4_Lu");
- G4Element* Y = nist->FindOrBuildElement("G4_Y");
- G4Element* Si = nist->FindOrBuildElement("G4_Si");
- G4Element* O = nist->FindOrBuildElement("G4_O");
- G4Material* LYSO = 
- new G4Material("LYSO",  3.67*g/cm3, 4, kStateSolid);
- LYSO->AddElement( Lu, 0.625); 
- LYSO->AddElement( Y, 0.0529);
- LYSO->AddElement( Si, 0.2385);
- LYSO->AddElement( O, 0.0836);
+ //G4Element* L = nist->FindOrBuildElement("G4_Lu");
+ //G4Element* Y  = nist->FindOrBuildElement("G4_Y");
+ //G4Element* Si = nist->FindOrBuildElement("G4_Si");
+ //G4Element* O = nist->FindOrBuildElement("G4_O");
+ //G4Material* LYSO = 
+ //new G4Material("LYSO",  3.67*g/cm3, 4, kStateSolid);
+ //LYSO->AddElement( L, 0.625); 
+ //LYSO->AddElement( Y, 0.0529);
+ //LYSO->AddElement( Si, 0.2385);
+ //LYSO->AddElement( O, 0.0836);
 
  //G4Element* Pb = nist->FindOrBuildElement("G4_Pb");
  //G4Element* W  = nist->FindOrBuildElement("G4_W");
@@ -514,10 +514,16 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   
   
   //Varying step length depending on the logical volume 
-  G4double stepLength = 0.0005*mm;
-  G4UserLimits* maxStep = new G4UserLimits(stepLength); 
-  logicShape1->SetUserLimits(maxStep);
-  logicShape2->SetUserLimits(maxStep);
+  G4double maxStep = 0.0001*mm;
+  G4UserLimits* stepLimit = new G4UserLimits(); 
+  stepLimit->SetMaxAllowedStep(maxStep);
+  logicShape1->SetUserLimits(stepLimit);
+
+  //limits = new G4UserLimits()
+  //maxStep->SetMaxAllowedStep(stepLength);
+  
+  //logicShape1->SetUserLimits(maxStep);
+  //logicShape2->SetUserLimits(maxStep);
 
 
   //
