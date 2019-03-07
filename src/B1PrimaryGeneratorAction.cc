@@ -117,7 +117,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
   // By Ben
-  G4double size = 1*mm; 
+  G4double size = 0*mm; 
   G4double xpos = (size * (G4UniformRand()-0.5)) + fXPos;
   G4double ypos = (size * (G4UniformRand()-0.5)) + fYPos;
   fParticleGun->SetParticlePosition(G4ThreeVector(xpos, ypos, fZPos));
