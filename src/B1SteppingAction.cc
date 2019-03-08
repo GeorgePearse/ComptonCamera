@@ -78,7 +78,9 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       procName = proc->GetProcessName();
     }
   }
-
+  //std::cout<<procName<<"\n"; //George Debugging
+  //G4double stepLength = step->GetStepLength(); // George Debugging
+  //std::cout<<stepLength<<"\n"; //George Debugging
   // dose in body George 
   if (volume->GetName() == "Body")
  	{G4double edepStep = step->GetTotalEnergyDeposit();
@@ -91,7 +93,9 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // scatterer energy
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
-    { G4double stepLength = step->GetStepLength(); //George checking step length
+    { G4double stepLength = step->GetStepLength();
+      //std::cout<<stepLength<<"\n"; //George checking step length
+      //std::cout<<procName<<"\n";
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);
@@ -113,7 +117,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 	// Finding details of processes that cause energy deposition that aren't Compton to solve the 0 scatter coincidence problem - by Jack
 	else
 	{
-	  if (edepStep!=0)
+	  if (edepStep!=0 && procName != "StepLimiter")
 	    {
 	      fEventAction->ZeroScatterInfo(edepStep, procName, step->GetPreStepPoint()->GetPosition());
 	    }
@@ -129,7 +133,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
-	if (procName != "Transportation")
+	if (procName != "Transportation" && procName != "StepLimiter")
 		{
 		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
 		fEventAction->Vector2(Pos2);

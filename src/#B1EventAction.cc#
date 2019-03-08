@@ -64,7 +64,7 @@ fFirstWrite = true;
 fPeakBroaden = true;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
-coincidence = true;
+coincidence = false;
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
@@ -253,14 +253,14 @@ if (coincidence == false)
 // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
     {
-      if(N==1) // By George 
+      if(N==1)
 	{
 	  fRunAction->CountUseful();
 	}
       else
 	{
 	  fRunAction->CountUseless();
-	} // End of by George
+	}
       if(fPeakBroaden == true)
       {
 	B1EventAction::PeakBroad(0.5254, 0.7222, true);
@@ -365,9 +365,8 @@ if (coincidence == false)
   	else std::cerr << "Unable to open Scat_PosCount2 file" << std::endl;
   	fFirstWritePosCount2 = false;
 	}
-// DEBUG STUFF BECAUSE DOUGLAS CODE RUNNING SLOW
-  G4bool debug = false;
-  if (procListNotCompt.size() > 0 && debug==true)
+
+  if (procListNotCompt.size() > 0)
     {
       std::ofstream myfileJack;
       if(fFirstWriteNotCompt)
