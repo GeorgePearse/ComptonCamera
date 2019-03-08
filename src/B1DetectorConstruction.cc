@@ -143,7 +143,7 @@ LaBr->AddElement( La, 0.39636269831033155);
  //G4Element* L = nist->FindOrBuildElement("G4_Lu");
  //G4Element* Y  = nist->FindOrBuildElement("G4_Y");
  //G4Element* Si = nist->FindOrBuildElement("G4_Si");
- //G4Element* O = nist->FindOrBuildElement("G4_O");
+ G4Element* elO = nist->FindOrBuildElement("G4_O");
  //G4Material* LYSO = 
  //new G4Material("LYSO",  3.67*g/cm3, 4, kStateSolid);
  //LYSO->AddElement( L, 0.625); 
@@ -151,13 +151,35 @@ LaBr->AddElement( La, 0.39636269831033155);
  //LYSO->AddElement( Si, 0.2385);
  //LYSO->AddElement( O, 0.0836);
 
+    G4Element* Lu = nist->FindOrBuildElement("Lu");
+    G4Element* Y = nist->FindOrBuildElement("Y");
+    G4Element* Si = nist->FindOrBuildElement("Si");
+    G4Element* O = nist->FindOrBuildElement("O");
+    G4Element* Ce = nist->FindOrBuildElement("Ce");
+
+    G4Material* LYSO = new G4Material("LYSO", 7.1*g/cm3, 5, kStateSolid);
+    LYSO->AddElement(Lu, 71.43*perCent);
+    LYSO->AddElement(Y, 4.03*perCent);
+    LYSO->AddElement(Si, 6.37*perCent);
+    LYSO->AddElement(O, 18.14*perCent);
+    LYSO->AddElement(Ce, 0.02*perCent);
+
  //G4Element* Pb = nist->FindOrBuildElement("G4_Pb");
  //G4Element* W  = nist->FindOrBuildElement("G4_W");
  //G4Material* PbWO4 = new G4Material("PbWO4",8.28,3);
  //PbWO4->AddElement(Pb,1);
  //PbWO4->AddElement(W,1);
  //PbWO4->AddElement(O,4);
+   //G4double a;  // atomic mass
+  //G4double z;  // atomic number
+ // G4double density,ncomponents,fractionmass,nel;
  
+ // THIS METHOD WORKS, atomic number, then number of atoms 
+ G4Material* BGO = new G4Material("BGO", 7.13*g/cm3, 3);
+  BGO->AddElement(nist->FindOrBuildElement(83),4); 
+  BGO->AddElement(nist->FindOrBuildElement(32),3);
+  BGO->AddElement(nist->FindOrBuildElement(8),12);
+
 fDetectorMessenger = new B1DetectorMessenger(this);
  
 fScatXPos = 0;
@@ -346,7 +368,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
     new G4LogicalVolume(solidShape1,         //its solid
                         shape1_mat,          //its material
                         "Scatterer");           //its name
-               
+         
   new G4PVPlacement(rot1,                    //rotation
                     G4ThreeVector(pos1->x(), pos1->y(), pos1->z()),  //at position
                     logicShape1,             //its logical volume
@@ -399,29 +421,6 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 			checkOverlaps);          //overlaps checking
     }
 
-
-  //
-  // Body (George) 
-  //
-
-  G4bool wantBody = false; 
-  if(wantBody==true){
-	G4Material* bodyMat = nist->FindOrBuildMaterial("G4_A-150_TISSUE");
-	G4ThreeVector* bodyPos = new G4ThreeVector(0.*cm,0.*cm,0.*cm); //needs to be around source
-	G4double bodyHeight = 10*cm;
-	G4double bodyRadius = 18*cm; //Average according to some website - get proper source
-	G4Tubs* bodyShape =    
-    new G4Tubs("Body", 0*cm, bodyRadius/2, bodyHeight/2, 0*deg, 360*deg);
-	G4LogicalVolume* bodyVolume = new G4LogicalVolume(bodyShape,bodyMat,"Body"); 
-	new G4PVPlacement(rot1,                    //rotation
-                    G4ThreeVector(bodyPos->x(), bodyPos->y(), bodyPos->z()),  //at position
-                    bodyVolume,             //its logical volume
-                    "Body",                //its name
-                    logicEnv,                //its mother  volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
-	};
 
   //     
   // Absorber
@@ -511,19 +510,51 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 			1,                       //copy number
 			checkOverlaps);          //overlaps checking
     }
-  
+
+  G4bool pixelatedOn = false;
+  if(pixelatedOn==true){
+
+  G4double pixelWidth = 0.55*cm; 
+  G4double pixelHeight = 1.26*cm;
+  G4double pixelDepth = 1*cm;
+  G4Box* solidCrystal = new G4Box("Crystal", pixelWidth/2, pixelHeight/2, pixelDepth/2); 	//should be over 2 /2 
+  G4Material* pixelatedMat = nist->FindOrBuildMaterial("BGO");
+  G4LogicalVolume* logicCrystal = new G4LogicalVolume(solidCrystal,pixelatedMat,"Scatterer");
+  G4LogicalVolume* logicCrystal2 = new G4LogicalVolume(solidCrystal,pixelatedMat,"Absorber");
+
+  int HoriNofCrystals = 8; //George - should be 8
+  int VertNofCrystals = 4; //George - should be 4
+ // G4double xSizeArray = 1.26*4; // was 1.26 but made it a little smaller
+ // G4double ySizeArray = 0.55*8; // x and y defined opposite to how you think. 
+  for (int j=0;j<VertNofCrystals;j++) { //George 
+  for (int i=0;i<HoriNofCrystals;i++) { //George
+  G4double x2 = ((i-3.5)*0.56)*cm; //George, one above actual
+  G4double y2 = ((j-1.5)*1.27)*cm; //George, one above actual
+  G4ThreeVector centreOfPixel = G4ThreeVector(x2,y2,0*cm);  //should be (x2,y2,Z2)
+   new G4PVPlacement(0, centreOfPixel,logicCrystal, //George
+                "Scatterer",logicEnv, //George //Pixelated detector to crystal
+                false,i+8*j,checkOverlaps);};};
+
+  G4double angle = 30*deg;
+  G4RotationMatrix* rotPixel = new G4RotationMatrix();
+  rotPixel->rotateY(angle);
+   for (int j=0;j<VertNofCrystals;j++) { //George 
+  for (int i=0;i<HoriNofCrystals;i++) { //George
+  G4double x2 = (((i-3.5)*(0.56))*sin(angle))*cm; //George, one above actual
+  G4double y2 = (((j-1.5)*(1.27))*cos(angle))*cm; //George, one above actual
+  G4ThreeVector centreOfPixel2 = G4ThreeVector(x2,y2, 4*cm); 
+  new G4PVPlacement(rotPixel, centreOfPixel2,logicCrystal2, //George
+                "Absorber",logicEnv, //George //Pixelated detector to crystal should be logicEnv2
+                false,i+8*j,checkOverlaps);};};
+ 
+}//ends the turn Pixelated detector off statement
+
   
   //Varying step length depending on the logical volume 
   G4double maxStep = 0.1*mm; //0.01 = an acceptable speed but quite slow
   G4UserLimits* stepLimit = new G4UserLimits(); 
   stepLimit->SetMaxAllowedStep(maxStep);
-  logicShape1->SetUserLimits(stepLimit);
-
-  //limits = new G4UserLimits()
-  //maxStep->SetMaxAllowedStep(stepLength);
-  
-  //logicShape1->SetUserLimits(maxStep);
-  //logicShape2->SetUserLimits(maxStep);
+  //logicShape1->SetUserLimits(stepLimit);
 
 
   //
