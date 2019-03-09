@@ -206,6 +206,8 @@ fScat2RotZ = 0;
 fScat2Rad = 7*mm;
 fScat2Height = 21.5*mm;
 fScat2Bool = false;
+fScat2Type = "Scatterer";
+fScat2CopyNo = 1;
 
 fDetXPos = -12.15*cm;
 fDetYPos = 0;
@@ -231,6 +233,8 @@ fDet2RotZ = 0;
 fDet2Rad = 1.905*cm;
 fDet2Height = 1.905*cm;
 fDet2Bool = false;
+fDet2Type = "Absorber";
+fDet2CopyNo = 1;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -409,15 +413,15 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
       G4LogicalVolume* logicShape3 =                         
 	new G4LogicalVolume(solidShape3,         //its solid
 			    shape3_mat,          //its material
-			    "Scatterer");           //its name
+			    fScat2Type);           //its name
                
       new G4PVPlacement(rot3,                    //rotation
 			G4ThreeVector(pos3->x(), pos3->y(), pos3->z()),  //at position
 			logicShape3,             //its logical volume
-			"Scatterer",                //its name
+			fScat2Type,                //its name
 			logicEnv,                //its mother  volume
 			false,                   //no boolean operation
-			1,                       //copy number
+			fScat2CopyNo,            //copy number
 			checkOverlaps);          //overlaps checking
     }
 
@@ -435,7 +439,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
       pos2->setTheta(fDetPolarPhi);
     }
   if(fDetPolarTheta!=9000)
-    {// theta of absorber by Doug
+    {
       pos2->setPhi(fDetPolarTheta);
     }
   G4Material* shape2_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide");
@@ -499,15 +503,15 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
       G4LogicalVolume* logicShape4 =                         
 	new G4LogicalVolume(solidShape4,         //its solid
 			    shape4_mat,          //its material
-			    "Absorber");           //its name
+			    fDet2Type);          //its name
                
       new G4PVPlacement(rot4,                       //no rotation
 			G4ThreeVector(pos4->x(), pos4->y(), pos4->z()),        		//at position
 			logicShape4,             //its logical volume
-			"Absorber",                //its name
+			fDet2Type,               //its name
 			logicEnv,                //its mother  volume
 			false,                   //no boolean operation
-			1,                       //copy number
+			fDet2CopyNo,             //copy number
 			checkOverlaps);          //overlaps checking
     }
 
@@ -727,6 +731,17 @@ void B1DetectorConstruction::SetScat2Bool(G4bool val)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+void B1DetectorConstruction::SetScat2Switch(G4bool val)
+{
+  if (val == false)
+    {
+      fScat2Type = "Absorber";
+      fScat2CopyNo = 2;
+    }
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 void B1DetectorConstruction::SetDetXPos(G4double val)
 {
   fDetXPos = val;
@@ -884,6 +899,17 @@ void B1DetectorConstruction::SetDet2Height(G4double val)
 void B1DetectorConstruction::SetDet2Bool(G4bool val)
 {
   fDet2Bool = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::SetDet2Switch(G4bool val)
+{
+  if (val == false)
+    {
+      fDet2Type = "Scatterer";
+      fDet2CopyNo = 2;
+    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
