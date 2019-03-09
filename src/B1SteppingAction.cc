@@ -78,13 +78,11 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       procName = proc->GetProcessName();
     }
   }
-  //std::cout<<procName<<"\n"; //George Debugging
-  //G4double stepLength = step->GetStepLength(); // George Debugging
-  //std::cout<<stepLength<<"\n"; //George Debugging
-  // dose in body George 
-  if (volume->GetName() == "Body")
- 	{G4double edepStep = step->GetTotalEnergyDeposit();
-     	fEventAction->AddEdepBody(edepStep);} //Have a look at AddEdepDetector. 
+  
+
+ // if (volume->GetName() == "Body")
+ //	{G4double edepStep = step->GetTotalEnergyDeposit();
+   //  	fEventAction->AddEdepBody(edepStep);} //Have a look at AddEdepDetector. 
  // End of dose in body George
  // check if we are in scoring volume
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
@@ -95,7 +93,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   if (volume->GetName() == "Scatterer")
     { G4double stepLength = step->GetStepLength();
       //std::cout<<stepLength<<"\n"; //George checking step length
-      //std::cout<<procName<<"\n";
+      if(procName=="phot"){std::cout<<procName<<"\n";};
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);

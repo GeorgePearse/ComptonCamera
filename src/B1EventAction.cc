@@ -139,7 +139,13 @@ else
     {
     //std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
-    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma)/1000;
+    //George basic peak broadening
+    double resBGO = 0.1335; //Second one
+    double resLSO = 0.105; //First one 
+    double resCdWO4 = 0.066; //Third one
+    double Sigma2 = resCdWO4*(std::pow(fEdepDetector*1000*662, 0.5))/2.35;
+    //endGeorge REMEMBER TO CHANGE BACK TO SIGMA BELOW !!!
+    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma2)/1000;
     //std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
     }
 }
