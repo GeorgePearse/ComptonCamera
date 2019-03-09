@@ -108,7 +108,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 		G4double timeScatterer = step->GetTrack()->GetGlobalTime();
 		G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
 		fEventAction->TimeScatterer(timeScatterer, copyNo);
-		fEventAction->Vector(Pos);
+		fEventAction->Vector(Pos, copyNo);
 		fEventAction->Count();
 	}
 
@@ -122,7 +122,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 	}
     }
 
-  // detector energy
+  // absorber energy
   if (volume->GetName() == "Absorber")
     { G4double edepStep = step->GetTotalEnergyDeposit();
       //if(procName=="msc"){std::cout<<edepStep/keV<<" "<<"\n";};
@@ -134,9 +134,15 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 	if (procName != "Transportation" && procName != "StepLimiter")
 		{
 		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
-		fEventAction->Vector2(Pos2);
+		fEventAction->Vector2(Pos2, copyNo);
 		fEventAction->Proc2(procName);
 		}
+
+	// Finding total number of photons that enter the absorber to test fraction that interact - by Jack
+	if (step->GetTrack()->GetParentID()==0 && step->IsFirstStepInVolume()==true)
+	{
+	  fEventAction->PhotonAbsorber();
+	}
     }
 }
 

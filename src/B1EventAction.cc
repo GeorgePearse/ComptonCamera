@@ -155,6 +155,8 @@ void B1EventAction::SetOutput(std::string folderName)
 {
   fOutput = folderName;
   system(("mkdir " + fOutput).c_str());
+  // Send output folder to run action for the file writers there
+  fRunAction->OutputFolder(folderName);
 }
 
 void B1EventAction::ZeroScatterInfo(G4double edep, G4String procName, G4ThreeVector pos)
@@ -162,6 +164,19 @@ void B1EventAction::ZeroScatterInfo(G4double edep, G4String procName, G4ThreeVec
   posListNotCompt.push_back(pos);
   procListNotCompt.push_back(procName);
   edepListNotCompt.push_back(edep);
+}
+
+// Scatterer and absorber positions - by Ben, generalised using copyNo by Jack
+void B1EventAction::Vector(G4ThreeVector Pos, int copyNo)
+{
+  posList.push_back(Pos);
+  fScatCopyNo = std::to_string(copyNo);
+}
+
+void B1EventAction::Vector2(G4ThreeVector Pos, int copyNo)
+{
+  posList2.push_back(Pos);
+  fAbsorbCopyNo = std::to_string(copyNo);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -185,6 +200,9 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   }
   counter += 1;
   fRunAction->Count(); //scared this may double count something??
+  // Set photon counts in absorber/scatterer to zero at start of events
+  photonScattererCount = 0;
+  photonAbsorberCount = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -321,7 +339,7 @@ if (coincidence == false)
       //std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-  // Text file writer for Scatterer Position and Count - by Ben
+  // Text file writer for Scatterer Position and Count - by Ben, generalised by Jack w/ copyNo
   // Special condition for first write to create file
 
   if (posList2.size() > 0)
@@ -329,11 +347,11 @@ if (coincidence == false)
 	std::ofstream myfile3;
   	if(fFirstWritePosCount)
 		{ 
-        	  myfile3.open(fOutput + "Scat_PosCount.txt");
+        	  myfile3.open(fOutput + "Scat_PosCount" + fScatCopyNo + ".txt");
 		}
   	else
 		{
-		  myfile3.open(fOutput + "Scat_PosCount.txt", std::ios::app);
+		  myfile3.open(fOutput + "Scat_PosCount" + fScatCopyNo + ".txt", std::ios::app);
 		}
   	if (myfile3.is_open())
       		{
@@ -353,22 +371,22 @@ if (coincidence == false)
 	std::ofstream myfile4;
  	if(fFirstWritePosCount2)
 		{
-        	  myfile4.open(fOutput + "Scat_PosCount2.txt");
+        	  myfile4.open(fOutput + "Abs_PosCount" + fAbsorbCopyNo + ".txt");
 		}
   	else
 		{
-		  myfile4.open(fOutput + "Scat_PosCount2.txt", std::ios::app);
+		  myfile4.open(fOutput + "Abs_PosCount" + fAbsorbCopyNo + ".txt", std::ios::app);
 		}
   	if (myfile4.is_open())
       		{
 		myfile4 << "New Event" << "\n";
 		for(unsigned int j=0; j<posList2.size(); j++)
 		{
-		  myfile4 << posList2[j] << procList2[j] << "\n";
+		  myfile4 << posList2[j] << " " << procList2[j] << "\n";
 		}
 		myfile4.close();
 		}
-  	else std::cerr << "Unable to open Scat_PosCount2 file" << std::endl;
+  	else std::cerr << "Unable to open Abs_PosCount file" << std::endl;
   	fFirstWritePosCount2 = false;
 	}
 // DEBUG STUFF BECAUSE DOUGLAS CODE RUNNING SLOW
@@ -418,6 +436,15 @@ if (coincidence == false)
 //	fFirstWrite2 = false;};//}
 
   }
+  // Summing photons that entered scatterer/absorber in run action - by Jack
+  if(photonScattererCount>0)
+    {
+      fRunAction->PhotonScattererCount();
+      if(photonAbsorberCount>0)
+	{
+	  fRunAction->PhotonAbsorberCount();
+	}
+    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.x.....cc

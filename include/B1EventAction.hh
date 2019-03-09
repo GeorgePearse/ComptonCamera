@@ -59,13 +59,14 @@ class B1EventAction : public G4UserEventAction
     virtual void PeakBroad(double g, double c, bool scatter);
     virtual void SetOutput(std::string folderName);
     virtual void ZeroScatterInfo(G4double edep, G4String procName, G4ThreeVector pos);
+    virtual void Vector(G4ThreeVector Pos, int copyNo);
+    virtual void Vector2(G4ThreeVector Pos, int copyNo);
 
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
-    void Vector(G4ThreeVector Pos){posList.push_back(Pos);};
-    void Vector2(G4ThreeVector Pos2){posList2.push_back(Pos2);};
     void Proc2(G4String procName){procList2.push_back(procName);};
     void Count(){N += 1;};
     void PhotonScatterer(){photonScattererCount+=1;};
+    void PhotonAbsorber(){photonAbsorberCount+=1;};
   
   private:
     B1RunAction* fRunAction;
@@ -94,6 +95,7 @@ class B1EventAction : public G4UserEventAction
     int N;
     int counter;
     int photonScattererCount;
+    int photonAbsorberCount;
     std::vector<G4ThreeVector> posList;
     std::vector<G4ThreeVector> posList2;
     std::vector<G4ThreeVector> posListNotCompt;
