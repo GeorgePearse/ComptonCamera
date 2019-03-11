@@ -61,7 +61,7 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fMessenger(0)
 {
 fFirstWrite = true;
-fPeakBroaden = true;
+fPeakBroaden = false;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
 coincidence = true;
