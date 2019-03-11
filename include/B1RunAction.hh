@@ -57,6 +57,7 @@ class B1RunAction : public G4UserRunAction
     void CountUseless(){numberUseless+=1;};
     void Count(){count+=1;};
     void PhotonScattererCount(){photonScattererCount+=1;};
+    void PhotonAbsorberCount(){photonAbsorberCount+=1;};
     void OutputFolder(std::string folderName){fOutput = folderName;};
 
   private:
@@ -67,6 +68,7 @@ class B1RunAction : public G4UserRunAction
     int numberUseful = 0; 
     int numberUseless = 0;
     int photonScattererCount;
+    int photonAbsorberCount;
     //G4int totalNumber;
     G4Accumulable<G4double> fEdep;
     G4Accumulable<G4double> fEdep2;

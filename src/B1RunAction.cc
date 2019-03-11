@@ -53,7 +53,8 @@ B1RunAction::B1RunAction()
   fEdep2(0.),
   count(0.),
   numberUseful(0.),
-  numberUseless(0.)
+  numberUseless(0.),
+  photonScattererCount(0.)
 
 { 
   // add new units for dose
@@ -76,6 +77,10 @@ B1RunAction::B1RunAction()
   //int numberUseful;
   //int numberUseless; 
   //G4bool ffirstWrite3 = true;
+
+  // Set initial counter of photons in scatterer and absorber to zero
+  photonScattererCount = 0;
+  photonAbsorberCount = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -139,13 +144,21 @@ std::ofstream Efficiency;
 G4double Scent = (numberUseless / count)*100;
 G4double Lcent = (numberUseful / count)*100;
 
-  Efficiency.open("Efficiency.txt", std::ios_base::app);
+  Efficiency.open(fOutput + "Efficiency.txt", std::ios_base::app);
   if (Efficiency.is_open()){
 	//File Prints: Time/Date Count Useless Useless(%) Useful Useful(%)
 	//put_time(ptm,"%c ")
   	Efficiency<<count<<" "<<numberUseless<<" "<<Scent<<" "<<numberUseful<<" "<<Lcent<<" \n";
   	}
   else Efficiency << "Unable to open file\n";
+
+  // Save file containing the number of photons in the scatterer and absorber - by Jack
+  std::ofstream photonsInVolumeFile;
+  photonsInVolumeFile.open(fOutput + "totalPhotonsInUsefulVolumes.txt");
+  if(photonsInVolumeFile.is_open())
+    {
+      photonsInVolumeFile << photonScattererCount << " " << photonAbsorberCount << std::endl;
+    }
 
 	//G4ofstreamDestinationBase(Efficiency.txt,true)
     	//	{
