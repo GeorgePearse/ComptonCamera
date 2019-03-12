@@ -93,7 +93,6 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   if (volume->GetName() == "Scatterer")
     {
       G4double stepLength = step->GetStepLength();
-      //std::cout<<stepLength<<"\n"; //George checking step length
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);
@@ -124,8 +123,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 
   // absorber energy
   if (volume->GetName() == "Absorber")
-    { if(procName=="compt"){ //REMEMBER TO REMOVE GEORGE
-      G4double edepStep = step->GetTotalEnergyDeposit();
+    { G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
@@ -135,7 +133,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
 		fEventAction->Vector2(Pos2, copyNo);
 		fEventAction->Proc2(procName);
-		} } //REMEMBER TO REMOVE GEORGE
+		} 
 	// Finding total number of photons that enter the absorber to test fraction that interact - by Jack
 	if (step->GetTrack()->GetParentID()==0 && step->IsFirstStepInVolume()==true)
 	{

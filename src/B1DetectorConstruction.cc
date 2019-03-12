@@ -359,8 +359,8 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   //G4bool wantEverything = true;   for PixelatedDetector testing
   //if(wantEverything==true){
 
-  //G4bool wantScatterer = true;    for MaterialTesting (Just the one absorber) 
-  //if(wantScatterer==false){
+  G4bool wantScatterer = false;    //for MaterialTesting (Just the one absorber) 
+  if(wantScatterer==true){
 
 
   //
@@ -404,7 +404,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     checkOverlaps);          //overlaps checking
    
 
-  //}; //End of if want scatterer GEORGE
+  }; //End of if want scatterer GEORGE
 
 
   //
@@ -467,7 +467,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
     {
       pos2->setPhi(fDetPolarTheta);
     }
-  G4Material* shape2_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide"); //Was LanthanumBromide GP
+  G4Material* shape2_mat = nist->FindOrBuildMaterial("CdWO4"); //Was LanthanumBromide GP
   G4RotationMatrix* rot2 = new G4RotationMatrix();
   rot2->rotateX(fDetRotX);
   rot2->rotateY(fDetRotY);
