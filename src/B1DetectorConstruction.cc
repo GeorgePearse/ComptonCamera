@@ -138,7 +138,7 @@ LaBr->AddElement( La, 0.39636269831033155);
  G4Material* CI = nist->FindOrBuildMaterial("G4_CESIUM_IODIDE");
  G4Material* CaF2 = nist->FindOrBuildMaterial("G4_CALCIUM_FLUORIDE");
  G4Material* BaF2 = nist->FindOrBuildMaterial("G4_BARIUM_FLUORIDE");
- G4Material* CdWO4 = nist->FindOrBuildMaterial("G4_CADMIUM_TUNGSTATE");
+ //G4Material* CdWO4 = nist->FindOrBuildMaterial("G4_CADMIUM_TUNGSTATE");
 
  //G4Element* L = nist->FindOrBuildElement("G4_Lu");
  //G4Element* Y  = nist->FindOrBuildElement("G4_Y");
@@ -164,21 +164,33 @@ LaBr->AddElement( La, 0.39636269831033155);
     LYSO->AddElement(O, 18.14*perCent);
     LYSO->AddElement(Ce, 0.02*perCent);
 
- //G4Element* Pb = nist->FindOrBuildElement("G4_Pb");
- //G4Element* W  = nist->FindOrBuildElement("G4_W");
- //G4Material* PbWO4 = new G4Material("PbWO4",8.28,3);
- //PbWO4->AddElement(Pb,1);
- //PbWO4->AddElement(W,1);
- //PbWO4->AddElement(O,4);
-   //G4double a;  // atomic mass
-  //G4double z;  // atomic number
- // G4double density,ncomponents,fractionmass,nel;
  
- // THIS METHOD WORKS, atomic number, then number of atoms 
+ //George Materials 
+ //eRes of 10.5% at 662keV  
+ G4Material* LSO = new G4Material("LSO", 7.4*g/cm3, 3);
+ LSO->AddElement(nist->FindOrBuildElement(71),2); // Lutetium
+ LSO->AddElement(nist->FindOrBuildElement(14),1); //Sulfur
+ LSO->AddElement(nist->FindOrBuildElement(8),5); //Oxygen
+
+ //eRes of 6.6% at 662keV for 20×20mm cylindrical crystal - Resource = CdWO4 Crystal in Gamma-Ray Spectrometry 
+ G4Material* CdWO4 = new G4Material("CdWO4", 7.9*g/cm3, 3);
+  CdWO4->AddElement(nist->FindOrBuildElement(48),1);  //Cadium
+  CdWO4->AddElement(nist->FindOrBuildElement(78),1);  //Tungsten
+  CdWO4->AddElement(nist->FindOrBuildElement(8),4);   //Oxygen
+ 
+ //eRes of  13.35% at 662keV for 76.2mm*76.2mm cylindrical cystal - Resource = Comparative Study of Large NaI(Tl) and BGO Scintillators
  G4Material* BGO = new G4Material("BGO", 7.13*g/cm3, 3);
-  BGO->AddElement(nist->FindOrBuildElement(83),4); 
-  BGO->AddElement(nist->FindOrBuildElement(32),3);
-  BGO->AddElement(nist->FindOrBuildElement(8),12);
+  BGO->AddElement(nist->FindOrBuildElement(83),4); //Bismuth
+  BGO->AddElement(nist->FindOrBuildElement(32),3); //Germanium
+  BGO->AddElement(nist->FindOrBuildElement(8),12); //Oxygen
+
+//Potential scatterer? Give it a quick test. 2.9% at 662 keV 
+G4Material* Cs2NaLaBr3I3 = new G4Material("theBeast", 4.00*g/cm3, 5);
+  Cs2NaLaBr3I3->AddElement(nist->FindOrBuildElement(55),2); //Caesium
+  Cs2NaLaBr3I3->AddElement(nist->FindOrBuildElement(11),1); //Germanium
+  Cs2NaLaBr3I3->AddElement(nist->FindOrBuildElement(57),1); //Oxygen
+  Cs2NaLaBr3I3->AddElement(nist->FindOrBuildElement(35),3); //Bismuth
+  Cs2NaLaBr3I3->AddElement(nist->FindOrBuildElement(53),3); //Germanium
 
 fDetectorMessenger = new B1DetectorMessenger(this);
  
@@ -341,7 +353,16 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   rot3->rotateY(fScat2RotY);
   rot3->rotateZ(fScat2RotZ);
   
-  
+
+//These two booleans are for George for Material testing and investigating the Pixelated detector. They are both definitely commented out in the github version.
+
+  //G4bool wantEverything = true;   for PixelatedDetector testing
+  //if(wantEverything==true){
+
+  //G4bool wantScatterer = false;    //for MaterialTesting (Just the one absorber) 
+  //if(wantScatterer==true){
+
+
   //
   //     
   // Scatterer
@@ -381,6 +402,10 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
+   
+
+  //}; //End of if want scatterer GEORGE
+
 
   //
   //     
@@ -423,9 +448,9 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 			false,                   //no boolean operation
 			fScat2CopyNo,            //copy number
 			checkOverlaps);          //overlaps checking
-    }
 
-
+    }// End of if scat2Bool
+ 
   //     
   // Absorber
   //
@@ -442,7 +467,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
     {
       pos2->setPhi(fDetPolarTheta);
     }
-  G4Material* shape2_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide");
+  G4Material* shape2_mat = nist->FindOrBuildMaterial("CdWO4"); //Was LanthanumBromide GP
   G4RotationMatrix* rot2 = new G4RotationMatrix();
   rot2->rotateX(fDetRotX);
   rot2->rotateY(fDetRotY);
@@ -468,6 +493,8 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
+  
+
 
   //     
   // Absorber 2 - by Jack
@@ -487,7 +514,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 	{
 	  pos4->setPhi(fDet2PolarTheta);
 	}
-      G4Material* shape4_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide");
+      G4Material* shape4_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide"); //Was Lanthanum Bromide
       G4RotationMatrix* rot4 = new G4RotationMatrix();
       rot4->rotateX(fDet2RotX);
       rot4->rotateY(fDet2RotY);
@@ -513,52 +540,66 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 			false,                   //no boolean operation
 			fDet2CopyNo,             //copy number
 			checkOverlaps);          //overlaps checking
-    }
+    
 
-  G4bool pixelatedOn = false;
+  } // ends activation of absorber 2
+
+  //}; ends wantEverything
+
+
+  // George's toy (The Pixelated Detectors - made out of 'ideal' materials) 
+  G4bool pixelatedOn = false; //turns the pixelated detector on or off
   if(pixelatedOn==true){
 
   G4double pixelWidth = 0.55*cm; 
   G4double pixelHeight = 1.26*cm;
   G4double pixelDepth = 1*cm;
-  G4Box* solidCrystal = new G4Box("Crystal", pixelWidth/2, pixelHeight/2, pixelDepth/2); 	//should be over 2 /2 
-  G4Material* pixelatedMat = nist->FindOrBuildMaterial("BGO");
-  G4LogicalVolume* logicCrystal = new G4LogicalVolume(solidCrystal,pixelatedMat,"Scatterer");
-  G4LogicalVolume* logicCrystal2 = new G4LogicalVolume(solidCrystal,pixelatedMat,"Absorber");
+  G4Box* solidCrystal = new G4Box("Crystal", pixelWidth/2, pixelHeight/2, pixelDepth/2); 	
+  G4Material* pixelatedScat = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
+  G4Material* pixelatedAbsorb = nist->FindOrBuildMaterial("CdWO4");
+  G4LogicalVolume* logicCrystal = new G4LogicalVolume(solidCrystal,pixelatedScat,"Scatterer");
+  G4LogicalVolume* logicCrystal2 = new G4LogicalVolume(solidCrystal,pixelatedAbsorb,"Absorber");
 
-  int HoriNofCrystals = 8; //George - should be 8
-  int VertNofCrystals = 4; //George - should be 4
- // G4double xSizeArray = 1.26*4; // was 1.26 but made it a little smaller
- // G4double ySizeArray = 0.55*8; // x and y defined opposite to how you think. 
-  for (int j=0;j<VertNofCrystals;j++) { //George 
-  for (int i=0;i<HoriNofCrystals;i++) { //George
-  G4double x2 = ((i-3.5)*0.56)*cm; //George, one above actual
-  G4double y2 = ((j-1.5)*1.27)*cm; //George, one above actual
-  G4ThreeVector centreOfPixel = G4ThreeVector(x2,y2,0*cm);  //should be (x2,y2,Z2)
+  int HoriNofCrystals = 8; 
+  int VertNofCrystals = 4; 
+  for (int j=0;j<VertNofCrystals;j++) { 
+  for (int i=0;i<HoriNofCrystals;i++) { 
+  G4double x2 = ((i-3.5)*0.56)*cm; 
+  G4double y2 = ((j-1.5)*1.27)*cm; 
+  G4ThreeVector centreOfPixel = G4ThreeVector(x2,y2,0*cm); 
    new G4PVPlacement(0, centreOfPixel,logicCrystal, //George
-                "Scatterer",logicEnv, //George //Pixelated detector to crystal
+                "Scatterer",logicEnv, 
                 false,i+8*j,checkOverlaps);};};
 
-  G4double angle = 30*deg;
-  G4RotationMatrix* rotPixel = new G4RotationMatrix();
-  rotPixel->rotateY(angle);
-   for (int j=0;j<VertNofCrystals;j++) { //George 
+  G4double angle = 38*deg; //Desired angle between plain of scatterer and absorber
+  G4double separationOfArray = 20; //Desired straight line separation between plains
+  G4ThreeVector centreOfArray = G4ThreeVector((-separationOfArray*sin(angle))*cm,0*cm,(separationOfArray*cos(angle))*cm); 
+  G4RotationMatrix* rotPixelAbsorb = new G4RotationMatrix();
+  rotPixelAbsorb->rotateY(angle); // have tried X and Y, try Z 
+  for (int j=0;j<VertNofCrystals;j++) { //George 
   for (int i=0;i<HoriNofCrystals;i++) { //George
-  G4double x2 = (((i-3.5)*(0.56))*sin(angle))*cm; //George, one above actual
-  G4double y2 = (((j-1.5)*(1.27))*cos(angle))*cm; //George, one above actual
-  G4ThreeVector centreOfPixel2 = G4ThreeVector(x2,y2, 4*cm); 
-  new G4PVPlacement(rotPixel, centreOfPixel2,logicCrystal2, //George
-                "Absorber",logicEnv, //George //Pixelated detector to crystal should be logicEnv2
+  G4double x2 = ((i-3.5)*(0.56)*cos(angle))*cm; 
+  G4double y2 = ((j-1.5)*(1.27))*cm;
+  G4double z2 = ((i-3.5)*(0.56)*sin(angle));  
+  G4double zSepCentres = 4;
+  G4ThreeVector relcentreOfPixel2 = G4ThreeVector(x2,y2,(z2+zSepCentres)*cm); 
+  G4ThreeVector centreOfPixel2 = relcentreOfPixel2 + centreOfArray;
+  new G4PVPlacement(rotPixelAbsorb, centreOfPixel2,logicCrystal2, 
+                "Absorber",logicEnv, 
                 false,i+8*j,checkOverlaps);};};
  
 }//ends the turn Pixelated detector off statement
+ 
 
-  
-  //Varying step length depending on the logical volume 
-  G4double maxStep = 0.1*mm; //0.01 = an acceptable speed but quite slow
+
+
+
+
+//Varying step length depending on the logical volume 
+  G4double maxStep = 0.01*mm; //0.01 = an acceptable speed but quite slow
   G4UserLimits* stepLimit = new G4UserLimits(); 
   stepLimit->SetMaxAllowedStep(maxStep);
-  //logicShape1->SetUserLimits(stepLimit);
+  //logicShape2->SetUserLimits(stepLimit);
 
 
   //
