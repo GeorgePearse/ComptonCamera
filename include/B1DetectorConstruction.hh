@@ -102,7 +102,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
     virtual G4VPhysicalVolume* Construct();
     virtual G4VPhysicalVolume* ConstructVolumes();
     
-    G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
+    G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; } //for Dose
 
     virtual void UpdateGeometry();
 
