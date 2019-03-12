@@ -372,7 +372,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   //
   //     
   // Scatterer
-  //
+  //  
   G4ThreeVector* pos1 = new G4ThreeVector(fScatXPos, fScatYPos, fScatZPos);
   if(fScatPolarR!=0)
     {

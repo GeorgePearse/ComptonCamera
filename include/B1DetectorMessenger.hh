@@ -71,6 +71,7 @@ class B1DetectorMessenger: public G4UImessenger
     G4UIcmdWithADoubleAndUnit* fScatRotZ;
     G4UIcmdWithADoubleAndUnit* fScatRad;
     G4UIcmdWithADoubleAndUnit* fScatHeight;
+    G4UIcmdWithAString*        fScatMat;
 
     G4UIcmdWithADoubleAndUnit* fScat2XPos;
     G4UIcmdWithADoubleAndUnit* fScat2YPos;
@@ -83,6 +84,7 @@ class B1DetectorMessenger: public G4UImessenger
     G4UIcmdWithADoubleAndUnit* fScat2RotZ;
     G4UIcmdWithADoubleAndUnit* fScat2Rad;
     G4UIcmdWithADoubleAndUnit* fScat2Height;
+    G4UIcmdWithAString*        fScat2Mat;
     G4UIcmdWithABool*          fScat2Bool;
     G4UIcmdWithABool*          fScat2Switch;
   
@@ -97,6 +99,7 @@ class B1DetectorMessenger: public G4UImessenger
     G4UIcmdWithADoubleAndUnit* fDetRotZ;
     G4UIcmdWithADoubleAndUnit* fDetRad;
     G4UIcmdWithADoubleAndUnit* fDetHeight;
+    G4UIcmdWithAString*        fDetMat;
 
     G4UIcmdWithADoubleAndUnit* fDet2XPos;
     G4UIcmdWithADoubleAndUnit* fDet2YPos;
@@ -109,6 +112,7 @@ class B1DetectorMessenger: public G4UImessenger
     G4UIcmdWithADoubleAndUnit* fDet2RotZ;
     G4UIcmdWithADoubleAndUnit* fDet2Rad;
     G4UIcmdWithADoubleAndUnit* fDet2Height;
+    G4UIcmdWithAString*        fDet2Mat;
     G4UIcmdWithABool*          fDet2Bool;
     G4UIcmdWithABool*          fDet2Switch;
   
