@@ -555,7 +555,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 
   
   //Varying step length depending on the logical volume 
-  G4double maxStep = 0.1*mm; //0.01 = an acceptable speed but quite slow
+  G4double maxStep = 0.01*mm; //0.01 = an acceptable speed but quite slow
   G4UserLimits* stepLimit = new G4UserLimits(); 
   stepLimit->SetMaxAllowedStep(maxStep);
   //logicShape1->SetUserLimits(stepLimit);
