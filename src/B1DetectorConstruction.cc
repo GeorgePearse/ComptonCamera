@@ -467,7 +467,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
     {
       pos2->setPhi(fDetPolarTheta);
     }
-  G4Material* shape2_mat = nist->FindOrBuildMaterial("CdWO4"); //Was LanthanumBromide GP
+  G4Material* shape2_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide");
   G4RotationMatrix* rot2 = new G4RotationMatrix();
   rot2->rotateX(fDetRotX);
   rot2->rotateY(fDetRotY);
