@@ -99,6 +99,8 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       fEventAction->AddEdepScatterer(edepStep, copyNo);
+      G4double timeScatterer = step->GetTrack()->GetGlobalTime();
+      fEventAction->TimeScatterer(timeScatterer, copyNo);
       
       // Finding total number of photons that enter the scatterer to test fraction that interact - by Jack
       if (step->GetTrack()->GetParentID()==0 && step->IsFirstStepInVolume()==true)
@@ -107,9 +109,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 	}
 	if (procName == "compt")
 	{
-		G4double timeScatterer = step->GetTrack()->GetGlobalTime();
 		G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
-		fEventAction->TimeScatterer(timeScatterer, copyNo);
 		fEventAction->Vector(Pos, copyNo);
 		fEventAction->Count();
 	}
@@ -133,7 +133,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
-	if (procName != "Transportation" && procName != "StepLimiter")
+      if (step->GetPostStepPoint()->GetTotalEnergy()==0)
 		{
 		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
 		fEventAction->Vector2(Pos2, copyNo);
