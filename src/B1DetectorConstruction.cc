@@ -359,8 +359,8 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   //G4bool wantEverything = true;   for PixelatedDetector testing
   //if(wantEverything==true){
 
-  G4bool wantScatterer = false;    //for MaterialTesting (Just the one absorber) 
-  if(wantScatterer==true){
+  //G4bool wantScatterer = false;    //for MaterialTesting (Just the one absorber) 
+  //if(wantScatterer==true){
 
 
   //
@@ -404,7 +404,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     checkOverlaps);          //overlaps checking
    
 
-  }; //End of if want scatterer GEORGE
+  //}; //End of if want scatterer GEORGE
 
 
   //
