@@ -64,7 +64,7 @@ fFirstWrite = true;
 fPeakBroaden = true;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
-coincidence = true;
+coincidence = true; //should be set to true unless a material test is being carried out 
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
@@ -139,13 +139,15 @@ else
     {
     //std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
-    //George basic peak broadening
+    //George basic peak broadening 
+    //Has no effect provided Sigma is written in "fEdepDetector =" and not Sigma2
     double resBGO = 0.1335; //Second one
     double resLSO = 0.105; //First one 
     double resCdWO4 = 0.066; //Third one
+    double restheBeast = 0.029; //Fourth one
     double Sigma2 = resCdWO4*(std::pow(fEdepDetector*1000*662, 0.5))/2.35;
     //endGeorge REMEMBER TO CHANGE BACK TO SIGMA BELOW !!!
-    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma2)/1000;
+    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma)/1000;
     //std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
     }
 }
@@ -287,8 +289,10 @@ if (coincidence == false)
 	} // End of by George
       if(fPeakBroaden == true)
       {
-	B1EventAction::PeakBroad(0.5254, 0.7222, true);
-	B1EventAction::PeakBroad(0.3871, -0.5296, false);
+	//Sodium Iodide (14*43mm) gradient and intercept of Ln(E) Ln(R) plot
+	B1EventAction::PeakBroad(0.5254, 0.7222, true); 
+	//Lanthanum Bromide gradient and intercept of Ln(E) Ln(R) plot
+	B1EventAction::PeakBroad(0.3871, -0.5296, false); 
       }
       
       // Text file writer for Scatterer
