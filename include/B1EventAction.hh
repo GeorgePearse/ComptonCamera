@@ -66,6 +66,7 @@ class B1EventAction : public G4UserEventAction
     void Proc2(G4String procName){procList2.push_back(procName);};
     void Count(){N += 1;};
     void totalComptons(){M += 1;};
+    void exit(){exitBool = true;}; 
     void PhotonScatterer(){photonScattererCount+=1;};
     void PhotonAbsorber(){photonAbsorberCount+=1;};
   
@@ -88,7 +89,7 @@ class B1EventAction : public G4UserEventAction
     G4bool fFirstWriteTotal;
     G4bool fFirstWriteTotal2;
 
-    G4bool wantTotalComptons;
+    bool exitBool;
 
     std::string fScatCopyNo;
     std::string fAbsorbCopyNo;
