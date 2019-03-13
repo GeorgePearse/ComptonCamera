@@ -118,7 +118,10 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 
   // absorber energy
   if (volume->GetName() == "Absorber")
-    { if(procName == "compt"){fEventAction->totalComptons();};
+    { if(procName == "compt"){fEventAction->totalComptons();}; //George.
+      //if(step->IsLastStepInVolume()==true && procName=="Transportation"){fEventAction->exit();};
+      if(step->GetPostStepPoint()->GetStepStatus()==fGeomBoundary){fEventAction->exit();};
+      // George^ there's a bool in EventAction and the photon is only counted if it comptons once and exits
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       G4double timeDetector = step->GetTrack()->GetGlobalTime();

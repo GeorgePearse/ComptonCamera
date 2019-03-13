@@ -64,14 +64,13 @@ fFirstWrite = true;
 fPeakBroaden = true;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
-coincidence = true; //should be set to true unless a material test is being carried out 
+coincidence = false; //should be set to true unless a material test is being carried out 
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
+ 
 fOutput = "";
 counter = 0; 
-//bool wantTotalComptons = true;
-//resolution = 0.105;
 // Event action generic messenger - by Jack
  fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
  auto& outputCommand = fMessenger->DeclareMethod("setOutput", &B1EventAction::SetOutput, "sets output folder");
@@ -192,6 +191,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fEdepScatterer = 0.;
   fEdepDetector = 0.;
   fEdepBody = 0.;
+  exitBool = false; // Should be set to false and should follow same rules as N and M 
   N = 0.;
   M = 0.; // ComptonScatters for one detector George
   fBeginTime = fRunTime;
@@ -279,10 +279,15 @@ if (coincidence == false)
 
 
 //By George - Analysis of effect on height and radius of detector
-if(coincidence=false){
+if(coincidence==false && exitBool == true){
+if(M==1){fRunAction->Count1ScatterEscape();};
+if(M>1){fRunAction->CountMoreScatterEscape();};
+}
+if(coincidence==false){
 if(M==1){fRunAction->Count1Scatter();};
 if(M>1){fRunAction->CountMoreScatter();};
 }
+
 
 // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)

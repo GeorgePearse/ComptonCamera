@@ -56,6 +56,8 @@ B1RunAction::B1RunAction()
   numberUseless(0.),
   OneScatter(0.), // need to have in header
   MoreScatter(0.),
+  OneScatterEscape(0.), // need to have in header
+  MoreScatterEscape(0.),
   photonScattererCount(0.)
 
 { 
@@ -150,7 +152,7 @@ G4double Lcent = (numberUseful / count)*100;
   if (Efficiency.is_open()){
 	//File Prints: Time/Date Count Useless Useless(%) Useful Useful(%)
 	//put_time(ptm,"%c ")
-  	Efficiency<<count<<" "<<numberUseless<<" "<<Scent<<" "<<numberUseful<<" "<<Lcent<<" \n";
+  	Efficiency<<count<<" "<<numberUseless<<" "<<Scent<<" "<<numberUseful<<" "<<Lcent<<"\n";
   	}
   else Efficiency << "Unable to open file\n";
 
@@ -159,7 +161,7 @@ G4double Lcent = (numberUseful / count)*100;
  std::ofstream totalComptons;
  totalComptons.open("totalComptons.txt", std::ios_base::app);
   if (totalComptons.is_open()){
-  	totalComptons<<count<<" "<<OneScatter<<" "<<MoreScatter<<" \n";
+  	totalComptons<<count<<" "<<OneScatter<<" "<<MoreScatter<<" "<<OneScatterEscape<<" "<<MoreScatterEscape<<"\n";
   	}
   else totalComptons << "Unable to open file\n";
 
