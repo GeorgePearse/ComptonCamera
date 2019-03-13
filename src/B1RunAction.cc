@@ -155,7 +155,7 @@ G4double Lcent = (numberUseful / count)*100;
   else Efficiency << "Unable to open file\n";
 
 
-// George, the other version didn't work without coincidence 
+// George, the other version doesn't work without coincidence -can't analyse one detector
  std::ofstream totalComptons;
  totalComptons.open("totalComptons.txt", std::ios_base::app);
   if (totalComptons.is_open()){

@@ -278,7 +278,7 @@ if (coincidence == false)
    }
 
 
-//By George remove if broken!!
+//By George - Analysis of effect on height and radius of detector
 if(coincidence=false){
 if(M==1){fRunAction->Count1Scatter();};
 if(M>1){fRunAction->CountMoreScatter();};

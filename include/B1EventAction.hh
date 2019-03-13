@@ -65,6 +65,7 @@ class B1EventAction : public G4UserEventAction
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
     void Proc2(G4String procName){procList2.push_back(procName);};
     void Count(){N += 1;};
+    void totalComptons(){M += 1;};
     void PhotonScatterer(){photonScattererCount+=1;};
     void PhotonAbsorber(){photonAbsorberCount+=1;};
   
@@ -86,6 +87,9 @@ class B1EventAction : public G4UserEventAction
     G4bool fFirstWriteNotCompt;
     G4bool fFirstWriteTotal;
     G4bool fFirstWriteTotal2;
+
+    G4bool wantTotalComptons;
+
     std::string fScatCopyNo;
     std::string fAbsorbCopyNo;
     std::string absorbName;
@@ -93,6 +97,7 @@ class B1EventAction : public G4UserEventAction
     std::string totalscatName;
     std::string totalabsorbName;
     int N;
+    int M;
     int counter;
     int photonScattererCount;
     int photonAbsorberCount;

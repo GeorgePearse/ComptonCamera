@@ -79,7 +79,6 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     }
   }
   
-  if (procName == "compt"){fEventAction->totalComptons();}; //George analysing size effects
 
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
 
@@ -119,7 +118,8 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 
   // absorber energy
   if (volume->GetName() == "Absorber")
-    { G4double edepStep = step->GetTotalEnergyDeposit();
+    { if(procName == "compt"){fEventAction->totalComptons();};
+      G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
