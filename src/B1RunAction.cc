@@ -54,6 +54,8 @@ B1RunAction::B1RunAction()
   count(0.),
   numberUseful(0.),
   numberUseless(0.),
+  OneScatter(0.), // need to have in header
+  MoreScatter(0.),
   photonScattererCount(0.)
 
 { 
@@ -151,6 +153,19 @@ G4double Lcent = (numberUseful / count)*100;
   	Efficiency<<count<<" "<<numberUseless<<" "<<Scent<<" "<<numberUseful<<" "<<Lcent<<" \n";
   	}
   else Efficiency << "Unable to open file\n";
+
+
+// George, the other version didn't work without coincidence 
+ std::ofstream totalComptons;
+ totalComptons.open("totalComptons.txt", std::ios_base::app);
+  if (totalComptons.is_open()){
+  	totalComptons<<count<<" "<<OneScatter<<" "<<MoreScatter<<" \n";
+  	}
+  else totalComptons << "Unable to open file\n";
+
+
+
+
 
   // Save file containing the number of photons in the scatterer and absorber - by Jack
   std::ofstream photonsInVolumeFile;

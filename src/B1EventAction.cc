@@ -70,6 +70,7 @@ fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
 fOutput = "";
 counter = 0; 
+//bool wantTotalComptons = true;
 //resolution = 0.105;
 // Event action generic messenger - by Jack
  fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
@@ -192,6 +193,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fEdepDetector = 0.;
   fEdepBody = 0.;
   N = 0.;
+  M = 0.; // ComptonScatters for one detector George
   fBeginTime = fRunTime;
   posList.clear();
   posList2.clear();
@@ -218,7 +220,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 // condition to print all scatter events into a file coincident and non-coincident.
 // By Douglas
 if (coincidence == false)
-   {  
+   {
      if(fEdepScatterer != 0)
       {
         if(fPeakBroaden == true)
@@ -276,7 +278,11 @@ if (coincidence == false)
    }
 
 
-
+//By George remove if broken!!
+if(coincidence=false){
+if(M==1){fRunAction->Count1Scatter();};
+if(M>1){fRunAction->CountMoreScatter();};
+}
 
 // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
