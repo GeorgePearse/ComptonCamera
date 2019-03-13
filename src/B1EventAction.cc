@@ -70,7 +70,7 @@ fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
 fOutput = "";
 counter = 0; 
-resolution = 0.105;
+//resolution = 0.105;
 // Event action generic messenger - by Jack
  fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
  auto& outputCommand = fMessenger->DeclareMethod("setOutput", &B1EventAction::SetOutput, "sets output folder");
