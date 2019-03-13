@@ -64,15 +64,17 @@ fFirstWrite = true;
 fPeakBroaden = true;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
-coincidence = false; //should be set to true unless a material test is being carried out 
+coincidence = true; //should be set to true unless a material test is being carried out 
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
 fOutput = "";
 counter = 0; 
+resolution = 0.105;
 // Event action generic messenger - by Jack
  fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
  auto& outputCommand = fMessenger->DeclareMethod("setOutput", &B1EventAction::SetOutput, "sets output folder");
+
  std::cout.precision(15);
 } 
 
@@ -147,7 +149,7 @@ else
     double restheBeast = 0.029; //Fourth one
     double Sigma2 = resCdWO4*(std::pow(fEdepDetector*1000*662, 0.5))/2.35;
     //endGeorge REMEMBER TO CHANGE BACK TO SIGMA BELOW !!!
-    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma2)/1000;
+    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma)/1000;
     //std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
     }
 }
