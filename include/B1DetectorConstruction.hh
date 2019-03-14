@@ -35,6 +35,7 @@
 
 class G4VPhysicalVolume;
 class G4LogicalVolume;
+class G4Material;
 
 class B1DetectorMessenger;
 
@@ -58,6 +59,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
     virtual void SetScatRotZ(G4double);
     virtual void SetScatRad(G4double);
     virtual void SetScatHeight(G4double);
+    virtual void SetScatMat(G4String);
   
     virtual void SetScat2XPos(G4double);
     virtual void SetScat2YPos(G4double);
@@ -70,6 +72,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
     virtual void SetScat2RotZ(G4double);
     virtual void SetScat2Rad(G4double);
     virtual void SetScat2Height(G4double);
+    virtual void SetScat2Mat(G4String);
     virtual void SetScat2Bool(G4bool);
     virtual void SetScat2Switch(G4bool);
   
@@ -84,6 +87,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
     virtual void SetDetRotZ(G4double);
     virtual void SetDetRad(G4double);
     virtual void SetDetHeight(G4double);
+    virtual void SetDetMat(G4String);
   
     virtual void SetDet2XPos(G4double);
     virtual void SetDet2YPos(G4double);
@@ -96,6 +100,7 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
     virtual void SetDet2RotZ(G4double);
     virtual void SetDet2Rad(G4double);
     virtual void SetDet2Height(G4double);
+    virtual void SetDet2Mat(G4String);
     virtual void SetDet2Bool(G4bool);
     virtual void SetDet2Switch(G4bool);
   
@@ -160,6 +165,11 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
   G4bool   fDet2Bool;
   G4String fDet2Type;
   G4int    fDet2CopyNo;
+
+  G4Material* shape1_mat;
+  G4Material* shape2_mat;
+  G4Material* shape3_mat;
+  G4Material* shape4_mat;
   
   B1DetectorMessenger* fDetectorMessenger;
   

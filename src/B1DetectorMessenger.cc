@@ -57,6 +57,7 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
  fScatRotZ(0),
  fScatRad(0),
  fScatHeight(0),
+ fScatMat(0),
  fScat2Dir(0),
  fScat2XPos(0),
  fScat2YPos(0),
@@ -69,7 +70,9 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
  fScat2RotZ(0),
  fScat2Rad(0),
  fScat2Height(0),
+ fScat2Mat(0),
  fScat2Bool(0),
+ fScat2Switch(0),
  fDetDir(0),
  fDetXPos(0),
  fDetYPos(0),
@@ -82,6 +85,7 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
  fDetRotZ(0),
  fDetRad(0),
  fDetHeight(0),
+ fDetMat(0),
  fDet2Dir(0),
  fDet2XPos(0),
  fDet2YPos(0),
@@ -94,7 +98,9 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
  fDet2RotZ(0),
  fDet2Rad(0),
  fDet2Height(0),
+ fDet2Mat(0),
  fDet2Bool(0),
+ fDet2Switch(0),
  fUpdateCmd(0)
 {
   // Sets directory for these commands
@@ -164,6 +170,11 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fScatHeight->SetParameterName("ScatHeight", false);
   fScatHeight->SetUnitCategory("Length");
 
+  // Set material of scatterer
+  fScatMat = new G4UIcmdWithAString("/B1/scat/setMat", this);
+  fScatMat->SetGuidance("Set material of scatterer");
+  fScatMat->SetParameterName("ScatMat", false);
+
   //-----------------------------------------------------
   // Sets directory for scatterer 2 commands
   fScat2Dir = new G4UIdirectory("/B1/scat2/");
@@ -227,6 +238,11 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fScat2Height->SetGuidance("Set height of the scatterer");
   fScat2Height->SetParameterName("Scat2Height", false);
   fScat2Height->SetUnitCategory("Length");
+
+  // Set material of scatterer 2
+  fScat2Mat = new G4UIcmdWithAString("/B1/scat2/setMat", this);
+  fScat2Mat->SetGuidance("Set material of scatterer 2");
+  fScat2Mat->SetParameterName("Scat2Mat", false);
 
   // Set whether scatterer 2 is active
   fScat2Bool = new G4UIcmdWithABool("/B1/scat2/setBool", this);
@@ -303,6 +319,11 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fDetHeight->SetParameterName("DetHeight", false);
   fDetHeight->SetUnitCategory("Length");
 
+  // Set material of detector
+  fDetMat = new G4UIcmdWithAString("/B1/det/setMat", this);
+  fDetMat->SetGuidance("Set material of detector");
+  fDetMat->SetParameterName("DetMat", false);
+
   //------------------------------------------------------------
 
   // Set directory for detector 2 commands
@@ -368,6 +389,11 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fDet2Height->SetParameterName("Det2Height", false);
   fDet2Height->SetUnitCategory("Length");
 
+  // Set material of detector 2
+  fDet2Mat = new G4UIcmdWithAString("/B1/det2/setMat", this);
+  fDet2Mat->SetGuidance("Set material of detector");
+  fDet2Mat->SetParameterName("Det2Mat", false);
+
   // Set whether detector 2 is active
   fDet2Bool = new G4UIcmdWithABool("/B1/det2/setBool", this);
   fDet2Bool->SetGuidance("Set whether detector 2 is active or not");
@@ -400,6 +426,7 @@ B1DetectorMessenger::~B1DetectorMessenger()
   delete fScatRotZ;
   delete fScatRad;
   delete fScatHeight;
+  delete fScatMat;
 
   delete fScat2XPos;
   delete fScat2YPos;
@@ -412,6 +439,7 @@ B1DetectorMessenger::~B1DetectorMessenger()
   delete fScat2RotZ;
   delete fScat2Rad;
   delete fScat2Height;
+  delete fScat2Mat;
   delete fScat2Bool;
   delete fScat2Switch;
   
@@ -426,6 +454,7 @@ B1DetectorMessenger::~B1DetectorMessenger()
   delete fDetRotZ;
   delete fDetRad;
   delete fDetHeight;
+  delete fDetMat;
   
   delete fDet2XPos;
   delete fDet2YPos;
@@ -438,6 +467,7 @@ B1DetectorMessenger::~B1DetectorMessenger()
   delete fDet2RotZ;
   delete fDet2Rad;
   delete fDet2Height;
+  delete fDet2Mat;
   delete fDet2Bool;
   delete fDet2Switch;
   
@@ -484,6 +514,9 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   if ( command == fScatRad )
    {fDetector->SetScatRad(fScatRad->GetNewDoubleValue(newValue));}
 
+  if ( command == fScatMat )
+   {fDetector->SetScatMat(newValue);}
+
   if ( command == fScat2XPos )
    {fDetector->SetScat2XPos(fScat2XPos->GetNewDoubleValue(newValue));}
 
@@ -516,6 +549,9 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   if ( command == fScat2Height )
    {fDetector->SetScat2Height(fScat2Height->GetNewDoubleValue(newValue));}
+
+  if ( command == fScat2Mat )
+   {fDetector->SetScat2Mat(newValue);}
 
   if ( command == fScat2Bool )
    {fDetector->SetScat2Bool(fScat2Bool->GetNewBoolValue(newValue));}
@@ -556,6 +592,9 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   if ( command == fDetHeight )
    {fDetector->SetDetHeight(fDetHeight->GetNewDoubleValue(newValue));}
 
+  if ( command == fDetMat )
+   {fDetector->SetDetMat(newValue);}
+
   if ( command == fDet2XPos )
    {fDetector->SetDet2XPos(fDet2XPos->GetNewDoubleValue(newValue));}
 
@@ -588,6 +627,9 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   if ( command == fDet2Height )
    {fDetector->SetDet2Height(fDet2Height->GetNewDoubleValue(newValue));}
+
+  if ( command == fDet2Mat )
+   {fDetector->SetDet2Mat(newValue);}
 
   if ( command == fDet2Bool )
    {fDetector->SetDet2Bool(fDet2Bool->GetNewBoolValue(newValue));}

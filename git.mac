@@ -30,4 +30,4 @@
 /gun/particle gamma
 /gun/energy 662 keV
 #
-/run/beamOn 2 000 000 000
+/run/beamOn 1000000
