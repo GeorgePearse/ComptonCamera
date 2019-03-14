@@ -60,6 +60,11 @@ class B1RunAction : public G4UserRunAction
     void PhotonAbsorberCount(){photonAbsorberCount+=1;};
     void OutputFolder(std::string folderName){fOutput = folderName;};
 
+    void Count1ScatterEscape(){OneScatterEscape+=1;}; //George Remove if breaks
+    void CountMoreScatterEscape(){MoreScatterEscape+=1;};
+    void Count1Scatter(){OneScatter+=1;}; //George Remove if breaks
+    void CountMoreScatter(){MoreScatter+=1;};
+
   private:
     G4bool ffirstWrite3; //This is needed
     G4bool fFirstWriteJack;
@@ -69,6 +74,12 @@ class B1RunAction : public G4UserRunAction
     int numberUseless = 0;
     int photonScattererCount;
     int photonAbsorberCount;
+   
+    int OneScatterEscape = 0; //George remove if breaks
+    int MoreScatterEscape = 0;
+    int OneScatter = 0; //George remove if breaks
+    int MoreScatter = 0;
+
     //G4int totalNumber;
     G4Accumulable<G4double> fEdep;
     G4Accumulable<G4double> fEdep2;

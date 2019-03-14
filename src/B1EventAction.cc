@@ -64,15 +64,17 @@ fFirstWrite = true;
 fPeakBroaden = true;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
-coincidence = false; //should be set to true unless a material test is being carried out 
+coincidence = true; //should be set to true unless a material test is being carried out 
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
+ 
 fOutput = "";
 counter = 0; 
 // Event action generic messenger - by Jack
  fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
  auto& outputCommand = fMessenger->DeclareMethod("setOutput", &B1EventAction::SetOutput, "sets output folder");
+
  std::cout.precision(15);
 } 
 
@@ -189,7 +191,9 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fEdepScatterer = 0.;
   fEdepDetector = 0.;
   fEdepBody = 0.;
+  exitBool = false; // Should be set to false and should follow same rules as N and M 
   N = 0.;
+  M = 0.; // ComptonScatters for one detector George
   fBeginTime = fRunTime;
   posList.clear();
   posList2.clear();
@@ -216,7 +220,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 // condition to print all scatter events into a file coincident and non-coincident.
 // By Douglas
 if (coincidence == false)
-   {  
+   {
      if(fEdepScatterer != 0)
       {
         if(fPeakBroaden == true)
@@ -274,12 +278,21 @@ if (coincidence == false)
    }
 
 
+//By George - Analysis of effect on height and radius of detector
+if(coincidence==false && exitBool == true && fTimeScatterer<fTimeDetector){
+if(M==1){fRunAction->Count1ScatterEscape();};
+if(M>1){fRunAction->CountMoreScatterEscape();};
+}
+if(coincidence==false && fTimeScatterer<fTimeDetector){
+if(M==1){fRunAction->Count1Scatter();};
+if(M>1){fRunAction->CountMoreScatter();};
+}
 
 
 // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
     {
-      if(N==1) // By George 
+      if(N==1 && fTimeScatterer<fTimeDetector) // By George 
 	{
 	  fRunAction->CountUseful();
 	}
