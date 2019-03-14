@@ -292,7 +292,7 @@ if(M>1){fRunAction->CountMoreScatter();};
 // By Douglas
   if(fEdepScatterer != 0 && fEdepDetector != 0)
     {
-      if(N==1) // By George 
+      if(N==1) //&& fTimeScatterer<fTimeDetector) // By George 
 	{
 	  fRunAction->CountUseful();
 	}
