@@ -279,11 +279,11 @@ if (coincidence == false)
 
 
 //By George - Analysis of effect on height and radius of detector
-if(coincidence==false && exitBool == true){
+if(coincidence==false && exitBool == true && fTimeScatterer<fTimeDetector){
 if(M==1){fRunAction->Count1ScatterEscape();};
 if(M>1){fRunAction->CountMoreScatterEscape();};
 }
-if(coincidence==false){
+if(coincidence==false && fTimeScatterer<fTimeDetector){
 if(M==1){fRunAction->Count1Scatter();};
 if(M>1){fRunAction->CountMoreScatter();};
 }
