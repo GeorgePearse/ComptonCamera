@@ -365,7 +365,7 @@ if (coincidence == false)
 		}
   	else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
   	fFirstWritePosCount = false;
-  G4bool posCountSwitch = false;
+  G4bool posCountSwitch = true;
   if (posList2.size() > 0 && posCountSwitch == true)
 	{
 	std::ofstream myfile4;
