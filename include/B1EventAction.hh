@@ -88,6 +88,7 @@ class B1EventAction : public G4UserEventAction
     G4bool fFirstWriteNotCompt;
     G4bool fFirstWriteTotal;
     G4bool fFirstWriteTotal2;
+    //G4bool fPhotonMomentum;
 
     bool exitBool;
 
