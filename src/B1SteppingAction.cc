@@ -130,7 +130,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       fEventAction->TimeDetector(timeDetector, copyNo);
 
 
-if(step->GetTrack()->GetParentID()==0 && step->GetPostStepPoint()->GetKineticEnergy() <= 0.1*keV && step->GetPostStepPoint()->GetStepStatus() != fGeomBoundaryF)
+if(step->GetTrack()->GetParentID()==0 && step->GetPostStepPoint()->GetKineticEnergy() <= 0.1*keV && step->GetPostStepPoint()->GetStepStatus() != fGeomBoundary)
 		{
 		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
 		fEventAction->Vector2(Pos2, copyNo);
