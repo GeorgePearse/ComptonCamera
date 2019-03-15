@@ -228,10 +228,15 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fScat2Height->SetParameterName("Scat2Height", false);
   fScat2Height->SetUnitCategory("Length");
 
-  //Set whether scatterer 2 is active
+  // Set whether scatterer 2 is active
   fScat2Bool = new G4UIcmdWithABool("/B1/scat2/setBool", this);
   fScat2Bool->SetGuidance("Set whether scatterer 2 is active or not");
   fScat2Bool->SetParameterName("Scat2Bool", false);
+
+  // Switch scatterer 2 between being a scatterer and an absorber
+  fScat2Switch = new G4UIcmdWithABool("/B1/scat2/setSwitch", this);
+  fScat2Switch->SetGuidance("Set whether scatterer 2 is a scatterer or an absorber - false switches it to be an absorber");
+  fScat2Switch->SetParameterName("Scat2Switch", false);
   
   //-----------------------------------------------------
 
@@ -367,6 +372,11 @@ B1DetectorMessenger::B1DetectorMessenger(B1DetectorConstruction * det)
   fDet2Bool = new G4UIcmdWithABool("/B1/det2/setBool", this);
   fDet2Bool->SetGuidance("Set whether detector 2 is active or not");
   fDet2Bool->SetParameterName("Det2Bool", false);
+
+  // Switch absorber 2 between being an absorber and a scatterer
+  fDet2Switch = new G4UIcmdWithABool("/B1/det2/setSwitch", this);
+  fDet2Switch->SetGuidance("Set whether absorber 2 is a scatterer or an absorber - false switches it to be a scatterer");
+  fDet2Switch->SetParameterName("Det2Switch", false);
   
   // Update geometry to apply changes made using the messenger
   fUpdateCmd = new G4UIcmdWithoutParameter("/B1/update",this);
@@ -390,6 +400,21 @@ B1DetectorMessenger::~B1DetectorMessenger()
   delete fScatRotZ;
   delete fScatRad;
   delete fScatHeight;
+
+  delete fScat2XPos;
+  delete fScat2YPos;
+  delete fScat2ZPos;
+  delete fScat2PolarR;
+  delete fScat2PolarPhi;
+  delete fScat2PolarTheta;
+  delete fScat2RotX;
+  delete fScat2RotY;
+  delete fScat2RotZ;
+  delete fScat2Rad;
+  delete fScat2Height;
+  delete fScat2Bool;
+  delete fScat2Switch;
+  
   delete fDetXPos;
   delete fDetYPos;
   delete fDetZPos;
@@ -401,6 +426,7 @@ B1DetectorMessenger::~B1DetectorMessenger()
   delete fDetRotZ;
   delete fDetRad;
   delete fDetHeight;
+  
   delete fDet2XPos;
   delete fDet2YPos;
   delete fDet2ZPos;
@@ -413,11 +439,14 @@ B1DetectorMessenger::~B1DetectorMessenger()
   delete fDet2Rad;
   delete fDet2Height;
   delete fDet2Bool;
+  delete fDet2Switch;
+  
   delete fUpdateCmd;
   delete fScatDir;  
   delete fB1Dir;
   delete fDetDir;
   delete fDet2Dir;
+  delete fScat2Dir;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -491,6 +520,9 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   if ( command == fScat2Bool )
    {fDetector->SetScat2Bool(fScat2Bool->GetNewBoolValue(newValue));}
 
+  if ( command == fScat2Switch )
+   {fDetector->SetScat2Switch(fScat2Switch->GetNewBoolValue(newValue));}
+
   if ( command == fDetXPos )
    {fDetector->SetDetXPos(fDetXPos->GetNewDoubleValue(newValue));}
 
@@ -559,6 +591,9 @@ void B1DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   if ( command == fDet2Bool )
    {fDetector->SetDet2Bool(fDet2Bool->GetNewBoolValue(newValue));}
+
+  if ( command == fDet2Switch )
+   {fDetector->SetDet2Switch(fDet2Switch->GetNewBoolValue(newValue));}
    
   if  ( command == fUpdateCmd )
    {fDetector->UpdateGeometry();}

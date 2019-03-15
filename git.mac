@@ -41,20 +41,31 @@
 
 #/B1/source/setZPos -24.905 cm
 
+
+##################################
+# simulation of just NaI infront of source circular face (prelim).
+
+/B1/det/setRad 0.001 cm
+/B1/det/setHeight 0.001 cm
+
+/B1/scat/setRotX 0 deg
+/B1/source/setZPos -25.15 cm
+
+
 ##################################
 # simulation of NaI (14mm*43mm) cylindrical face on.
 
 
-/B1/det/setPolarR 26.205 cm
-/B1/det/setPolarPhi 30 deg
+#/B1/det/setPolarR 26.205 cm
+#/B1/det/setPolarPhi 30 deg
 #Set absorber rotation
-/B1/det/setRotY 30 deg
+#/B1/det/setRotY 30 deg
 
 #########################################
 # simulation of NaI (14mm*43mm) circular face on.
 
-/B1/scat/setRotX 0 deg
-/B1/source/setZPos -29.7 cm
+#/B1/scat/setRotX 0 deg
+#/B1/source/setZPos -31.15 cm
 
 
 #/B1/det/setPolarR 26.205 cm
@@ -79,5 +90,5 @@
 /gun/particle gamma
 /gun/energy 662 keV
 #
-/run/beamOn 2000000000
+/run/beamOn 500000000
 

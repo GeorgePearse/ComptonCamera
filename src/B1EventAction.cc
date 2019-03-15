@@ -64,7 +64,7 @@ fFirstWrite = true;
 fPeakBroaden = true;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
-coincidence = true;
+coincidence = false; //should be set to true unless a material test is being carried out 
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
@@ -139,6 +139,14 @@ else
     {
     //std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
     double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
+    //George basic peak broadening 
+    //Has no effect provided Sigma is written in "fEdepDetector =" and not Sigma2
+    double resBGO = 0.1335; //Second one
+    double resLSO = 0.105; //First one 
+    double resCdWO4 = 0.066; //Third one
+    double restheBeast = 0.029; //Fourth one
+    double Sigma2 = resCdWO4*(std::pow(fEdepDetector*1000*662, 0.5))/2.35;
+    //endGeorge REMEMBER TO CHANGE BACK TO SIGMA BELOW !!!
     fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma)/1000;
     //std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
     }
@@ -149,6 +157,8 @@ void B1EventAction::SetOutput(std::string folderName)
 {
   fOutput = folderName;
   system(("mkdir " + fOutput).c_str());
+  // Send output folder to run action for the file writers there
+  fRunAction->OutputFolder(folderName);
 }
 
 void B1EventAction::ZeroScatterInfo(G4double edep, G4String procName, G4ThreeVector pos)
@@ -156,6 +166,19 @@ void B1EventAction::ZeroScatterInfo(G4double edep, G4String procName, G4ThreeVec
   posListNotCompt.push_back(pos);
   procListNotCompt.push_back(procName);
   edepListNotCompt.push_back(edep);
+}
+
+// Scatterer and absorber positions - by Ben, generalised using copyNo by Jack
+void B1EventAction::Vector(G4ThreeVector Pos, int copyNo)
+{
+  posList.push_back(Pos);
+  fScatCopyNo = std::to_string(copyNo);
+}
+
+void B1EventAction::Vector2(G4ThreeVector Pos, int copyNo)
+{
+  posList2.push_back(Pos);
+  fAbsorbCopyNo = std::to_string(copyNo);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -179,6 +202,9 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   }
   counter += 1;
   fRunAction->Count(); //scared this may double count something??
+  // Set photon counts in absorber/scatterer to zero at start of events
+  photonScattererCount = 0;
+  photonAbsorberCount = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -263,8 +289,10 @@ if (coincidence == false)
 	} // End of by George
       if(fPeakBroaden == true)
       {
-	B1EventAction::PeakBroad(0.5254, 0.7222, true);
-	B1EventAction::PeakBroad(0.3871, -0.5296, false);
+	//Sodium Iodide (14*43mm) gradient and intercept of Ln(E) Ln(R) plot
+	B1EventAction::PeakBroad(0.5254, 0.7222, true); 
+	//Lanthanum Bromide gradient and intercept of Ln(E) Ln(R) plot
+	B1EventAction::PeakBroad(0.3871, -0.5296, false); 
       }
       
       // Text file writer for Scatterer
@@ -315,19 +343,16 @@ if (coincidence == false)
       //std::cout << "EndOfEvent fEdepDetector = " << G4BestUnit(fEdepDetector, "Energy") << " at time " << G4BestUnit(fTimeDetector + fBeginTime, "Time") << std::endl;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-  // Text file writer for Scatterer Position and Count - by Ben
+  // Text file writer for Scatterer Position and Count - by Ben, generalised by Jack w/ copyNo
   // Special condition for first write to create file
-
-  if (posList2.size() > 0)
-	{	
 	std::ofstream myfile3;
   	if(fFirstWritePosCount)
 		{ 
-        	  myfile3.open(fOutput + "Scat_PosCount.txt");
+        	  myfile3.open(fOutput + "Scat_PosCount" + fScatCopyNo + ".txt");
 		}
   	else
 		{
-		  myfile3.open(fOutput + "Scat_PosCount.txt", std::ios::app);
+		  myfile3.open(fOutput + "Scat_PosCount" + fScatCopyNo + ".txt", std::ios::app);
 		}
   	if (myfile3.is_open())
       		{
@@ -340,29 +365,28 @@ if (coincidence == false)
 		}
   	else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
   	fFirstWritePosCount = false;
-	}
-
-  if (posList2.size() > 0)
+  G4bool posCountSwitch = false;
+  if (posList2.size() > 0 && posCountSwitch == true)
 	{
 	std::ofstream myfile4;
  	if(fFirstWritePosCount2)
 		{
-        	  myfile4.open(fOutput + "Scat_PosCount2.txt");
+        	  myfile4.open(fOutput + "Abs_PosCount" + fAbsorbCopyNo + ".txt");
 		}
   	else
 		{
-		  myfile4.open(fOutput + "Scat_PosCount2.txt", std::ios::app);
+		  myfile4.open(fOutput + "Abs_PosCount" + fAbsorbCopyNo + ".txt", std::ios::app);
 		}
   	if (myfile4.is_open())
       		{
 		myfile4 << "New Event" << "\n";
 		for(unsigned int j=0; j<posList2.size(); j++)
 		{
-		  myfile4 << posList2[j] << procList2[j] << "\n";
+		  myfile4 << posList2[j] << " " << procList2[j] << "\n";
 		}
 		myfile4.close();
 		}
-  	else std::cerr << "Unable to open Scat_PosCount2 file" << std::endl;
+  	else std::cerr << "Unable to open Abs_PosCount file" << std::endl;
   	fFirstWritePosCount2 = false;
 	}
 // DEBUG STUFF BECAUSE DOUGLAS CODE RUNNING SLOW
@@ -412,6 +436,15 @@ if (coincidence == false)
 //	fFirstWrite2 = false;};//}
 
   }
+  // Summing photons that entered scatterer/absorber in run action - by Jack
+  if(photonScattererCount>0)
+    {
+      fRunAction->PhotonScattererCount();
+      if(photonAbsorberCount>0)
+	{
+	  fRunAction->PhotonAbsorberCount();
+	}
+    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.x.....cc
