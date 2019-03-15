@@ -99,6 +99,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 	{
 	  fEventAction->PhotonScatterer();
 	}
+
 	if (procName == "compt")
 	{
 		G4ThreeVector Pos = step->GetPreStepPoint()->GetPosition();
@@ -127,11 +128,14 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
       fEventAction->TimeDetector(timeDetector, copyNo);
-      if (step->IsLastStepInVolume()==true && procName!="Transportation" && step->GetTrack()->GetParentID()==0)
+
+
+if(step->GetTrack()->GetParentID()==0 && step->GetPostStepPoint()->GetKineticEnergy() <= 0.1*keV && step->GetPostStepPoint()->GetStepStatus() != fGeomBoundary)
 		{
 		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
 		fEventAction->Vector2(Pos2, copyNo);
 		fEventAction->Proc2(procName);
+		std::cout << procName << step->GetPostStepPoint()->GetKineticEnergy()/keV << "\n";
 		} 
 	// Finding total number of photons that enter the absorber to test fraction that interact - by Jack
 	if (step->GetTrack()->GetParentID()==0 && step->IsFirstStepInVolume()==true)

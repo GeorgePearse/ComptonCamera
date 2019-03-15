@@ -568,12 +568,12 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
  
 }//ends the turn Pixelated detector off statement
 
-//Varying step length depending on the logical volume 
+//arying step length depending on the logical volume 
   G4double maxStep = 0.01*mm; //0.01 = an acceptable speed but quite slow
   G4UserLimits* stepLimit = new G4UserLimits(); 
   stepLimit->SetMaxAllowedStep(maxStep);
-  //logicShape1->SetUserLimits(stepLimit);
-  //logicShape2->SetUserLimits(stepLimit);
+  logicShape1->SetUserLimits(stepLimit);
+  logicShape2->SetUserLimits(stepLimit);
 
   //
   //always return the physical World
