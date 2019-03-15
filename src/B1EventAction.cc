@@ -61,13 +61,14 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fMessenger(0)
 {
 fFirstWrite = true;
-fPeakBroaden = true;
+fPeakBroaden = false;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
-coincidence = true; //should be set to true unless a material test is being carried out 
+coincidence = false; //should be set to true unless a material test is being carried out 
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
+//fPhotonMomentum = true;
  
 fOutput = "";
 counter = 0; 
@@ -132,15 +133,22 @@ void B1EventAction::PeakBroad(double g, double c, bool scatter = true)
 if(scatter == true)
     {
     //std::cout << " dirac scat peak = " << fEdepScatterer/keV << std::endl;
-    double Sigma = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g))/2.35482;
-    fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma)/1000;
+    double ScatSigma = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g))/2.35482;
+    //double ScatFWHM = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g));
+    //std::cout << "scatterer FWHM = " << ScatFWHM << std::endl;
+    fEdepScatterer = (G4RandGauss::shoot(fEdepScatterer*1000, ScatSigma))/1000;
     //std::cout << " broad scat peak = " << fEdepScatterer << std::endl;
     }
 else
 
     {
     //std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
-    double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
+    double DetSigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
+    //double DetFWHM = std::exp(c)*std::pow(fEdepDetector*1000,1-g);
+    //std::cout << "absorber FWHM = " << DetFWHM << std::endl;
+    fEdepDetector = (G4RandGauss::shoot(fEdepDetector*1000, DetSigma))/1000;
+    //std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
+    
     //George basic peak broadening 
     //Has no effect provided Sigma is written in "fEdepDetector =" and not Sigma2
     double resBGO = 0.1335; //Second one
@@ -149,12 +157,15 @@ else
     double restheBeast = 0.029; //Fourth one
     double Sigma2 = resCdWO4*(std::pow(fEdepDetector*1000*662, 0.5))/2.35;
     //endGeorge REMEMBER TO CHANGE BACK TO SIGMA BELOW !!!
-    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma)/1000;
-    //std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
     }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+//void B1EventAction::MomentumEnergy(G4ThreeVector)
+
+
 void B1EventAction::SetOutput(std::string folderName)
 {
   fOutput = folderName;
@@ -378,7 +389,7 @@ if(M>1){fRunAction->CountMoreScatter();};
 		}
   	else std::cerr << "Unable to open Scat_PosCount file" << std::endl;
   	fFirstWritePosCount = false;
-  G4bool posCountSwitch = false;
+  G4bool posCountSwitch = true;
   if (posList2.size() > 0 && posCountSwitch == true)
 	{
 	std::ofstream myfile4;
