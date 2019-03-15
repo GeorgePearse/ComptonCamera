@@ -1,4 +1,4 @@
-//
+F//
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -494,7 +494,6 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
 	{
 	  pos4->setPhi(fDet2PolarTheta);
 	}
-      G4Material* shape4_mat = nist->FindOrBuildMaterial("Lanthanum_Bromide"); 
       G4RotationMatrix* rot4 = new G4RotationMatrix();
       rot4->rotateX(fDet2RotX);
       rot4->rotateY(fDet2RotY);
@@ -570,12 +569,12 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
  
 }//ends the turn Pixelated detector off statement
 
-//Varying step length depending on the logical volume 
+//arying step length depending on the logical volume 
   G4double maxStep = 0.01*mm; //0.01 = an acceptable speed but quite slow
   G4UserLimits* stepLimit = new G4UserLimits(); 
   stepLimit->SetMaxAllowedStep(maxStep);
-  //logicShape1->SetUserLimits(stepLimit);
-  //logicShape2->SetUserLimits(stepLimit);
+  logicShape1->SetUserLimits(stepLimit);
+  logicShape2->SetUserLimits(stepLimit);
 
   //
   //always return the physical World
