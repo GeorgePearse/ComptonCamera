@@ -135,7 +135,6 @@ if(step->GetTrack()->GetParentID()==0 && step->GetPostStepPoint()->GetKineticEne
 		G4ThreeVector Pos2 = step->GetPreStepPoint()->GetPosition();
 		fEventAction->Vector2(Pos2, copyNo);
 		fEventAction->Proc2(procName);
-		std::cout << procName << step->GetPostStepPoint()->GetKineticEnergy()/keV << "\n";
 		} 
 	// Finding total number of photons that enter the absorber to test fraction that interact - by Jack
 	if (step->GetTrack()->GetParentID()==0 && step->IsFirstStepInVolume()==true)
