@@ -62,13 +62,13 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
 {
 fFirstWrite = true;
 fPeakBroaden = true;
+fPeakBroaden = true;   // should be set to true by default.
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
 coincidence = true; //should be set to true unless a material test is being carried out 
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
-//fPhotonMomentum = true;
  
 fOutput = "";
 counter = 0; 
@@ -163,7 +163,6 @@ else
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
-//void B1EventAction::MomentumEnergy(G4ThreeVector)
 
 
 void B1EventAction::SetOutput(std::string folderName)
