@@ -51,6 +51,11 @@
 /B1/scat/setRotX 0 deg
 /B1/source/setZPos -25.15 cm
 
+/B1/det/setPolarR 26.205 cm
+/B1/det/setPolarPhi 30 deg
+# Set absorber rotation
+/B1/det/setRotY 30 deg
+
 
 ##################################
 # simulation of NaI (14mm*43mm) cylindrical face on.

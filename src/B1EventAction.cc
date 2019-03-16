@@ -61,10 +61,10 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fMessenger(0)
 {
 fFirstWrite = true;
-fPeakBroaden = false;
+fPeakBroaden = true;
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
-coincidence = false; //should be set to true unless a material test is being carried out 
+coincidence = true; //should be set to true unless a material test is being carried out 
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
