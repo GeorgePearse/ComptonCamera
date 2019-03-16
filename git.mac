@@ -19,15 +19,33 @@
 # Set output folder
 /B1/eventAction/setOutput test/
 
-/B1/det/setPolarR 26.205 cm
-/B1/det/setPolarPhi 30 deg
-# Set absorber rotation
-/B1/det/setRotY 30 deg
+# Enable scatterer and absorber 2
+/B1/scat2/setBool true
+/B1/det2/setBool true
+
+# Set position and rotation of scatterers
+/B1/scat/setX 5 cm
+/B1/scat/setRotX 0 deg
+/B1/scat/setRotY 90 deg
+
+/B1/scat2/setX -5 cm
+/B1/scat2/setRotX 0 deg
+/B1/scat2/setRotY 90 deg
+
+# Set position of absorbers
+/B1/det/setZ 20 cm
+/B1/det/setX 0 cm
+/B1/det/setY 0 cm
+/B1/det/setRotY 0 deg
+
+/B1/det2/setZ 20 cm
+/B1/det2/setX 0 cm
+/B1/det2/setY 10 cm
+/B1/det2/setRotY 0 deg
 
 # Update geometry
 /B1/update
 
 /gun/particle gamma
 /gun/energy 662 keV
-#
 /run/beamOn 1000000
