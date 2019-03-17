@@ -124,6 +124,23 @@ void B1EventAction::TimeDetector(G4double timeDetector, int copyNo)
   fAbsorbCopyNo = std::to_string(copyNo);
 }
 
+//WrittenByGeorge
+void B1EventAction::DeltaMomentum(G4ThreeVector deltaMomentum)
+{
+fdeltaMomentum = deltaMomentum;
+}
+
+void B1EventAction::DeltaComptonEnergy(G4double deltaComptonEnergy)
+{
+fdeltaComptonEnergy = deltaComptonEnergy;
+}
+
+void B1EventAction::EnergyExit(G4double energyExit)
+{
+fenergyExit = energyExit;
+}
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // By Douglas
@@ -191,9 +208,10 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fEdepScatterer = 0.;
   fEdepDetector = 0.;
   fEdepBody = 0.;
+  fdeltaComptonEnergy = 0.; 
   exitBool = false; // Should be set to false and should follow same rules as N and M 
   N = 0.;
-  M = 0.; // ComptonScatters for one detector George
+  M = 0.;
   fBeginTime = fRunTime;
   posList.clear();
   posList2.clear();
@@ -277,20 +295,19 @@ if (coincidence == false)
         }
    }
 
-
+//if(M==1){std::cout<<fdeltaMomentum<<" "<<fdeltaComptonEnergy<<"\n";}
 //By George - Analysis of effect on height and radius of detector
 if(coincidence==false && exitBool == true && fTimeScatterer<fTimeDetector){
-if(M==1){fRunAction->Count1ScatterEscape();};
-if(M>1){fRunAction->CountMoreScatterEscape();};
+if(M==1){fRunAction->Count1ScatterEscape();}
+if(M>1){fRunAction->CountMoreScatterEscape();}
 }
-if(coincidence==false && fTimeScatterer<fTimeDetector){
-if(M==1){fRunAction->Count1Scatter();};
-if(M>1){fRunAction->CountMoreScatter();};
-}
+//if(coincidence==false && fTimeScatterer<fTimeDetector){
+//if(M==1){fRunAction->Count1Scatter();};
+//if(M>1){fRunAction->CountMoreScatter();};
 
 
 // By Douglas
-  if(fEdepScatterer != 0 && fEdepDetector != 0)
+  if(fEdepScatterer != 0 && fEdepDetector != 0 && fTimeScatterer < fTimeDetector)
     {
       if(N==1 && fTimeScatterer<fTimeDetector) // By George 
 	{

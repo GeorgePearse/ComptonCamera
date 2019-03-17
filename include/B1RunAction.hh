@@ -64,7 +64,8 @@ class B1RunAction : public G4UserRunAction
     void CountMoreScatterEscape(){MoreScatterEscape+=1;};
     void Count1Scatter(){OneScatter+=1;}; //George Remove if breaks
     void CountMoreScatter(){MoreScatter+=1;};
-
+    void enter(){nEnterAbsorber+=1;}; //For single detector investigations
+ 
   private:
     G4bool ffirstWrite3; //This is needed
     G4bool fFirstWriteJack;
@@ -79,6 +80,7 @@ class B1RunAction : public G4UserRunAction
     int MoreScatterEscape = 0;
     int OneScatter = 0; //George remove if breaks
     int MoreScatter = 0;
+    int nEnterAbsorber = 0;
 
     //G4int totalNumber;
     G4Accumulable<G4double> fEdep;
