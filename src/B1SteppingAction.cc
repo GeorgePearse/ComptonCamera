@@ -78,7 +78,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       procName = proc->GetProcessName();
     }
   }
-    
+
 
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
 
@@ -87,7 +87,11 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
     { 
-      
+      if(procName=="compt"){fEventAction->totalComptons(); //By george
+      G4ThreeVector deltaMomentum = step->GetDeltaMomentum(); //George
+      G4double deltaComptonEnergy = step->GetDeltaEnergy(); //George
+      fEventAction->DeltaMomentum(deltaMomentum); //Test
+      fEventAction->DeltaComptonEnergy(deltaComptonEnergy);} //George
       G4double stepLength = step->GetStepLength();
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
@@ -129,12 +133,21 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
     { 
       //if(step->IsLastStepInVolume()==true && procName=="Transportation"){fEventAction->exit();};
       if(step->GetPostStepPoint()->GetStepStatus()==fGeomBoundary){fEventAction->exit();};
+      G4String photEffect = "";
+      photEffect = step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
+      //std::cout<<photEffect<<"\n";
+      //if(procName == "compt"){fEventAction->totalComptons();}; //George.
+      //if(step->GetPostStepPoint()->GetStepStatus()==fGeomBoundary){fEventAction->exit();};
+      //if(step->GetPreStepPoint()->GetStepStatus()==fGeomBoundary){fRunAction->enter();};
       // George^ there's a bool in EventAction and the photon is only counted if it comptons once and exits
+      //if(step->GetPostStepPoint()->GetStepStatus()==fGeomBoundary)
+ 	//{G4double energyExit = step->GetPostStepPoint()->GetTotalEnergy();
+	 //fEventAction->EnergyExit(energyExit);};
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
       G4double timeDetector = step->GetTrack()->GetGlobalTime();
       fEventAction->AddEdepDetector(edepStep, copyNo);
-      fEventAction->TimeDetector(timeDetector, copyNo);
+      fEventAction->TimeDetector(timeDetector, copyNo); //debugging
 
 
 if(step->GetTrack()->GetParentID()==0 && step->GetPostStepPoint()->GetKineticEnergy() <= 0.1*keV && step->GetPostStepPoint()->GetStepStatus() != fGeomBoundary)

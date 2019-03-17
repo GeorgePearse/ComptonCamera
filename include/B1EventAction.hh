@@ -61,10 +61,14 @@ class B1EventAction : public G4UserEventAction
     virtual void ZeroScatterInfo(G4double edep, G4String procName, G4ThreeVector pos);
     virtual void Vector(G4ThreeVector Pos, int copyNo);
     virtual void Vector2(G4ThreeVector Pos, int copyNo);
+    virtual void DeltaMomentum(G4ThreeVector deltaMomentum);	
+    virtual void DeltaComptonEnergy(G4double deltaComptonEnergy);
+    virtual void EnergyExit(G4double energyExit);
 
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
     void Proc2(G4String procName){procList2.push_back(procName);};
     void Count(){N += 1;};
+    void totalComptons(){M += 1;};
     void exit(){exitBool = true;}; 
     void PhotonScatterer(){photonScattererCount+=1;};
     void PhotonAbsorber(){photonAbsorberCount+=1;};
@@ -95,6 +99,7 @@ class B1EventAction : public G4UserEventAction
 
 
     bool exitBool;
+    G4double fenergyExit;
 
     std::string fScatCopyNo;
     std::string fAbsorbCopyNo;
@@ -105,7 +110,9 @@ class B1EventAction : public G4UserEventAction
     std::string momentumchange;
     int N;
     int M;
+
     G4ThreeVector fdeltaMomentum;
+    G4double fdeltaComptonEnergy;
 
     int counter;
     int photonScattererCount;
