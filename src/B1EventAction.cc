@@ -68,8 +68,9 @@ coincidence = true; //should be set to true unless a material test is being carr
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
-//fPhotonMomentum = true;
- 
+fPhotonMomentum = true;
+fMomentumWrite = true;
+
 fOutput = "";
 counter = 0; 
 // Event action generic messenger - by Jack
@@ -125,6 +126,7 @@ void B1EventAction::TimeDetector(G4double timeDetector, int copyNo)
   fAbsorbCopyNo = std::to_string(copyNo);
 }
 
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // By Douglas
@@ -162,8 +164,6 @@ else
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-
-//void B1EventAction::MomentumEnergy(G4ThreeVector)
 
 
 void B1EventAction::SetOutput(std::string folderName)
@@ -204,7 +204,8 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fEdepBody = 0.;
   exitBool = false; // Should be set to false and should follow same rules as N and M 
   N = 0.;
-  M = 0.; // ComptonScatters for one detector George
+  M = 0.;
+   // ComptonScatters for one detector George
   fBeginTime = fRunTime;
   posList.clear();
   posList2.clear();
@@ -286,8 +287,28 @@ if (coincidence == false)
 	else std::cerr << "Unable to open absorb file" << std::endl;
         fFirstWriteTotal2 = false;
         }
+        
+       if(fPhotonMomentum == true && M==1)
+         {
+           std::ofstream myfilemomentum;
+           momentumchange = fOutput + "momentumchange" + fAbsorbCopyNo + "data.txt";
+           if(fMomentumWrite)
+             {
+              myfilemomentum.open(momentumchange);
+              }
+           else
+              {
+               myfilemomentum.open(momentumchange, std::ios::app);
+               }
+            if(myfilemomentum.is_open())
+              {
+               myfilemomentum << fdeltaMomentum << "\n";
+               myfilemomentum.close();
+               }
+            else std::cerr << "Unable to open momentum file" << std::endl;
+            fMomentumWrite = false;
+          }
    }
-
 
 //By George - Analysis of effect on height and radius of detector
 if(coincidence==false && exitBool == true && fTimeScatterer<fTimeDetector){

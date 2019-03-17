@@ -78,7 +78,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       procName = proc->GetProcessName();
     }
   }
-  
+    
 
   if (volume->GetName() != "Scatterer" && volume->GetName() != "Absorber") return;
 
@@ -86,7 +86,8 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // scatterer energy
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
-    {
+    { 
+      
       G4double stepLength = step->GetStepLength();
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
@@ -94,6 +95,10 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
       G4double timeScatterer = step->GetTrack()->GetGlobalTime();
       fEventAction->TimeScatterer(timeScatterer, copyNo);
       
+
+    // Finding change in momentum and energy for calcuting scatter angle. By Doug. 
+
+
       // Finding total number of photons that enter the scatterer to test fraction that interact - by Jack
       if (step->GetTrack()->GetParentID()==0 && step->IsFirstStepInVolume()==true)
 	{
@@ -117,9 +122,11 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 	}
     }
 
+
+
   // absorber energy
   if (volume->GetName() == "Absorber")
-    { if(procName == "compt"){fEventAction->totalComptons();}; //George.
+    { 
       //if(step->IsLastStepInVolume()==true && procName=="Transportation"){fEventAction->exit();};
       if(step->GetPostStepPoint()->GetStepStatus()==fGeomBoundary){fEventAction->exit();};
       // George^ there's a bool in EventAction and the photon is only counted if it comptons once and exits

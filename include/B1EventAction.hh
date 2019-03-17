@@ -65,10 +65,12 @@ class B1EventAction : public G4UserEventAction
     void TotalTime(G4double deltaTime){fRunTime += deltaTime;};
     void Proc2(G4String procName){procList2.push_back(procName);};
     void Count(){N += 1;};
-    void totalComptons(){M += 1;};
     void exit(){exitBool = true;}; 
     void PhotonScatterer(){photonScattererCount+=1;};
     void PhotonAbsorber(){photonAbsorberCount+=1;};
+    //void PhotonDeltaMomentum(deltaMomentum){fPhotonDeltaMomentum=deltaMomentum};
+
+    
   
   private:
     B1RunAction* fRunAction;
@@ -88,7 +90,9 @@ class B1EventAction : public G4UserEventAction
     G4bool fFirstWriteNotCompt;
     G4bool fFirstWriteTotal;
     G4bool fFirstWriteTotal2;
-    //G4bool fPhotonMomentum;
+    G4bool fPhotonMomentum;
+    G4bool fMomentumWrite;
+
 
     bool exitBool;
 
@@ -98,8 +102,11 @@ class B1EventAction : public G4UserEventAction
     std::string scatName;
     std::string totalscatName;
     std::string totalabsorbName;
+    std::string momentumchange;
     int N;
     int M;
+    G4ThreeVector fdeltaMomentum;
+
     int counter;
     int photonScattererCount;
     int photonAbsorberCount;
