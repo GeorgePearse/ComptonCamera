@@ -61,14 +61,16 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
   fMessenger(0)
 {
 fFirstWrite = true;
-fPeakBroaden = true;
+fPeakBroaden = true;   // should be set to true by default.
 fFirstWritePosCount = true;
 fFirstWritePosCount2 = true;
 coincidence = true; //should be set to true unless a material test is being carried out 
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
- 
+fPhotonMomentum = true;
+fMomentumWrite = true;
+
 fOutput = "";
 counter = 0; 
 // Event action generic messenger - by Jack
@@ -124,6 +126,23 @@ void B1EventAction::TimeDetector(G4double timeDetector, int copyNo)
   fAbsorbCopyNo = std::to_string(copyNo);
 }
 
+
+//WrittenByGeorge
+void B1EventAction::DeltaMomentum(G4ThreeVector deltaMomentum)
+{
+fdeltaMomentum = deltaMomentum;
+}
+
+void B1EventAction::DeltaComptonEnergy(G4double deltaComptonEnergy)
+{
+fdeltaComptonEnergy = deltaComptonEnergy;
+}
+
+void B1EventAction::EnergyExit(G4double energyExit)
+{
+fenergyExit = energyExit;
+}
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // By Douglas
@@ -132,15 +151,22 @@ void B1EventAction::PeakBroad(double g, double c, bool scatter = true)
 if(scatter == true)
     {
     //std::cout << " dirac scat peak = " << fEdepScatterer/keV << std::endl;
-    double Sigma = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g))/2.35482;
-    fEdepScatterer = G4RandGauss::shoot(fEdepScatterer*1000, Sigma)/1000;
+    double ScatSigma = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g))/2.35482;
+    //double ScatFWHM = std::exp(c)*std::pow(fEdepScatterer*1000,(1-g));
+    //std::cout << "scatterer FWHM = " << ScatFWHM << std::endl;
+    fEdepScatterer = (G4RandGauss::shoot(fEdepScatterer*1000, ScatSigma))/1000;
     //std::cout << " broad scat peak = " << fEdepScatterer << std::endl;
     }
 else
 
     {
     //std::cout << " dirac absorb peak = " << fEdepDetector/keV << std::endl;
-    double Sigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
+    double DetSigma = std::exp(c)*std::pow(fEdepDetector*1000,1-g)/2.35482;
+    //double DetFWHM = std::exp(c)*std::pow(fEdepDetector*1000,1-g);
+    //std::cout << "absorber FWHM = " << DetFWHM << std::endl;
+    fEdepDetector = (G4RandGauss::shoot(fEdepDetector*1000, DetSigma))/1000;
+    //std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
+    
     //George basic peak broadening 
     //Has no effect provided Sigma is written in "fEdepDetector =" and not Sigma2
     double resBGO = 0.1335; //Second one
@@ -149,12 +175,13 @@ else
     double restheBeast = 0.029; //Fourth one
     double Sigma2 = resCdWO4*(std::pow(fEdepDetector*1000*662, 0.5))/2.35;
     //endGeorge REMEMBER TO CHANGE BACK TO SIGMA BELOW !!!
-    fEdepDetector = G4RandGauss::shoot(fEdepDetector*1000, Sigma)/1000;
-    //std::cout << " broad absorb peak = " << fEdepDetector << std::endl;
     }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+
 void B1EventAction::SetOutput(std::string folderName)
 {
   fOutput = folderName;
@@ -191,9 +218,12 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fEdepScatterer = 0.;
   fEdepDetector = 0.;
   fEdepBody = 0.;
+  fdeltaComptonEnergy = 0.; 
   exitBool = false; // Should be set to false and should follow same rules as N and M 
   N = 0.;
-  M = 0.; // ComptonScatters for one detector George
+  M = 0.;
+   // ComptonScatters for one detector George
+
   fBeginTime = fRunTime;
   posList.clear();
   posList2.clear();
@@ -278,22 +308,41 @@ if (coincidence == false)
 	else std::cerr << "Unable to open absorb file" << std::endl;
         fFirstWriteTotal2 = false;
         }
+        
+       if(fPhotonMomentum == true && M==1)
+         {
+           std::ofstream myfilemomentum;
+           momentumchange = fOutput + "momentumchange" + fAbsorbCopyNo + "data.txt";
+           if(fMomentumWrite)
+             {
+              myfilemomentum.open(momentumchange);
+              }
+           else
+              {
+               myfilemomentum.open(momentumchange, std::ios::app);
+               }
+            if(myfilemomentum.is_open())
+              {
+               myfilemomentum << fdeltaMomentum << "\n";
+               myfilemomentum.close();
+               }
+            else std::cerr << "Unable to open momentum file" << std::endl;
+            fMomentumWrite = false;
+          }
    }
-
-
+//if(M==1){std::cout<<fdeltaMomentum<<" "<<fdeltaComptonEnergy<<"\n";}
 //By George - Analysis of effect on height and radius of detector
 if(coincidence==false && exitBool == true && fTimeScatterer<fTimeDetector){
-if(M==1){fRunAction->Count1ScatterEscape();};
-if(M>1){fRunAction->CountMoreScatterEscape();};
+if(M==1){fRunAction->Count1ScatterEscape();}
+if(M>1){fRunAction->CountMoreScatterEscape();}
 }
-if(coincidence==false && fTimeScatterer<fTimeDetector){
-if(M==1){fRunAction->Count1Scatter();};
-if(M>1){fRunAction->CountMoreScatter();};
-}
+//if(coincidence==false && fTimeScatterer<fTimeDetector){
+//if(M==1){fRunAction->Count1Scatter();};
+//if(M>1){fRunAction->CountMoreScatter();};
 
 
 // By Douglas
-  if(fEdepScatterer != 0 && fEdepDetector != 0)
+  if(fEdepScatterer != 0 && fEdepDetector != 0 && fTimeScatterer < fTimeDetector)
     {
       if(N==1 && fTimeScatterer<fTimeDetector) // By George 
 	{
