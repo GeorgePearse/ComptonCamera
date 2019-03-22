@@ -250,6 +250,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
 // condition to print all scatter events into a file coincident and non-coincident.
 // By Douglas
+
 if (coincidence == false)
    {
      if(fEdepScatterer != 0)
@@ -262,7 +263,8 @@ if (coincidence == false)
       std::ofstream myfiletotal;
       totalscatName = fOutput + "totalscatter" + fScatCopyNo + "data.txt";
       // Special condition for first write to create file
-      if(fFirstWriteTotal)
+      G4bool switch1 = true;
+      if(fFirstWriteTotal && switch1 == true)
 	{
 		myfiletotal.open(totalscatName);
 	}
@@ -270,7 +272,7 @@ if (coincidence == false)
 	{
 		myfiletotal.open (totalscatName, std::ios::app);
 	}
-      	if (myfiletotal.is_open())
+      	if (myfiletotal.is_open() && switch1 == true)
       	{
           myfiletotal << (fTimeScatterer + fBeginTime)/1000  << " " << fEdepScatterer/keV << "\n";
 	  myfiletotal.close();
@@ -289,7 +291,8 @@ if (coincidence == false)
        std::ofstream myfiletotal2;
        totalabsorbName = fOutput + "totalabsorb" + fAbsorbCopyNo + "data.txt";
        // Special condition for first write to create file
-       if(fFirstWriteTotal2)
+       G4bool switch2 = true;
+       if(fFirstWriteTotal2 && switch2 == true)
 	{
 		myfiletotal2.open(totalabsorbName);
 	}
@@ -297,7 +300,7 @@ if (coincidence == false)
 	{
 		myfiletotal2.open (totalabsorbName, std::ios::app);
 	}
-      	if (myfiletotal2.is_open())
+      	if (myfiletotal2.is_open() && switch2 == false)
       	{
           myfiletotal2 << (fTimeDetector + fBeginTime)/1000 << " "
 	  << fEdepDetector/keV << "\n";
@@ -366,7 +369,8 @@ if(M>1){fRunAction->CountMoreScatterEscape();}
       scatName = fOutput + "scatter" + fScatCopyNo + "data.txt";
       absorbName = fOutput + "absorb" + fAbsorbCopyNo + "data.txt";
       // Special condition for first write to create file
-      if(fFirstWrite)
+      G4bool switch3 = true;
+      if(fFirstWrite && switch3 == true)
 	{
 		myfile.open(scatName);
 	}
@@ -374,7 +378,7 @@ if(M>1){fRunAction->CountMoreScatterEscape();}
 	{
 		myfile.open (scatName, std::ios::app);
 	}
-      	if (myfile.is_open())
+      	if (myfile.is_open() && switch3 == true)
       	{
           myfile << (fTimeScatterer + fBeginTime)/1000  << " "
 	  << fEdepScatterer/keV << "\n";
@@ -387,7 +391,8 @@ if(M>1){fRunAction->CountMoreScatterEscape();}
        // Text file writer for Absorber
        std::ofstream myfile2;
        // Special condition for first write to create file
-       if(fFirstWrite)
+       G4bool switch4 = true;
+       if(fFirstWrite && switch4 == true)
 	{
 		myfile2.open(absorbName);
 	}
@@ -395,7 +400,7 @@ if(M>1){fRunAction->CountMoreScatterEscape();}
 	{
 		myfile2.open (absorbName, std::ios::app);
 	}
-      	if (myfile2.is_open())
+      	if (myfile2.is_open() && switch4 == true)
       	{
           myfile2 << (fTimeDetector + fBeginTime)/1000 << " "
 	  << fEdepDetector/keV << "\n";
@@ -422,7 +427,7 @@ if(M>1){fRunAction->CountMoreScatterEscape();}
 		}
   	if (myfile3.is_open())
       		{
-		myfile3 << "New Event" << "\n";
+		myfile3 << "N" << "\n";
 		for(unsigned int i=0; i<posList.size(); i++)
 		{
 		  myfile3 << posList[i] << "\n";
@@ -445,10 +450,11 @@ if(M>1){fRunAction->CountMoreScatterEscape();}
 		}
   	if (myfile4.is_open())
       		{
-		myfile4 << "New Event" << "\n";
+		myfile4 << "N" << "\n";
 		for(unsigned int j=0; j<posList2.size(); j++)
 		{
-		  myfile4 << posList2[j] << " " << procList2[j] << "\n";
+		  //myfile4 << posList2[j] << " " << procList2[j] << "\n";
+		  myfile4 << posList2[j] << " " << "\n";
 		}
 		myfile4.close();
 		}
