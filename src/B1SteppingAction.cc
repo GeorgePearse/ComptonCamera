@@ -87,11 +87,17 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
     { 
-      if(procName=="compt"){fEventAction->totalComptons(); //By george
-      G4ThreeVector deltaMomentum = step->GetDeltaMomentum(); //George
+      G4String procName2 = "";
+      procName2 = step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
+      if(procName2=="compt")
+      {
+      fEventAction->totalComptons(); //By george
+      G4ThreeVector preMomentum = step->GetPreStepPoint()->GetMomentum(); 
+      G4ThreeVector postMomentum = step->GetPostStepPoint()->GetMomentum(); //George
       G4double deltaComptonEnergy = step->GetDeltaEnergy(); //George
-      fEventAction->DeltaMomentum(deltaMomentum); //Test
-      fEventAction->DeltaComptonEnergy(deltaComptonEnergy);} //George
+      fEventAction->DeltaMomentum(preMomentum, postMomentum); //Test
+      fEventAction->DeltaComptonEnergy(deltaComptonEnergy); //George
+      } //George
       G4double stepLength = step->GetStepLength();
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();

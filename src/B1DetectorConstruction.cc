@@ -342,7 +342,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   //G4bool wantEverything = false;  // for PixelatedDetector testing
   //if(wantEverything==true){
 
-  //G4bool wantScatterer = false;    //for MaterialTesting (Just the one absorber) 
+  //G4bool wantScatterer = true;    //for MaterialTesting (Just the one absorber) 
   //if(wantScatterer==true){
 
 
@@ -529,7 +529,7 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   // George's toy (The Pixelated Detectors - made out of 'ideal' materials) 
   G4bool pixelatedOn = false; //turns the pixelated detector on or off
   if(pixelatedOn==true){
-
+  
   G4double pixelWidth = 0.55*cm; 
   G4double pixelHeight = 1.26*cm;
   G4double pixelDepth = 1*cm;
@@ -550,6 +550,9 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                 "Scatterer",logicEnv, 
                 false,i+8*j,checkOverlaps);};};
 
+  G4bool secondPixelatedOn = false;
+  if(secondPixelatedOn==true){
+
   G4double angle = 38*deg; //Desired angle between plain of scatterer and absorber
   G4double separationOfArray = 20; //Desired straight line separation between plains
   G4ThreeVector centreOfArray = G4ThreeVector((-separationOfArray*sin(angle))*cm,0*cm,(separationOfArray*cos(angle))*cm); 
@@ -560,21 +563,21 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
   G4double x2 = ((i-3.5)*(0.56)*cos(angle))*cm; 
   G4double y2 = ((j-1.5)*(1.27))*cm;
   G4double z2 = ((i-3.5)*(0.56)*sin(angle));  
-  //G4double zSepCentres = 4;
   G4ThreeVector relcentreOfPixel2 = G4ThreeVector(x2,y2,(z2)*cm); 
   G4ThreeVector centreOfPixel2 = relcentreOfPixel2 + centreOfArray;
   new G4PVPlacement(rotPixelAbsorb, centreOfPixel2,logicCrystal2, 
                 "Absorber",logicEnv, 
                 false,i+8*j,checkOverlaps);};};
  
-}//ends the turn Pixelated detector off statement
+}//ends the turn secondPixelatedDetector on statement
+}//ends the turn Pixelated detector on statement
 
 //arying step length depending on the logical volume 
   G4double maxStep = 0.01*mm; //0.01 = an acceptable speed but quite slow
   G4UserLimits* stepLimit = new G4UserLimits(); 
   stepLimit->SetMaxAllowedStep(maxStep);
-  logicShape1->SetUserLimits(stepLimit);
-  logicShape2->SetUserLimits(stepLimit);
+  //logicShape1->SetUserLimits(stepLimit);
+  //logicShape2->SetUserLimits(stepLimit);
 
   //
   //always return the physical World

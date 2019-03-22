@@ -61,7 +61,7 @@ class B1EventAction : public G4UserEventAction
     virtual void ZeroScatterInfo(G4double edep, G4String procName, G4ThreeVector pos);
     virtual void Vector(G4ThreeVector Pos, int copyNo);
     virtual void Vector2(G4ThreeVector Pos, int copyNo);
-    virtual void DeltaMomentum(G4ThreeVector deltaMomentum);	
+    virtual void DeltaMomentum(G4ThreeVector preMomentum, G4ThreeVector postMomentum);	
     virtual void DeltaComptonEnergy(G4double deltaComptonEnergy);
     virtual void EnergyExit(G4double energyExit);
 
@@ -111,8 +111,11 @@ class B1EventAction : public G4UserEventAction
     int N;
     int M;
 
-    G4ThreeVector fdeltaMomentum;
+    G4ThreeVector fpreMomentum;
+    G4ThreeVector fpostMomentum;
     G4double fdeltaComptonEnergy;
+    G4double fdeltaComptonEnergy2;
+ 
 
     int counter;
     int photonScattererCount;

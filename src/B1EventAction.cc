@@ -68,8 +68,8 @@ coincidence = true; //should be set to true unless a material test is being carr
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
-fPhotonMomentum = true;
-fMomentumWrite = true;
+fPhotonMomentum = false;
+fMomentumWrite = false;
 
 fOutput = "";
 counter = 0; 
@@ -128,9 +128,10 @@ void B1EventAction::TimeDetector(G4double timeDetector, int copyNo)
 
 
 //WrittenByGeorge
-void B1EventAction::DeltaMomentum(G4ThreeVector deltaMomentum)
+void B1EventAction::DeltaMomentum(G4ThreeVector preMomentum, G4ThreeVector postMomentum)
 {
-fdeltaMomentum = deltaMomentum;
+fpreMomentum = preMomentum;
+fpostMomentum = postMomentum;
 }
 
 void B1EventAction::DeltaComptonEnergy(G4double deltaComptonEnergy)
@@ -230,7 +231,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   posListNotCompt.clear();
   procListNotCompt.clear();
   edepListNotCompt.clear();
-  if (counter%50000 == 0)
+  if (counter%5000 == 0)
   {
   std::cout << " total event counter = " << counter << std::endl;
   }
@@ -320,7 +321,10 @@ if (coincidence == false)
                }
             if(myfilemomentum.is_open())
               {
-               myfilemomentum << fdeltaMomentum << "\n";
+		if(fdeltaComptonEnergy2/keV > 300 and fdeltaComptonEnergy2/keV < 301)
+		{ 
+               myfilemomentum << fpreMomentum << " " << fpostMomentum << " " << fdeltaComptonEnergy/keV << "\n";    
+		}
                myfilemomentum.close();
                }
             else std::cerr << "Unable to open momentum file" << std::endl;
