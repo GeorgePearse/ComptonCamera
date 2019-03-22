@@ -262,7 +262,7 @@ if (coincidence == false)
       std::ofstream myfiletotal;
       totalscatName = fOutput + "totalscatter" + fScatCopyNo + "data.txt";
       // Special condition for first write to create file
-      G4bool switch1 = false;
+      G4bool switch1 = true;
       if(fFirstWriteTotal && switch1 == true)
 	{
 		myfiletotal.open(totalscatName);
@@ -290,7 +290,7 @@ if (coincidence == false)
        std::ofstream myfiletotal2;
        totalabsorbName = fOutput + "totalabsorb" + fAbsorbCopyNo + "data.txt";
        // Special condition for first write to create file
-       G4bool switch2 = false;
+       G4bool switch2 = true;
        if(fFirstWriteTotal2 && switch2 == true)
 	{
 		myfiletotal2.open(totalabsorbName);
@@ -365,7 +365,7 @@ if(M>1){fRunAction->CountMoreScatterEscape();}
       scatName = fOutput + "scatter" + fScatCopyNo + "data.txt";
       absorbName = fOutput + "absorb" + fAbsorbCopyNo + "data.txt";
       // Special condition for first write to create file
-      G4bool switch3 = false;
+      G4bool switch3 = true;
       if(fFirstWrite && switch3 == true)
 	{
 		myfile.open(scatName);
@@ -387,7 +387,7 @@ if(M>1){fRunAction->CountMoreScatterEscape();}
        // Text file writer for Absorber
        std::ofstream myfile2;
        // Special condition for first write to create file
-       G4bool switch4 = false;
+       G4bool switch4 = true;
        if(fFirstWrite && switch4 == true)
 	{
 		myfile2.open(absorbName);
