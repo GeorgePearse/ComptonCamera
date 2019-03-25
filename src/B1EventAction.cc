@@ -69,6 +69,7 @@ fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
 //fPhotonMomentum = true;
+fFirstWriteJackEnergies = true;
  
 fOutput = "";
 counter = 0; 
@@ -211,6 +212,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   posListNotCompt.clear();
   procListNotCompt.clear();
   edepListNotCompt.clear();
+  scatterEnergies.clear();
   if (counter%50000 == 0)
   {
   std::cout << " total event counter = " << counter << std::endl;
@@ -436,6 +438,34 @@ if(M>1){fRunAction->CountMoreScatter();};
 	  myfileJack.close();
       }
     fFirstWriteNotCompt = false;
+    }
+  // File writer for double Compton scatter investigation
+  if(N==2)
+    {
+      std::ofstream myfileJackEnergies;
+      if(fFirstWriteJackEnergies)
+	{
+	  myfileJackEnergies.open(fOutput + "doubleScatterEnergies.txt");
+	}
+      else
+	{
+	  myfileJackEnergies.open(fOutput + "doubleScatterEnergies.txt", std::ios::app);
+	}
+      if(myfileJackEnergies.is_open())
+	{
+	  if(scatterEnergies.size() == 2)
+	    {
+	      myfileJackEnergies << scatterEnergies[0] << " " << scatterEnergies[1] << " " << fEdepScatterer << " " << fEdepDetector << std::endl;
+	    }
+	  else
+	    {
+	      // Writes this message if the method I've come up with doesn't work so that I know for certain
+	      myfileJackEnergies << "BROKEN METHOD :(" << std::endl;
+	    }
+	   myfileJackEnergies.close();
+	}
+      else std::cerr << "Unable to open doubleScatterEnergies file" << std::endl;
+      fFirstWriteJackEnergies = false;
     }
   
 //Energy deposited in body by George

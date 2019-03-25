@@ -69,6 +69,7 @@ class B1EventAction : public G4UserEventAction
     void exit(){exitBool = true;}; 
     void PhotonScatterer(){photonScattererCount+=1;};
     void PhotonAbsorber(){photonAbsorberCount+=1;};
+    void ScatterEnergy(G4double scatterEnergy){scatterEnergies.push_back(scatterEnergy);};
   
   private:
     B1RunAction* fRunAction;
@@ -88,6 +89,7 @@ class B1EventAction : public G4UserEventAction
     G4bool fFirstWriteNotCompt;
     G4bool fFirstWriteTotal;
     G4bool fFirstWriteTotal2;
+    G4bool fFirstWriteJackEnergies;
     //G4bool fPhotonMomentum;
 
     bool exitBool;
@@ -109,6 +111,7 @@ class B1EventAction : public G4UserEventAction
     std::vector<G4String> procListNotCompt;
     std::vector<G4String> procList2;
     std::vector<G4double> edepListNotCompt;
+    std::vector<G4double> scatterEnergies;
     G4GenericMessenger* fMessenger;
     std::string fOutput;
 };

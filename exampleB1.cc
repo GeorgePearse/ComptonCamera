@@ -82,10 +82,9 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(new B1DetectorConstruction());
 
   // Physics list - GEORGE
-  G4String plname = "QBBC_EMZ"; 
+  G4String plname = "QBBC_EMZ";
   G4PhysListFactory plfactory;
   G4VModularPhysicsList* physicsList = plfactory.GetReferencePhysList(plname);
-
 
   G4StepLimiterPhysics* StepLim = new G4StepLimiterPhysics(); //George
   StepLim->SetApplyToAll(true); //George 

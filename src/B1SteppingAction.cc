@@ -87,6 +87,13 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   // get copy number if multiple scatter detectors
   if (volume->GetName() == "Scatterer")
     {
+      // Investigating energy in each scatter of a double Compton coincidence event - Jack
+      G4String procName2 = step->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
+      if(procName2 == "compt")
+	{
+	  G4double scatterEnergy = step->GetDeltaEnergy();
+	  fEventAction->ScatterEnergy(scatterEnergy);
+	}
       G4double stepLength = step->GetStepLength();
       G4double edepStep = step->GetTotalEnergyDeposit();
       int copyNo = volumePhys->GetCopyNo();
