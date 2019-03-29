@@ -26,35 +26,35 @@
 # written by Doug 
 
 
-#/B1/scat/setX -12.15 cm
-#/B1/scat/setY 0 cm
-#/B1/scat/setZ 26.205 cm
-#/B1/scat/setRad 0.001 cm
-#/B1/scat/setHeight 0.001 cm
+/B1/scat/setX -12.15 cm
+/B1/scat/setY 0 cm
+/B1/scat/setZ 26.205 cm
+/B1/scat/setRad 0.001 cm
+/B1/scat/setHeight 0.001 cm
 
 
 
-#/B1/det/setX 0 cm
-#/B1/det/setY 0 cm
-#/B1/det/setZ 0 cm
+/B1/det/setX 0 cm
+/B1/det/setY 0 cm
+/B1/det/setZ 0 cm
 
 
-#/B1/source/setZPos -24.905 cm
+/B1/source/setZPos -24.905 cm
 
 
 ##################################
 # simulation of just NaI infront of source circular face (prelim).
 
-/B1/det/setRad 0.001 cm
-/B1/det/setHeight 0.001 cm
+#/B1/det/setRad 0.001 cm
+#/B1/det/setHeight 0.001 cm
 
-/B1/scat/setRotX 0 deg
-/B1/source/setZPos -25.15 cm
+#/B1/scat/setRotX 0 deg
+#/B1/source/setZPos -25.15 cm
 
-/B1/det/setPolarR 26.205 cm
-/B1/det/setPolarPhi 30 deg
+#/B1/det/setPolarR 26.205 cm
+#/B1/det/setPolarPhi 30 deg
 # Set absorber rotation
-/B1/det/setRotY 30 deg
+#/B1/det/setRotY 30 deg
 
 
 ##################################

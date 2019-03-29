@@ -172,7 +172,8 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
   G4Material* shape4_mat;
   
   B1DetectorMessenger* fDetectorMessenger;
-  
+  G4bool fAluminium;
+
   protected:
     G4LogicalVolume*  fScoringVolume;
 };

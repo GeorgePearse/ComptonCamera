@@ -230,6 +230,8 @@ SetDet2Mat("Lanthanum_Bromide");
 fDet2Bool = false;
 fDet2Type = "Absorber";
 fDet2CopyNo = 1;
+
+fAluminium = false;   // set to true for casing around absorber.
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -472,6 +474,105 @@ G4VPhysicalVolume* B1DetectorConstruction::ConstructVolumes()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
+
+   if(fAluminium == true) //By Douglas, for casing on scintillator.
+       {
+        G4double alshape_rmin = fDetRad + 1*mm, alshape_rmax = fDetRad + 2*mm;
+        G4double alshape_hz = fDetHeight; // half length of cylinder
+        G4double alshape_phimin = 0.*deg, alshape_phimax = 360.*deg;
+        G4Tubs* hollowalshape = new G4Tubs("aluminiumshape", alshape_rmin,
+                                              alshape_rmax, alshape_hz, alshape_phimin,
+                                                    alshape_phimax);
+        // aluminium casing
+
+
+        G4LogicalVolume* logicAlcase =                         
+         new G4LogicalVolume(hollowalshape,        
+                            nist->FindOrBuildMaterial("G4_Al"),          
+                             "Alluminum Case");          
+
+        new G4PVPlacement(rot2,                      
+                    G4ThreeVector(pos2->x(), pos2->y(), pos2->z()),  
+                    logicAlcase,            
+                    "Alluminium Case",            
+                    logicEnv,             
+                    false,                   
+                    0,                       
+                    checkOverlaps);  
+
+        G4Tubs* Alface = new G4Tubs("Al face", 0*mm, fDetRad, 0.5*mm,
+                                        alshape_phimin, alshape_phimax);
+          
+          G4LogicalVolume* logicAlface = 
+                                   new G4LogicalVolume(Alface,
+                                                           nist->FindOrBuildMaterial("G4_Al"),
+                                                                 "Al face");       
+   
+         new G4PVPlacement(rot2, 
+			    G4ThreeVector(pos2->x(), pos2->y(), pos2->z() + alshape_hz + 1.5*mm),
+			    logicAlface,
+			    "Alluminium face",
+			    logicEnv,
+			    false,
+			    0,
+			    checkOverlaps);
+           
+          new G4PVPlacement(rot2, G4ThreeVector(pos2->x(), pos2->y(), pos2->z() - alshape_hz - 1.5*mm),
+                logicAlface,
+                "Alluminium face",
+                logicEnv,  
+                false,
+                1,
+                checkOverlaps);   
+
+         // MgO casing
+         G4double mgshape_rmin = fDetRad, mgshape_rmax = fDetRad + 1*mm;
+         G4double mgshape_hz = fDetHeight;
+         G4double mgshape_phimin = 0*deg, mgshape_phimax = 360.*deg;
+         G4Tubs* hollowmgshape = new G4Tubs("Mgoshape", mgshape_rmin, mgshape_rmax,
+                                             mgshape_hz, mgshape_phimin, mgshape_phimax);
+
+         G4LogicalVolume* logicMgcase = 
+                                 new G4LogicalVolume(hollowmgshape,
+                                                     nist->FindOrBuildMaterial("G4_MAGNESIUM_OXIDE"),
+                                                             "Mgo case");
+                             
+         new G4PVPlacement(rot2,
+                            G4ThreeVector(pos2->x(), pos2->y(), pos2->z()),
+                            logicMgcase,
+                            "Mgo case",
+                            logicEnv,  
+                            false,
+                            0,
+                            checkOverlaps);
+
+          G4Tubs* mgoface = new G4Tubs("mgo face", 0*mm, fDetRad, 0.5*mm,
+                                        mgshape_phimin, mgshape_phimax);
+          
+          G4LogicalVolume* logicMgface = 
+                                   new G4LogicalVolume(mgoface,
+                                                    nist->FindOrBuildMaterial("G4_MAGNESIUM_OXIDE"),
+                                                                 "mgo face");
+          new G4PVPlacement(rot2, 
+			    G4ThreeVector(pos2->x(), pos2->y(), pos2->z() + mgshape_hz + 0.5),
+			    logicMgface,
+			    "mgo face",
+			    logicEnv,
+			    false,
+			    0,
+			    checkOverlaps);
+           
+          new G4PVPlacement(rot2, G4ThreeVector(pos2->x(), pos2->y(), pos2->z() - mgshape_hz - 0.5),
+                logicMgface,
+                "mgo face",
+                logicEnv,  
+                false,
+                1,
+                checkOverlaps);
+          
+
+        
+        }
   
 
 
