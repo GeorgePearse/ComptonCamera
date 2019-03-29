@@ -68,13 +68,16 @@ coincidence = true; //should be set to true unless a material test is being carr
 fFirstWrite2 = true;
 fFirstWriteTotal = true;
 fFirstWriteTotal2 = true;
- 
+fFirstWriteJackEnergies = true;
+fPhotonMomentum = false;
+fMomentumWrite = false;
 fOutput = "";
 counter = 0; 
-// Event action generic messenger - by Jack
+// Event action generic messenger, used to set output folder - by Jack
  fMessenger = new G4GenericMessenger(this, "/B1/eventAction/", "EventAction control");
  auto& outputCommand = fMessenger->DeclareMethod("setOutput", &B1EventAction::SetOutput, "sets output folder");
 
+ // Makes sure all decimal places are written to files - by Jack
  std::cout.precision(15);
 } 
 
@@ -124,6 +127,24 @@ void B1EventAction::TimeDetector(G4double timeDetector, int copyNo)
   fAbsorbCopyNo = std::to_string(copyNo);
 }
 
+
+//WrittenByGeorge
+void B1EventAction::DeltaMomentum(G4ThreeVector preMomentum, G4ThreeVector postMomentum)
+{
+fpreMomentum = preMomentum;
+fpostMomentum = postMomentum;
+}
+
+void B1EventAction::DeltaComptonEnergy(G4double deltaComptonEnergy)
+{
+fdeltaComptonEnergy = deltaComptonEnergy;
+}
+
+void B1EventAction::EnergyExit(G4double energyExit)
+{
+fenergyExit = energyExit;
+}
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // By Douglas
@@ -161,9 +182,6 @@ else
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-
-
-
 void B1EventAction::SetOutput(std::string folderName)
 {
   fOutput = folderName;
@@ -200,15 +218,19 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fEdepScatterer = 0.;
   fEdepDetector = 0.;
   fEdepBody = 0.;
+  fdeltaComptonEnergy = 0.; 
   exitBool = false; // Should be set to false and should follow same rules as N and M 
   N = 0.;
-  M = 0.; // ComptonScatters for one detector George
+  M = 0.;
+   // ComptonScatters for one detector George
+
   fBeginTime = fRunTime;
   posList.clear();
   posList2.clear();
   posListNotCompt.clear();
   procListNotCompt.clear();
   edepListNotCompt.clear();
+  scatterEnergies.clear();
   if (counter%50000 == 0)
   {
   std::cout << " total event counter = " << counter << std::endl;
@@ -228,6 +250,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
 // condition to print all scatter events into a file coincident and non-coincident.
 // By Douglas
+
 if (coincidence == false)
    {
      if(fEdepScatterer != 0)
@@ -240,7 +263,8 @@ if (coincidence == false)
       std::ofstream myfiletotal;
       totalscatName = fOutput + "totalscatter" + fScatCopyNo + "data.txt";
       // Special condition for first write to create file
-      if(fFirstWriteTotal)
+      G4bool switch1 = true;
+      if(fFirstWriteTotal && switch1 == true)
 	{
 		myfiletotal.open(totalscatName);
 	}
@@ -248,7 +272,7 @@ if (coincidence == false)
 	{
 		myfiletotal.open (totalscatName, std::ios::app);
 	}
-      	if (myfiletotal.is_open())
+      	if (myfiletotal.is_open() && switch1 == true)
       	{
           myfiletotal << (fTimeScatterer + fBeginTime)/1000  << " " << fEdepScatterer/keV << "\n";
 	  myfiletotal.close();
@@ -267,7 +291,8 @@ if (coincidence == false)
        std::ofstream myfiletotal2;
        totalabsorbName = fOutput + "totalabsorb" + fAbsorbCopyNo + "data.txt";
        // Special condition for first write to create file
-       if(fFirstWriteTotal2)
+       G4bool switch2 = true;
+       if(fFirstWriteTotal2 && switch2 == true)
 	{
 		myfiletotal2.open(totalabsorbName);
 	}
@@ -275,7 +300,7 @@ if (coincidence == false)
 	{
 		myfiletotal2.open (totalabsorbName, std::ios::app);
 	}
-      	if (myfiletotal2.is_open())
+      	if (myfiletotal2.is_open() && switch2 == false)
       	{
           myfiletotal2 << (fTimeDetector + fBeginTime)/1000 << " "
 	  << fEdepDetector/keV << "\n";
@@ -284,22 +309,44 @@ if (coincidence == false)
 	else std::cerr << "Unable to open absorb file" << std::endl;
         fFirstWriteTotal2 = false;
         }
+        
+       if(fPhotonMomentum == true && M==1)
+         {
+           std::ofstream myfilemomentum;
+           momentumchange = fOutput + "momentumchange" + fAbsorbCopyNo + "data.txt";
+           if(fMomentumWrite)
+             {
+              myfilemomentum.open(momentumchange);
+              }
+           else
+              {
+               myfilemomentum.open(momentumchange, std::ios::app);
+               }
+            if(myfilemomentum.is_open())
+              {
+		if(fdeltaComptonEnergy2/keV > 300 and fdeltaComptonEnergy2/keV < 301)
+		{ 
+               myfilemomentum << fpreMomentum << " " << fpostMomentum << " " << fdeltaComptonEnergy/keV << "\n";    
+		}
+               myfilemomentum.close();
+               }
+            else std::cerr << "Unable to open momentum file" << std::endl;
+            fMomentumWrite = false;
+          }
    }
-
-
+//if(M==1){std::cout<<fdeltaMomentum<<" "<<fdeltaComptonEnergy<<"\n";}
 //By George - Analysis of effect on height and radius of detector
 if(coincidence==false && exitBool == true && fTimeScatterer<fTimeDetector){
-if(M==1){fRunAction->Count1ScatterEscape();};
-if(M>1){fRunAction->CountMoreScatterEscape();};
+if(M==1){fRunAction->Count1ScatterEscape();}
+if(M>1){fRunAction->CountMoreScatterEscape();}
 }
-if(coincidence==false && fTimeScatterer<fTimeDetector){
-if(M==1){fRunAction->Count1Scatter();};
-if(M>1){fRunAction->CountMoreScatter();};
-}
+//if(coincidence==false && fTimeScatterer<fTimeDetector){
+//if(M==1){fRunAction->Count1Scatter();};
+//if(M>1){fRunAction->CountMoreScatter();};
 
 
 // By Douglas
-  if(fEdepScatterer != 0 && fEdepDetector != 0)
+  if(fEdepScatterer != 0 && fEdepDetector != 0 && fTimeScatterer < fTimeDetector)
     {
       if(N==1 && fTimeScatterer<fTimeDetector) // By George 
 	{
@@ -322,7 +369,8 @@ if(M>1){fRunAction->CountMoreScatter();};
       scatName = fOutput + "scatter" + fScatCopyNo + "data.txt";
       absorbName = fOutput + "absorb" + fAbsorbCopyNo + "data.txt";
       // Special condition for first write to create file
-      if(fFirstWrite)
+      G4bool switch3 = true;
+      if(fFirstWrite && switch3 == true)
 	{
 		myfile.open(scatName);
 	}
@@ -330,7 +378,7 @@ if(M>1){fRunAction->CountMoreScatter();};
 	{
 		myfile.open (scatName, std::ios::app);
 	}
-      	if (myfile.is_open())
+      	if (myfile.is_open() && switch3 == true)
       	{
           myfile << (fTimeScatterer + fBeginTime)/1000  << " "
 	  << fEdepScatterer/keV << "\n";
@@ -343,7 +391,8 @@ if(M>1){fRunAction->CountMoreScatter();};
        // Text file writer for Absorber
        std::ofstream myfile2;
        // Special condition for first write to create file
-       if(fFirstWrite)
+       G4bool switch4 = true;
+       if(fFirstWrite && switch4 == true)
 	{
 		myfile2.open(absorbName);
 	}
@@ -351,7 +400,7 @@ if(M>1){fRunAction->CountMoreScatter();};
 	{
 		myfile2.open (absorbName, std::ios::app);
 	}
-      	if (myfile2.is_open())
+      	if (myfile2.is_open() && switch4 == true)
       	{
           myfile2 << (fTimeDetector + fBeginTime)/1000 << " "
 	  << fEdepDetector/keV << "\n";
@@ -378,7 +427,7 @@ if(M>1){fRunAction->CountMoreScatter();};
 		}
   	if (myfile3.is_open())
       		{
-		myfile3 << "New Event" << "\n";
+		myfile3 << "N" << "\n";
 		for(unsigned int i=0; i<posList.size(); i++)
 		{
 		  myfile3 << posList[i] << "\n";
@@ -401,10 +450,11 @@ if(M>1){fRunAction->CountMoreScatter();};
 		}
   	if (myfile4.is_open())
       		{
-		myfile4 << "New Event" << "\n";
+		myfile4 << "N" << "\n";
 		for(unsigned int j=0; j<posList2.size(); j++)
 		{
-		  myfile4 << posList2[j] << " " << procList2[j] << "\n";
+		  //myfile4 << posList2[j] << " " << procList2[j] << "\n";
+		  myfile4 << posList2[j] << " " << "\n";
 		}
 		myfile4.close();
 		}
@@ -434,6 +484,34 @@ if(M>1){fRunAction->CountMoreScatter();};
 	  myfileJack.close();
       }
     fFirstWriteNotCompt = false;
+    }
+  // File writer for double Compton scatter investigation
+  if(N==2)
+    {
+      std::ofstream myfileJackEnergies;
+      if(fFirstWriteJackEnergies)
+	{
+	  myfileJackEnergies.open(fOutput + "doubleScatterEnergies.txt");
+	}
+      else
+	{
+	  myfileJackEnergies.open(fOutput + "doubleScatterEnergies.txt", std::ios::app);
+	}
+      if(myfileJackEnergies.is_open())
+	{
+	  if(scatterEnergies.size() == 2)
+	    {
+	      myfileJackEnergies << scatterEnergies[0] << " " << scatterEnergies[1] << " " << fEdepScatterer << " " << fEdepDetector << std::endl;
+	    }
+	  else
+	    {
+	      // Writes this message if the method I've come up with doesn't work so that I know for certain
+	      myfileJackEnergies << "BROKEN METHOD :(" << std::endl;
+	    }
+	   myfileJackEnergies.close();
+	}
+      else std::cerr << "Unable to open doubleScatterEnergies file" << std::endl;
+      fFirstWriteJackEnergies = false;
     }
   
 //Energy deposited in body by George
